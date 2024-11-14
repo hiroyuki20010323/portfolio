@@ -1,6 +1,7 @@
 import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
-import {getAuth,createUserWithEmailAndPassword} from 'firebase/auth';
+
+import {getAuth,GoogleAuthProvider} from 'firebase/auth';
+
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -18,15 +19,18 @@ const firebaseConfig = {
   storageBucket: "fast-share-5189c.firebasestorage.app",
   messagingSenderId: "535693902276",
   appId: "1:535693902276:web:0b124ddd116afd4c492491",
-  measurementId: "G-FK4CQQ1TXB"
+ 
+  // measurementId:import.meta.env.VITE_REACT_APP_FIREBASE_MEASUREMENT_ID
+
+  // viteを使用する場合はimport.meta.envをしようする
 };
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
-const auth = getAuth(app);
+// const analytics = getAnalytics(app);
+export const auth = getAuth(app);
+// firebaseSDKの初期化を行い、認証情報を使用できるようにしているgetAuthを使用して。
+export const provider = new GoogleAuthProvider();
 
 
 
-
-export {app, analytics,auth,createUserWithEmailAndPassword}
