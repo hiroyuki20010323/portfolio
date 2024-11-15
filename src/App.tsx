@@ -1,9 +1,10 @@
 
 import { Route, Routes } from 'react-router-dom'
-import { AuthProvider } from './AuthContext'
-import { SignUp } from './signUp'
+import { AuthProvider } from './auth/AuthContext'
+import { SignUp } from './auth/signUp'
 import Home from './Home'
-import Login from './Login'
+import Login from './auth/Login'
+import './style.css';
 
 const App = () => {
   return (

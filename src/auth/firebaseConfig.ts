@@ -1,6 +1,7 @@
 import { initializeApp } from "firebase/app";
 
-import {getAuth,GoogleAuthProvider} from 'firebase/auth';
+import {getAuth,GoogleAuthProvider,TwitterAuthProvider} from 'firebase/auth';
+
 
 
 // TODO: Add SDKs for Firebase products that you want to use
@@ -31,6 +32,7 @@ const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 // firebaseSDKの初期化を行い、認証情報を使用できるようにしているgetAuthを使用して。
 export const provider = new GoogleAuthProvider();
+export const xprovider = new TwitterAuthProvider();
 
 
 
