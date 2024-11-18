@@ -1,17 +1,16 @@
-import { signOut } from 'firebase/auth'
+
 import {  useNavigate } from "react-router-dom";
-import { auth } from './auth/firebaseConfig';
+
 import { useAuthContext } from './auth/AuthContext';
-import { AppBar, Box, Button, IconButton, Toolbar, Typography } from '@mui/material';
+import {  Box, List  } from '@mui/material';
 import Header from './components/Header';
 import Footer from './components/Footer';
+import GroupList from './components/GroupListItem';
+import GroupListItem from "./components/GroupListItem";
 
 const Home = () => {
   const navigate = useNavigate();
-  const handleLogout = () =>{
-    signOut(auth);
-    navigate("/login");
-  }
+
 const user = useAuthContext();
 // console.log(user)
  if(!user){
@@ -22,11 +21,20 @@ return null;
     return (
       <Box>
     <Header/>
-      <div>
-        <h1>ホームページ</h1>
-        <button onClick={handleLogout}>ログアウト</button>
-         
-      </div>
+    <List sx={{overflow:'scroll'}}>
+    <GroupListItem/>
+    <GroupListItem/>
+    <GroupListItem/>
+    <GroupListItem/>
+    <GroupListItem/>
+    <GroupListItem/>
+    <GroupListItem/>
+    <GroupListItem/>
+    <GroupListItem/>
+    <GroupListItem/>
+    <GroupListItem/>
+    </List>
+      
       <Footer/>
       </Box>
     )
