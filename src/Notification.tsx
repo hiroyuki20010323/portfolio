@@ -8,6 +8,7 @@ const Notification = () => {
   return (
     <Box>
       <Header/>
+      <Box sx={{paddingTop:'80px',paddingBottom:'80px'}}>
       <NotificationItem/>
       <NotificationItem/>
       <NotificationItem/>
@@ -17,6 +18,7 @@ const Notification = () => {
       <NotificationItem/>
       <NotificationItem/>
       <NotificationItem/>
+      </Box>
       <Footer/>
     </Box>
   )

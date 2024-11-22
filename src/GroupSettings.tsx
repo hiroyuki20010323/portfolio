@@ -1,13 +1,13 @@
-import { Avatar, Box, Button, FormControl, TextField } from '@mui/material'
-
+import React from 'react'
 import Header from './components/Header'
+import { Avatar, AvatarGroup, Box, Button, FormControl, TextField, Typography } from '@mui/material'
 import Footer from './components/Footer'
 import { Link } from 'react-router-dom'
 
-const CreateGroup = () => {
-  
+const GroupSettings = () => {
   return (
-    <>
+  
+      <>
     
     <Header />
     <Box sx={{display:'flex',alignItems:'center',flexFlow:'column',paddingTop:'80px',paddingBottom:'80px'}}>
@@ -22,14 +22,32 @@ const CreateGroup = () => {
       multiline
       rows={8}
       defaultValue='グループの説明を書く'
+      sx={{marginBottom:4}}
       />
-      <Button variant='contained'sx={{height:40,marginTop:10,marginBottom:8}} disabled>保存</Button>
       
+      <Typography>
+       メンバー
+      </Typography>
+      <Box sx={{display:'flex',justifyContent:'flex-start'}}>
+
+   <AvatarGroup total={8}  >
+  <Avatar/>
+  <Avatar/>
+  <Avatar/>
+  <Avatar/>
+  <Avatar/>
+</AvatarGroup>
+      </Box>
+
+      <Button variant='contained'sx={{height:40,marginTop:10}} disabled>保存</Button>
+      <Button variant='contained'sx={{height:40,marginTop:4,marginBottom:8}} component={Link} to='/invitation'>招待</Button>
+      <Button variant='outlined' color='error'sx={{marginTop:12,marginBottom:4}}>退出</Button>
     </FormControl>
     </Box>
     <Footer/>
     </>
+ 
   )
 }
 
-export default CreateGroup
+export default GroupSettings
