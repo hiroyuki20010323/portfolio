@@ -5,9 +5,12 @@ import { SignUp } from './auth/signUp'
 import Home from './Home'
 import Login from './auth/Login'
 import './style.css';
-import Profile from './components/profile'
+import Profile from './components/Profile'
 import CreateGroup from './CreateGroup'
 import Notification from './Notification'
+import Invitations from './Invitations'
+import GroupSettings from './GroupSettings'
+import Task from './Task'
 
 
 const App = () => {
@@ -20,6 +23,9 @@ const App = () => {
    <Route path='/profile' element={<Profile/>}/>
    <Route path='/creategroup' element={<CreateGroup/>}/>
    <Route path='/notification' element={<Notification/>}/>
+   <Route path='/invitation' element={<Invitations/>}/>
+   <Route path='/groupsettings' element={<GroupSettings/>}/>
+   <Route path='/task' element={<Task/>}/>
       </Routes>
      </AuthProvider>
   )

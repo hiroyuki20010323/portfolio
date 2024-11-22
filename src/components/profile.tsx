@@ -14,7 +14,7 @@ const Profile = () => {
   }
 
   return (
-  <Box sx={{display:'flex',alignItems:'center',flexFlow:'column'}}>
+  <Box sx={{display:'flex',alignItems:'center',flexFlow:'column',paddingTop:'80px',paddingBottom:'80px'}}>
   <Header />
   <Avatar sx={{width:140,height:140,marginTop:10,marginBottom:10}}/>
   <FormControl component='form' variant='standard' >

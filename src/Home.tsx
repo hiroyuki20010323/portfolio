@@ -21,7 +21,7 @@ return null;
     return (
       <Box>
     <Header/>
-    <List sx={{overflow:'scroll'}}>
+    <List sx={{overflow:'scroll',paddingTop:'80px',paddingBottom:'80px'}}>
     <GroupListItem/>
     <GroupListItem/>
     <GroupListItem/>
