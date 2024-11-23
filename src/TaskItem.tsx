@@ -17,7 +17,7 @@ const TaskItem = () => {
         id="panel1-header">
           <Box sx={{display:'flex' ,justifyContent:'space-between',alignItems:'center',width:'100%'}}>
     <Typography variant='h6'>12/1(月)</Typography>
-    <Badge badgeContent={4} color="primary" sx={{marginRight:2}}>
+    <Badge badgeContent={4}color='success'  sx={{marginRight:4}}>
       </Badge>
           </Box>
     </AccordionSummary>
