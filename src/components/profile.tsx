@@ -21,7 +21,7 @@ const Profile = () => {
   <TextField  id='outline-disabled' label='ユーザーネーム'defaultValue='Hiroyuki Ishiyama' style={{width:280,marginBottom:50}}/>
     <Button variant='contained'sx={{height:40}} disabled>保存</Button>
   </FormControl>
- <Button variant='outlined' color='error'sx={{marginTop:22}}onClick={handleLogout}>ログアウト</Button>
+ <Button variant='outlined' color='error'sx={{marginTop:22,marginBottom:4}}onClick={handleLogout}>ログアウト</Button>
   <Footer/>
   </Box>
   )

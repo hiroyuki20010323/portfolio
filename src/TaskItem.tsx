@@ -23,9 +23,7 @@ const TaskItem = () => {
     </AccordionSummary>
     <AccordionDetails >
 <EachTask/>
-<EachTask/>
-<EachTask/>
-<EachTask/>
+
     </AccordionDetails>
         </Accordion>
       

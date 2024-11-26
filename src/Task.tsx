@@ -1,4 +1,4 @@
-import {  Box, Fab, Modal, Tab, Typography} from '@mui/material'
+import {  Box, Button, Fab, FormControl, InputAdornment, Modal, Tab, TextField, Typography} from '@mui/material'
 
 import Header from './components/Header'
 import Footer from './components/Footer'
@@ -8,8 +8,15 @@ import { useState } from 'react'
 import TabContext from '@mui/lab/TabContext';
 
 import WeekTask from './WeekTask';
-import { TabList } from '@mui/lab';
+import {  TabList } from '@mui/lab';
 import AddIcon from '@mui/icons-material/Add';
+import {  LocalizationProvider, TimePicker } from '@mui/x-date-pickers';
+
+
+
+import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+
 
 
 const Task = () => {
@@ -37,6 +44,7 @@ const style = {
   border: '2px solid #000',
   boxShadow: 24,
   p: 4,
+  
 };
 
   return (
@@ -87,14 +95,62 @@ const style = {
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
+        {/* モーダルのレイアウト別コンポーネントに切り出す */}
         <Box sx={style}>
-          <Typography id="modal-modal-title" variant="h6" component="h2">
-            Text in a modal
+          <Box sx={{alignItems:'center',display:'flex',flexDirection:'column',width:'100%'}}>
+
+        
+          <Box sx={{display:'flex',alignItems:'center',marginBottom:4}}>
+
+          <Typography id="modal-modal-title" variant="h6" component="h2"   >
+          タスク追加
           </Typography>
-          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-            Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
-          </Typography>
-        </Box>
+<Button onClick={handleCloseModal} color='error' >閉じる</Button>
+            </Box>
+
+          <FormControl component='form' variant='standard' >
+  <TextField  id='outline-disabled' label='タスク名'defaultValue='コーヒー買ってくる' style={{width:280,marginBottom:50}}/>
+  <TextField
+      id='outlined-multiline-static'
+      label='タスク詳細'
+      multiline
+      rows={8}
+      defaultValue='スーパーでコーヒを買ってきてください。豆ではなく、挽いてあるやつでお願いします。'
+      />
+
+
+<Box sx={{ display: 'flex', alignItems: 'center' }}>
+
+  
+  <Button variant="contained" component="label" sx={{ marginLeft: 1 }}>
+    選択
+    <input
+      type="file"
+      capture='user'
+      hidden
+    />
+  </Button>
+</Box>
+
+<Typography sx={{marginTop:2}}>期限指定</Typography>
+
+<TextField
+      id="inputDate"
+      type="date"
+    
+    />
+ <TextField
+      id="time"
+      type="time" // タイプを "time" に指定
+      defaultValue="12:00" // 初期値（オプション）
+      />
+
+    <Button variant='contained'sx={{height:40,marginTop:2}} >追加</Button>
+  </FormControl>
+  </Box>
+  </Box>
+  {/* ここまで */}
+        
       </Modal>
 
 
