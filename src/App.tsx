@@ -5,7 +5,7 @@ import { SignUp } from './auth/signUp'
 import Home from './Home'
 import Login from './auth/Login'
 import './style.css';
-import Profile from './components/Profile'
+import Profile from './components/Profile/index'
 import CreateGroup from './CreateGroup'
 import Notification from './Notification'
 import Invitations from './Invitations'
