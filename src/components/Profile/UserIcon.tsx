@@ -6,12 +6,13 @@ import {  UseFormSetValue } from 'react-hook-form';
 
 type AvatarDataProps ={
   setValue:UseFormSetValue<any>
+  value:any
 }
 
-const UserIcon= ({setValue}:AvatarDataProps) => {
+const UserIcon= ({setValue,value}:AvatarDataProps) => {
 
   const fileInputRef = useRef<HTMLInputElement | null>(null)
-  const [icon ,setIcon] = useState<string | null  >(null)
+  const [icon ,setIcon] = useState<string | null  >(value)
 
   const handleInput = () =>{
   const files = fileInputRef.current?.files
@@ -43,7 +44,6 @@ const UserIcon= ({setValue}:AvatarDataProps) => {
   />
   <input type="file" 
   ref={fileInputRef}
-  
   onChange={handleInput}
   style={{   
     display:'none'
