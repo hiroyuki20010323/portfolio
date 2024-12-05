@@ -8,6 +8,7 @@ import { Box, Button, FormControl, TextField } from '@mui/material';
 import UserIcon from './UserIcon';
 import { useForm, Controller } from 'react-hook-form';
 import axios from 'axios';
+import { useState } from 'react';
 
 export type UserProfileData={
   userName:string,
@@ -25,6 +26,8 @@ const Profile = () => {
     userName:'',
     userIcon:''
   }});
+
+  const [fileUrl,setFileUrl] = useState(null)
 
   
   const onSubmit = async({userName,userIcon}: UserProfileData) =>{
@@ -44,6 +47,9 @@ const Profile = () => {
 
     
       const response = await axios.post('http://localhost:3080/api/saveProfile',formData);
+      const iconUrl = response.data.fileUrl
+      setFileUrl(iconUrl)
+      console.log(iconUrl)
       console.log("アップロード成功", response.data)
     }catch(error){
       console.log('アップロードに失敗しました',error)
@@ -59,7 +65,7 @@ const Profile = () => {
   <Header />
   
   <FormControl encType='multipart/form-data' component='form' variant='standard' sx={{alignItems:'center'}} onSubmit={ handleSubmit(onSubmit)}>
-  <UserIcon setValue={setValue}/>
+  <UserIcon setValue={setValue} value={fileUrl} />
   <Controller  name='userName' control={control} rules={{required:{value:true,message:'入力は必須です'}}} render={({field,formState:{errors}}) =>(
 <TextField
 {...field}
