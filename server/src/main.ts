@@ -31,6 +31,7 @@ const upload = multer({
   storage: multerS3({
     s3: s3,
     bucket: process.env.S3_BUCKET_NAME!,
+    contentType:multerS3.AUTO_CONTENT_TYPE,
     metadata: function (req, file, cb) {
       cb(null, {fieldName: file.fieldname});
     },
@@ -38,7 +39,8 @@ const upload = multer({
       const uniqueFileName = `${uuidv4()}-${file.originalname}`
       const filePath = `userIcon/${uniqueFileName}`
       cb(null, filePath)
-    }
+    },
+    
   })
 });
 
@@ -58,35 +60,50 @@ if(!req.file){
   return
 }
 
-    const iconKey = (req.file as any)?.key
-    const iconLocation = (req.file as any)?.location
+
+const userName = req.body.user_name
+
+
+    // const iconKey = (req.file as any)?.key
+const iconLocation = (req.file as any)?.location
    
+await prisma.users.create({
+  data:{
+    user_name:userName,
+    icon_url:iconLocation
+  }
+})
 
-
-
-   
 res.status(201).json({
   message:'アップロード成功',
-  fileKey:iconKey,
-  fileUrl:iconLocation
 })
-// const uploadedFile =await prisma.users.create({
-//   data:{
-//     user_name:userName,
-  
-    
-//   }
-// })
-    
-
-    
- 
   }catch(error){
     console.log('データ保存エラー:',error);
      res.status(500).json({error:'サーバーエラー'})
   }
 })
 
+
+app.get('/api/getProfile/:id',async(req,res)=>{
+  try{
+ const {id} =req.params;
+ const user = await prisma.users.findUnique({where:{id:Number(id)}});
+ if(!user){
+  res.status(400).json({error:'ユーザー情報を取得できませんでした'});
+  return 
+ }
+res.json({
+  newUserName:user.user_name,
+  fileUrl:user.icon_url,
+  message:'取得成功'
+});
+
+  }
+catch(error){
+console.error('データ取得エラー',error)
+res.status(500).json({error:'サーバーエラー'})
+}
+})
 
 
 app.listen(PORT, () => {
