@@ -8,7 +8,7 @@ import { Box, Button, FormControl, TextField } from '@mui/material';
 import UserIcon from './UserIcon';
 import { useForm, Controller } from 'react-hook-form';
 import axios from 'axios';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export type UserProfileData={
   userName:string,
@@ -28,6 +28,7 @@ const Profile = () => {
   }});
 
   const [fileUrl,setFileUrl] = useState(null)
+  const [userName,setUserName] =useState('');
 
   
   const onSubmit = async({userName,userIcon}: UserProfileData) =>{
@@ -37,25 +38,34 @@ const Profile = () => {
       formData.append('user_name', userName);
       formData.append('icon_url', userIcon);
 
-      console.log(userIcon);
-      
+     await axios.post('http://localhost:3080/api/saveProfile',formData);
 
-      for (let [key, value] of formData.entries()) {
-        console.log(`${key}: ${value}`);
-      }
-      
+      const getResponse = await axios.get('http://localhost:3080/api/getProfile/10');
+      // console.log(getResponse)
 
-    
-      const response = await axios.post('http://localhost:3080/api/saveProfile',formData);
-      const iconUrl = response.data.fileUrl
-      setFileUrl(iconUrl)
-      console.log(iconUrl)
-      console.log("アップロード成功", response.data)
+      const {newUserName,fileUrl} = getResponse.data;
+      setFileUrl(fileUrl);
+      setUserName(newUserName)
+
+      console.log("アップロード成功")
     }catch(error){
       console.log('アップロードに失敗しました',error)
     }
 
   }
+
+  useEffect(()=>{
+    (async()=>{
+      const getResponse = await axios.get('http://localhost:3080/api/getProfile/10');
+      console.log(getResponse)
+      
+      const {newUserName,fileUrl} = getResponse.data;
+      
+      setFileUrl(fileUrl);
+      setUserName(newUserName);
+    })()
+    
+  },[])
 
 
 
@@ -70,6 +80,7 @@ const Profile = () => {
 <TextField
 {...field}
 id='outline-disabled' label='ユーザーネーム'
+value={userName}
 style={{width:280,marginBottom:50}}
 error={errors.userName ? true : false}
 helperText={errors.userName?.message as string}

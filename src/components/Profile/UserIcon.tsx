@@ -1,7 +1,7 @@
 
 
 import { Avatar, Box } from '@mui/material';
-import {  useRef, useState } from 'react';
+import {  useEffect, useRef, useState } from 'react';
 import {  UseFormSetValue } from 'react-hook-form';
 
 type AvatarDataProps ={
@@ -10,9 +10,17 @@ type AvatarDataProps ={
 }
 
 const UserIcon= ({setValue,value}:AvatarDataProps) => {
+  console.log(value);
+  
 
   const fileInputRef = useRef<HTMLInputElement | null>(null)
-  const [icon ,setIcon] = useState<string | null  >(value)
+  const [icon ,setIcon] = useState<string | undefined>(value)
+  console.log(icon);
+  useEffect(() => {
+    setIcon(value);
+  }, [value]);
+
+  
 
   const handleInput = () =>{
   const files = fileInputRef.current?.files
@@ -30,16 +38,17 @@ const UserIcon= ({setValue,value}:AvatarDataProps) => {
 
 
 
+
   
 
   const fileUpLoad =() =>{
     fileInputRef.current?.click()
   }
- 
+  
   return (
   <Box >
   <Avatar sx={{width:140,height:140,marginTop:10,marginBottom:10}}
-  src={icon|| undefined}
+  src={icon || undefined}
   onClick={fileUpLoad}
   />
   <input type="file" 
