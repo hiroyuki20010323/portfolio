@@ -28,7 +28,7 @@ const Profile = () => {
   }});
 
   const [fileUrl,setFileUrl] = useState(null)
-  const [userName,setUserName] =useState('');
+  // const [userName,setUserName] =useState('');
 
   
   const onSubmit = async({userName,userIcon}: UserProfileData) =>{
@@ -38,14 +38,22 @@ const Profile = () => {
       formData.append('user_name', userName);
       formData.append('icon_url', userIcon);
 
-     await axios.post('http://localhost:3080/api/saveProfile',formData);
+      for (let pair of formData.entries()) {
+        console.log(pair[0] + ': ' + pair[1]);
+      }
 
-      const getResponse = await axios.get('http://localhost:3080/api/getProfile/10');
+    //  await axios.post('http://localhost:3080/api/profile',formData);
+
+     const patchResponse = await axios.patch('http://localhost:3080/api/profile/10',formData);
+     console.log(patchResponse.data)
+      
+      const getResponse = await axios.get('http://localhost:3080/api/profile/10');
       // console.log(getResponse)
-
       const {newUserName,fileUrl} = getResponse.data;
       setFileUrl(fileUrl);
-      setUserName(newUserName)
+      setValue('userName',newUserName)
+
+     
 
       console.log("アップロード成功")
     }catch(error){
@@ -56,13 +64,13 @@ const Profile = () => {
 
   useEffect(()=>{
     (async()=>{
-      const getResponse = await axios.get('http://localhost:3080/api/getProfile/10');
+      const getResponse = await axios.get('http://localhost:3080/api/profile/10');
       console.log(getResponse)
       
       const {newUserName,fileUrl} = getResponse.data;
       
       setFileUrl(fileUrl);
-      setUserName(newUserName);
+      setValue('userName',newUserName)
     })()
     
   },[])
@@ -74,13 +82,12 @@ const Profile = () => {
   <Box sx={{display:'flex',alignItems:'center',flexFlow:'column',paddingTop:'80px',paddingBottom:'80px'}}>
   <Header />
   
-  <FormControl encType='multipart/form-data' component='form' variant='standard' sx={{alignItems:'center'}} onSubmit={ handleSubmit(onSubmit)}>
+  <FormControl  encType='multipart/form-data' component='form' variant='standard' sx={{alignItems:'center'}} onSubmit={ handleSubmit(onSubmit)}>
   <UserIcon setValue={setValue} value={fileUrl} />
   <Controller  name='userName' control={control} rules={{required:{value:true,message:'入力は必須です'}}} render={({field,formState:{errors}}) =>(
 <TextField
 {...field}
 id='outline-disabled' label='ユーザーネーム'
-value={userName}
 style={{width:280,marginBottom:50}}
 error={errors.userName ? true : false}
 helperText={errors.userName?.message as string}

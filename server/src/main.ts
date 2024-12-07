@@ -6,6 +6,9 @@ import  {S3Client} from '@aws-sdk/client-s3';
 import multer from 'multer';
 import multerS3 from 'multer-s3'
 import {v4 as uuidv4}  from 'uuid'
+// import methodOverride from 'method-override';
+
+
 
 
 
@@ -15,6 +18,7 @@ const PORT = 3080;
 
  
 
+// app.use(methodOverride('_method'));
 
 const s3 = new S3Client({
   region: process.env.AWS_REGION || '',
@@ -52,7 +56,7 @@ app.get('/', (req, res) => {
   res.send('Hello from Express with TypeScript!!!!');
 });
 
-app.post('/api/saveProfile',upload.single('icon_url'),async(req,res)=>{
+app.post('/api/profile',upload.single('icon_url'),async(req,res)=>{
   try{
 if(!req.file){
   console.log('ファイルがアップロードされていません')
@@ -84,7 +88,7 @@ res.status(201).json({
 })
 
 
-app.get('/api/getProfile/:id',async(req,res)=>{
+app.get('/api/profile/:id',async(req,res)=>{
   try{
  const {id} =req.params;
  const user = await prisma.users.findUnique({where:{id:Number(id)}});
@@ -104,6 +108,29 @@ console.error('データ取得エラー',error)
 res.status(500).json({error:'サーバーエラー'})
 }
 })
+
+app.patch('/api/profile/:id', upload.single('icon_url'), async (req, res) => {
+  console.log('Body:', req.body); 
+  console.log('File:', req.file || 'No file uploaded'); 
+
+  const { id } = req.params;
+  const { user_name } = req.body;
+
+  try {
+    const updatedUser = await prisma.users.update({
+      where: { id: parseInt(id) },
+      data: {
+        ...(user_name && { user_name }),
+        ...(req.file && { icon_url: (req.file as any)?.location }), 
+      },
+    });
+    res.json(updatedUser);
+  } catch (error) {
+    console.error('Error updating user:', error);
+    res.status(500).json({ error: 'ユーザーの更新に失敗しました。' });
+  }
+});
+
 
 
 app.listen(PORT, () => {
