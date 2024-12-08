@@ -1,24 +1,18 @@
 import { Avatar, Box } from '@mui/material';
-import {  useEffect, useRef, useState } from 'react';
+import {  useRef, useState } from 'react';
 import {  UseFormSetValue } from 'react-hook-form';
+import React from 'react'
 
 type AvatarDataProps ={
   setValue:UseFormSetValue<any>
-  value:any
+ value:any
 }
 
-const UserIcon= ({setValue,value}:AvatarDataProps) => {
-  console.log(value);
+const GroupIcon = ({setValue,value}:AvatarDataProps) => {
   
-
   const fileInputRef = useRef<HTMLInputElement | null>(null)
   const [icon ,setIcon] = useState<string | undefined>(value)
-  console.log(icon);
-  useEffect(() => {
-    setIcon(value);
-  }, [value]);
-
-  
+ 
 
   const handleInput = () =>{
   const files = fileInputRef.current?.files
@@ -34,21 +28,15 @@ const UserIcon= ({setValue,value}:AvatarDataProps) => {
 
   }
 
-
-
-
-  
-
   const fileUpLoad =() =>{
     fileInputRef.current?.click()
   }
   
   return (
-  <Box >
-  <Avatar sx={{width:140,height:140,marginTop:10,marginBottom:10}}
+  <Box>
+  <Avatar sx={{width:140,height:140,marginTop:4,marginBottom:4}} 
   src={icon || undefined}
-  onClick={fileUpLoad}
-  />
+  onClick={fileUpLoad}/>
   <input type="file" 
   ref={fileInputRef}
   onChange={handleInput}
@@ -59,4 +47,4 @@ const UserIcon= ({setValue,value}:AvatarDataProps) => {
   )
 }
 
-export default UserIcon
+export default GroupIcon
