@@ -131,6 +131,16 @@ app.patch('/api/profile/:id', upload.single('icon_url'), async (req, res) => {
   }
 });
 
+app.post('api/group',async(req,res)=>{
+  try{
+    console.log(req.body)
+  }catch(error){
+    res.json({
+      message:'データが送信されていません'
+    })
+  }
+})
+
 
 
 app.listen(PORT, () => {
