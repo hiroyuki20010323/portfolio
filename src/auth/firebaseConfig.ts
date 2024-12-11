@@ -1,6 +1,6 @@
 import { initializeApp } from "firebase/app";
 
-import {getAuth,GoogleAuthProvider,TwitterAuthProvider} from 'firebase/auth';
+import {getAuth,GoogleAuthProvider} from 'firebase/auth';
 
 
 
@@ -20,6 +20,7 @@ const firebaseConfig = {
   storageBucket: "fast-share-5189c.firebasestorage.app",
   messagingSenderId: "535693902276",
   appId: "1:535693902276:web:0b124ddd116afd4c492491",
+  // TODO 　後で、envで書き直す。
  
   // measurementId:import.meta.env.VITE_REACT_APP_FIREBASE_MEASUREMENT_ID
 
@@ -32,7 +33,7 @@ const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 // firebaseSDKの初期化を行い、認証情報を使用できるようにしているgetAuthを使用して。
 export const provider = new GoogleAuthProvider();
-export const xprovider = new TwitterAuthProvider();
+
 
 
 

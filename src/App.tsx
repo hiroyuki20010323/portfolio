@@ -15,6 +15,7 @@ import Task from './Task'
 
 const App = () => {
   return (
+    
     <AuthProvider>
       <Routes>
    <Route path='/' element={<Home/>}/> 
@@ -27,7 +28,8 @@ const App = () => {
    <Route path='/groupsettings' element={<GroupSettings/>}/>
    <Route path='/task' element={<Task/>}/>
       </Routes>
-     </AuthProvider>
+    </AuthProvider>
+    
   )
 }
 

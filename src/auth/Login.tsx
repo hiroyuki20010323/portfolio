@@ -1,11 +1,12 @@
 import { signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
 import React, { useState } from 'react'
-import { auth, provider, xprovider } from './firebaseConfig';
+import { auth, provider } from './firebaseConfig';
 import { Link, useNavigate,  } from 'react-router-dom';
 
 import { Box, TextField, Typography,Button, FormControl, InputLabel, OutlinedInput, InputAdornment, IconButton, Divider} from '@mui/material';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
+import axios from 'axios';
 
 
 
@@ -26,14 +27,35 @@ const [password,setPassword] = useState<string>("");
     };
   const  navigate = useNavigate();
   
-  const handleSubmit = (event:React.FormEvent<HTMLFormElement>)=> {
+  const handleSubmit = async(event:React.FormEvent<HTMLFormElement>)=> {
     event.preventDefault();
     // 通常はeventが発生した時に、デフォルトでページのリロードが行われるがそれを防ぐ。つまりリロードされない。
     // リロードと再レンダリングは違う、リロードはサーバーからすべてのデータを取得してページの生成を再実行するのに対して、再レンダリングは、reactのコンポーネントを再描画すると言う意味
     // TODO 後で確認
     
-    signInWithEmailAndPassword(auth,email,password)
-    navigate('/')
+try{
+
+ const userCredential = await signInWithEmailAndPassword(auth,email,password)
+  const user = userCredential.user
+
+  const idToken = await user.getIdToken(true)
+  // console.log(idToken);
+  const response = await axios.post('http://localhost:3080/auth/verify',
+    {message:`認証に成功しました！ようこそ${user.displayName}さん`},
+    {
+      headers:{
+        Authorization: `Bearer ${idToken}`,
+        'Content-Type': 'application/json',
+      },
+    }
+  )
+  console.log('バックエンドレスポンス'+ response.data);
+  
+  navigate('/')
+  
+}catch(e){
+  console.log('ユーザーが存在しません',e);
+}
   }
 
   const handleChangeEmail = (event:React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>)=>{
@@ -61,14 +83,7 @@ const [password,setPassword] = useState<string>("");
    }
   }
 
-  const handleXLogin= async()=>{
-    try{
-      await signInWithPopup(auth,xprovider)
-      navigate('/');
-  }catch(error){
-    console.log(error)
-   }
-  }
+  
 
   return (
     <Box display="flex" flexDirection="column" alignItems="center">
@@ -80,7 +95,7 @@ const [password,setPassword] = useState<string>("");
 
       <Box component="form" onSubmit={handleSubmit} flexDirection='column' display='flex' alignItems="center" >
        
-        <TextField  name='email'type='email' id="email" label="メールアドレス"   sx={{width:300,margin:3}} onChange={(e)=>handleChangeEmail(e)} />
+        <TextField  name='email'type='email' id="email" label="メールアドレス" sx={{width:300,margin:3}} onChange={(e)=>handleChangeEmail(e)} />
       
           <FormControl variant="outlined" sx={{width:300,margin:3}}>
    
@@ -97,7 +112,6 @@ const [password,setPassword] = useState<string>("");
                    onClick={handleClickShowPassword}
                    onMouseDown={handleMouseDownPassword}
                    onMouseUp={handleMouseUpPassword}
-                   // edge="end"
                  >
                    {showPassword ? <VisibilityIcon />:<VisibilityOffIcon  />}
                  </IconButton>
@@ -111,8 +125,7 @@ const [password,setPassword] = useState<string>("");
           <Button type='submit' variant='contained' sx={{width:300,margin:3}}>ログイン</Button>
           <Divider  sx={{width:'100%'}}>または</Divider>
 
-          <Button variant='contained' onClick={handleGoogleLogin} sx={{width:400,margin:3}}>Googleでログイン </Button>
-          <Button variant='contained' onClick={handleXLogin} sx={{width:400}}>Xでログイン </Button>
+          <Button variant='contained' onClick={handleGoogleLogin} sx={{width:400,margin:3}}>Googleでログイン</Button>
       </Box> 
     </Box>
   )
