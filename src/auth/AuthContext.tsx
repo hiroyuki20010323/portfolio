@@ -4,7 +4,7 @@ import { auth } from "./firebaseConfig";
 // import {User} from 'firebase/auth'
 
 
-const AuthContext = createContext<string | null>(null);
+const AuthContext = createContext<User | null>(null);
 
 
 
@@ -13,7 +13,7 @@ export const useAuthContext=()=>{
 }
 
 export const AuthProvider = ({children}:{children: ReactNode}) =>{
-  const [user, setUser] =useState<string | User>('');
+  const [user, setUser] =useState< User | null>(null);
 
 // console.log(user)
   // const value ={

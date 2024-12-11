@@ -5,7 +5,7 @@ import { useAuthContext } from './auth/AuthContext';
 import {  Box, List  } from '@mui/material';
 import Header from './components/Header';
 import Footer from './components/Footer';
-import GroupList from './components/GroupListItem';
+// import GroupList from './components/GroupListItem';
 import GroupListItem from "./components/GroupListItem";
 
 const Home = () => {

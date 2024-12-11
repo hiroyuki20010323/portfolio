@@ -1,6 +1,6 @@
 // Import the functions you need from the SDKs you need
 import { useState } from "react";
-import { auth, provider, xprovider } from "./firebaseConfig"
+import { auth, provider} from "./firebaseConfig"
 import {createUserWithEmailAndPassword, signInWithPopup} from 'firebase/auth';
 import { Link, useNavigate } from "react-router-dom";
 import { Box, Button, Divider, FormControl, IconButton,  InputAdornment,InputLabel,OutlinedInput, TextField, Typography } from "@mui/material";
@@ -36,15 +36,7 @@ const  navigate = useNavigate();
    }
   }
 
-  const handleXLogin= async()=>{
-    try{
-      await signInWithPopup(auth,xprovider)
-
-      navigate('/');
-  }catch(error){
-    console.log(error)
-   }
-  }
+  
  
 
 
@@ -122,13 +114,13 @@ return(
             endAdornment={
               <InputAdornment position="end">
                 <IconButton
-                  // aria-label={
-                  //   showPassword ? 'hide the password' : 'display the password'
-                  // }
+                // aria-label={
+                //      showPassword ? 'hide the password' : 'display the password'
+                //   }
                   onClick={handleClickShowPassword}
                   onMouseDown={handleMouseDownPassword}
                   onMouseUp={handleMouseUpPassword}
-                  // edge="end"
+                  
                 >
                   {showPassword ?   <VisibilityIcon />:<VisibilityOffIcon  />}
                 </IconButton>
@@ -144,7 +136,7 @@ return(
     </Box>
     
     <Button variant='contained' onClick={handleGoogleLogin} sx={{width:400,margin:3}} >Googleでログイン </Button>
-    <Button variant='contained' onClick={handleXLogin} sx={{width:400}}>Xでログイン </Button>
+    
     
   </Box>
 )

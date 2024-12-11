@@ -6,9 +6,11 @@ import  {S3Client} from '@aws-sdk/client-s3';
 import multer from 'multer';
 import multerS3 from 'multer-s3'
 import {v4 as uuidv4}  from 'uuid'
+import {initializeApp} from 'firebase-admin/app'
+
 // import methodOverride from 'method-override';
 
-
+import admin from 'firebase-admin'
 
 
 
@@ -16,7 +18,13 @@ const prisma = new PrismaClient();
 const app = express();
 const PORT = 3080;
 
- 
+
+
+
+
+ admin.initializeApp({
+  credential: admin.credential.applicationDefault(),
+ })
 
 // app.use(methodOverride('_method'));
 
@@ -55,6 +63,29 @@ app.use(express.urlencoded({extended:true}))
 app.get('/', (req, res) => {
   res.send('Hello from Express with TypeScript!!!!');
 });
+
+
+app.post('/auth/verify',async(req,res)=>{
+  const authHeader = req.headers.authorization;
+  const idToken = authHeader && authHeader.split('Bearer ')[1];
+if(!idToken){
+  res.status(400).json({message:'トークンがありません'});
+  console.log('トークンがないよ')
+  return
+}
+
+try{
+  const decodedToken = await admin.auth().verifyIdToken(idToken);
+  res.status(200).send({message:'トークンが有効です',uid:decodedToken.uid})
+}catch(e){
+  res.status(401).send('無効なトークンです');
+  console.log('無効なトークンだよ')
+}
+
+})
+
+
+
 
 app.post('/api/profile',upload.single('icon_url'),async(req,res)=>{
   try{
