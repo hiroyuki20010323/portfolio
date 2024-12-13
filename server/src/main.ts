@@ -6,11 +6,11 @@ import  {S3Client} from '@aws-sdk/client-s3';
 import multer from 'multer';
 import multerS3 from 'multer-s3'
 import {v4 as uuidv4}  from 'uuid'
-import {initializeApp} from 'firebase-admin/app'
+import serviceAccount from './fast-share-5189c-firebase-adminsdk-56qis-6fd2cb3c05.json'
 
 // import methodOverride from 'method-override';
 
-import admin from 'firebase-admin'
+import admin, { ServiceAccount } from 'firebase-admin'
 
 
 
@@ -23,7 +23,7 @@ const PORT = 3080;
 
 
  admin.initializeApp({
-  credential: admin.credential.applicationDefault(),
+  credential: admin.credential.cert(serviceAccount as ServiceAccount),
  })
 
 // app.use(methodOverride('_method'));
@@ -68,6 +68,7 @@ app.get('/', (req, res) => {
 app.post('/auth/verify',async(req,res)=>{
   const authHeader = req.headers.authorization;
   const idToken = authHeader && authHeader.split('Bearer ')[1];
+ 
 if(!idToken){
   res.status(400).json({message:'トークンがありません'});
   console.log('トークンがないよ')
