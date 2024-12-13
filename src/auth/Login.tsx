@@ -41,7 +41,7 @@ try{
   const idToken = await user.getIdToken(true)
   // console.log(idToken);
   const response = await axios.post('http://localhost:3080/auth/verify',
-    {message:`認証に成功しました！ようこそ${user.displayName}さん`},
+    {message:'認証に成功しました！'},
     {
       headers:{
         Authorization: `Bearer ${idToken}`,
@@ -49,7 +49,10 @@ try{
       },
     }
   )
-  console.log('バックエンドレスポンス'+ response.data);
+  console.log(response.data.message)
+  console.log(user);
+  
+  
   
   navigate('/')
   
