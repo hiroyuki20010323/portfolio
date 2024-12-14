@@ -8,12 +8,12 @@ type AvatarDataProps ={
 }
 
 const UserIcon= ({setValue,value}:AvatarDataProps) => {
-  console.log(value);
+
   
 
   const fileInputRef = useRef<HTMLInputElement | null>(null)
   const [icon ,setIcon] = useState<string | undefined>(value)
-  console.log(icon);
+  
   useEffect(() => {
     setIcon(value);
   }, [value]);

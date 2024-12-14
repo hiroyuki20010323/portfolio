@@ -2,4 +2,4 @@ node_modules
 # Keep environment variables out of version control
 .env
 
-./src/fast-share-5189c-firebase-adminsdk-56qis-6fd2cb3c05.json
+src/fast-share-5189c-firebase-adminsdk-56qis-6fd2cb3c05.json

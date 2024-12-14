@@ -10,7 +10,9 @@ import serviceAccount from './fast-share-5189c-firebase-adminsdk-56qis-6fd2cb3c0
 
 // import methodOverride from 'method-override';
 
-import admin, { ServiceAccount } from 'firebase-admin'
+import admin, { messaging, ServiceAccount } from 'firebase-admin'
+import { log } from 'console';
+
 
 
 
@@ -35,10 +37,7 @@ const s3 = new S3Client({
     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || '',
   },
 })
-console.log('S3 Client configured with:', {
-  region: process.env.AWS_REGION,
-  bucket: process.env.S3_BUCKET_NAME,
-});
+
 const upload = multer({
   storage: multerS3({
     s3: s3,
@@ -84,7 +83,31 @@ try{
 }
 
 })
+// メールアドレスとパスワード新規登録
+app.post('/api/user',async(req,res)=>{
+try{
+  if(!req.body){
+    console.log('データが存在しません')
+    res.status(400).json({error:'ユーザーデータが存在しません。。。'})
+  }
+  const id = req.body.uid
+  const userName = req.body.displayName
+  const iconData = req.body.icon_url
+  
+  await prisma.users.create({
+    data:{
+      id,
+      user_name:userName,
+      icon_url:iconData
+    }
+  })
+res.status(201).json({message:'ユーザーの登録に成功しました。'})
 
+}catch(e){
+  console.log('ユーザーデータの保存に失敗しました')
+  res.status(500).json({error:'データの保存に失敗しました'})
+}
+})
 
 
 
@@ -103,12 +126,12 @@ const userName = req.body.user_name
     // const iconKey = (req.file as any)?.key
 const iconLocation = (req.file as any)?.location
    
-await prisma.users.create({
-  data:{
-    user_name:userName,
-    icon_url:iconLocation
-  }
-})
+// await prisma.users.create({
+//   data:{
+//     user_name:userName,
+//     icon_url:iconLocation
+//   }
+// })
 
 res.status(201).json({
   message:'アップロード成功',
@@ -119,11 +142,18 @@ res.status(201).json({
   }
 })
 
-
-app.get('/api/profile/:id',async(req,res)=>{
+// プロフィール情報取得
+app.get('/api/profile',async(req,res)=>{
   try{
- const {id} =req.params;
- const user = await prisma.users.findUnique({where:{id:Number(id)}});
+    const token = req.headers.authorization?.split('Bearer ')[1];
+ if(!token){
+  res.status(400).json({message:'許可されていないリクエストです。'})
+  return
+ }
+ const decodedToken = await admin.auth().verifyIdToken(token);
+ console.log(decodedToken)
+const uid = decodedToken.uid
+ const user = await prisma.users.findUnique({where:{id:uid}});
  if(!user){
   res.status(400).json({error:'ユーザー情報を取得できませんでした'});
   return 
@@ -141,16 +171,25 @@ res.status(500).json({error:'サーバーエラー'})
 }
 })
 
-app.patch('/api/profile/:id', upload.single('icon_url'), async (req, res) => {
+app.patch('/api/profile', upload.single('icon_url'), async (req, res) => {
   console.log('Body:', req.body); 
   console.log('File:', req.file || 'No file uploaded'); 
+  try{
+    const token = req.headers.authorization?.split('Bearer ')[1];
+ if(!token){
+  res.status(400).json({message:'許可されていないリクエストです。'})
+  return
+ }
+ const decodedToken = await admin.auth().verifyIdToken(token);
+ console.log(decodedToken)
+const uid = decodedToken.uid
 
-  const { id } = req.params;
+
+  
   const { user_name } = req.body;
 
-  try {
     const updatedUser = await prisma.users.update({
-      where: { id: parseInt(id) },
+      where: {id:uid},
       data: {
         ...(user_name && { user_name }),
         ...(req.file && { icon_url: (req.file as any)?.location }), 
