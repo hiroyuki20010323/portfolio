@@ -14,6 +14,7 @@ export const useAuthContext=()=>{
 
 export const AuthProvider = ({children}:{children: ReactNode}) =>{
   const [user, setUser] =useState< User | null>(null);
+  const [loading,setLoading] = useState(true)
 
 // console.log(user)
   // const value ={
@@ -24,6 +25,7 @@ export const AuthProvider = ({children}:{children: ReactNode}) =>{
   const unsubscribed = onAuthStateChanged(auth,(user:any)=>{
     if(user){
       setUser(user);
+      setLoading(false)
     }
   
     // console.log(value)
@@ -33,6 +35,11 @@ export const AuthProvider = ({children}:{children: ReactNode}) =>{
     unsubscribed();
   }
 },[]);
+
+if(loading){
+  return <p>Loading...</p>
+}
+// TODO あとでちゃんとしたローディング画面を作る。
 
 
   return (

@@ -1,10 +1,13 @@
 import { Box, FormControl, TextField } from '@mui/material'
 import React, { useState } from 'react'
-import { useForm } from 'react-hook-form'
+import { Controller, useForm } from 'react-hook-form'
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import { useNavigate } from 'react-router-dom';
+import {auth} from './firebaseConfig'
+import {  updateProfile } from 'firebase/auth';
+import axios from 'axios';
 
 type ModalControl ={
   setIsOpenModal:React.Dispatch<React.SetStateAction<boolean>>
@@ -20,10 +23,27 @@ const  navigate = useNavigate();
 
 
   const [open, setOpen] = useState(true);
-  const onSubmit = () =>{
+  // TODOuseStateを使用せずmodalを管理できないか・・・
+  const onSubmit = async(data:{user_name:string}) =>{
+    if(auth.currentUser){
+
+      const uid = auth.currentUser?.uid
+      await updateProfile(auth.currentUser,{
+        displayName:data.user_name
+      })
+
+      const response = await axios.post('http://localhost:3080/api/user',{
+        uid : uid,
+        displayName:data.user_name,
+        icon_url:null
+      })
+      console.log(response.data.message)
+    }
+  console.log(data)
     setIsOpenModal(false);
+    console.log(auth.currentUser)
     navigate('/')
-    console.log('発火してるで')
+    
    
   }
   return (
@@ -49,7 +69,11 @@ const  navigate = useNavigate();
           <Typography id="modal-modal-title" variant="subtitle1" component="h2" sx={{mb:4}}>
             ユーザーネームを設定してください！！
             </Typography>
-        <TextField id='outline-disabled' name='user_name' label='ユーザーネーム' sx={{width:300,mt:4,mb:6}}/>
+            <Controller name='user_name' control={control} rules={{required:'ユーザーネームの入力は必須です！'}} render={({field,formState:{errors}})=>(
+
+              <TextField {...field} id='outline-disabled' name='user_name' label='ユーザーネーム' sx={{width:300,mt:4,mb:6}} error={errors.user_name ? true :false} helperText={errors.user_name?.message}/>
+            )}
+            />
         <Button variant='contained' type='submit'>送信</Button>
 
             </FormControl>

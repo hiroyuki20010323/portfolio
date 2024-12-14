@@ -52,9 +52,14 @@ const  navigate = useNavigate();
 
   const handleGoogleLogin= async()=>{
     try{
-      await signInWithPopup(auth,provider)
-
-
+     const result =  await signInWithPopup(auth,provider)
+        const response = await axios.post('http://localhost:3080/api/user',{
+          uid : result.user.uid,
+          displayName:result.user.displayName,
+          icon_url:result.user.photoURL
+        })
+        console.log(response.data.message)
+    
       navigate('/');
   }catch(error){
     console.log(error)
@@ -65,7 +70,7 @@ const onSubmit = async({email,password}:UserData) =>{
   
 
  try{ 
-  // TODO あとで確認
+  
   const userCredential = await createUserWithEmailAndPassword(auth,email,password)
  
     const user = userCredential.user

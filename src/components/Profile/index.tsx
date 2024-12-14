@@ -9,6 +9,7 @@ import UserIcon from './UserIcon';
 import { useForm, Controller } from 'react-hook-form';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
+import { useAuthContext } from '../../auth/AuthContext';
 
 export type UserProfileData={
   userName:string,
@@ -16,6 +17,7 @@ export type UserProfileData={
 }
 
 const Profile = () => {
+  const user = useAuthContext()
   const navigate = useNavigate();
   const handleLogout = () =>{
     signOut(auth);
@@ -42,12 +44,23 @@ const Profile = () => {
         console.log(pair[0] + ': ' + pair[1]);
       }
 
+const token = await auth.currentUser?.getIdToken();
+
+
     //  await axios.post('http://localhost:3080/api/profile',formData);
 
-     const patchResponse = await axios.patch('http://localhost:3080/api/profile/10',formData);
+     const patchResponse = await axios.patch('http://localhost:3080/api/profile',formData,{
+      headers:{
+        Authorization: `Bearer ${token}`
+      }
+            });
      console.log(patchResponse.data)
       
-      const getResponse = await axios.get('http://localhost:3080/api/profile/10');
+      const getResponse = await axios.get('http://localhost:3080/api/profile',{
+headers:{
+  Authorization: `Bearer ${token}`
+}
+      });
       // console.log(getResponse)
       const {newUserName,fileUrl} = getResponse.data;
       setFileUrl(fileUrl);
@@ -64,8 +77,21 @@ const Profile = () => {
 
   useEffect(()=>{
     (async()=>{
-      const getResponse = await axios.get('http://localhost:3080/api/profile/10');
-      console.log(getResponse)
+      
+      
+      if(!user){
+        console.log('ログインしてません');
+        return
+      }
+      
+      
+      const token = await auth.currentUser?.getIdToken();
+      const getResponse = await axios.get('http://localhost:3080/api/profile',{
+        headers:{
+          Authorization: `Bearer ${token}`
+        }
+              });
+      // console.log(getResponse)
       
       const {newUserName,fileUrl} = getResponse.data;
       
@@ -73,7 +99,7 @@ const Profile = () => {
       setValue('userName',newUserName)
     })()
     
-  },[])
+  },[user])
 
 
 
