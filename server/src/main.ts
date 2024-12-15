@@ -90,9 +90,20 @@ try{
     console.log('データが存在しません')
     res.status(400).json({error:'ユーザーデータが存在しません。。。'})
   }
+
   const id = req.body.uid
   const userName = req.body.displayName
-  const iconData = req.body.icon_url
+  const iconData = req.body.icon_url || req.body.photoURL
+
+  const existingUser = await prisma.users.findUnique({
+    where: { id },
+  });
+
+  if (existingUser) {
+  res.status(200).json({ message: "ユーザーは既に存在します" });
+  return
+  }
+  
   
   await prisma.users.create({
     data:{

@@ -36,9 +36,9 @@ export const AuthProvider = ({children}:{children: ReactNode}) =>{
   }
 },[]);
 
-if(loading){
-  return <p>Loading...</p>
-}
+// if(loading){
+//   return <p>Loading...</p>
+// }
 // TODO あとでちゃんとしたローディング画面を作る。
 
 

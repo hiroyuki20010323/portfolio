@@ -57,7 +57,7 @@ try{
   navigate('/')
   
 }catch(e){
-  console.log('ユーザーが存在しません',e);
+  alert('IDまたはPassWordが違います');
 }
   }
 
@@ -78,7 +78,20 @@ try{
 
   const handleGoogleLogin= async()=>{
     try{
-      await signInWithPopup(auth,provider)
+const userData =   await signInWithPopup(auth,provider)
+const {displayName,photoURL,uid} = userData.user;
+const responseData = axios.post('http://localhost:3080/api/user',{
+  displayName,
+  photoURL,
+  uid
+})
+
+console.log((await responseData).data.message);
+
+
+
+
+
 
       navigate('/');
   }catch(error){
