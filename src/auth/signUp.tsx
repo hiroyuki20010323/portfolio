@@ -1,7 +1,7 @@
 // Import the functions you need from the SDKs you need
 import {  useState } from "react";
 import { auth, provider} from "./firebaseConfig"
-import {createUserWithEmailAndPassword, signInWithPopup, updateProfile} from 'firebase/auth';
+import {createUserWithEmailAndPassword, signInWithPopup} from 'firebase/auth';
 import { Link, useNavigate } from "react-router-dom";
 import { Avatar, Box, Button, Divider, FormControl, FormHelperText, IconButton,  InputAdornment,InputLabel,OutlinedInput, TextField, Typography } from "@mui/material";
 import VisibilityIcon from '@mui/icons-material/Visibility';

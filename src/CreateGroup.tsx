@@ -1,4 +1,4 @@
-import { Avatar, Box, Button, FormControl, TextField } from '@mui/material'
+import {  Box, Button, FormControl, TextField } from '@mui/material'
 import Header from './components/Header'
 import Footer from './components/Footer'
 import { Controller, useForm } from 'react-hook-form'
