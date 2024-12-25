@@ -10,10 +10,12 @@ import axios from 'axios';
 
 
 
+
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [email,setEmail] = useState<string>("");
 const [password,setPassword] = useState<string>("");
+ const apiUrl = import.meta.env.VITE_API_URL
  
   
     const handleClickShowPassword = () => setShowPassword((prev) => !prev);
@@ -40,7 +42,7 @@ try{
 
   const idToken = await user.getIdToken(true)
   // console.log(idToken);
-  const response = await axios.post('http://localhost:3080/auth/verify',
+  const response = await axios.post(`${apiUrl}/auth/verify`,
     {message:'認証に成功しました！'},
     {
       headers:{
@@ -80,7 +82,7 @@ try{
     try{
 const userData =   await signInWithPopup(auth,provider)
 const {displayName,photoURL,uid} = userData.user;
-const responseData = axios.post('http://localhost:3080/api/user',{
+const responseData = axios.post(`${apiUrl}/api/user`,{
   displayName,
   photoURL,
   uid

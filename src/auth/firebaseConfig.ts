@@ -14,15 +14,15 @@ import {getAuth,GoogleAuthProvider} from 'firebase/auth';
 
 
 const firebaseConfig = {
-  apiKey: "AIzaSyA4A0SMYHRAps6qwbKazr8DKhFt9kePaGo",
-  authDomain: "fast-share-5189c.firebaseapp.com",
-  projectId: "fast-share-5189c",
-  storageBucket: "fast-share-5189c.firebasestorage.app",
-  messagingSenderId: "535693902276",
-  appId: "1:535693902276:web:0b124ddd116afd4c492491",
+  apiKey: import.meta.env.VITE_FIREBASE_APIKEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId:import.meta.env.VITE_FIREBASE_MESSAGE_SENDER_ID ,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+  measurementId:import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
   // TODO 　後で、envで書き直す。
  
-  // measurementId:import.meta.env.VITE_REACT_APP_FIREBASE_MEASUREMENT_ID
 
   // viteを使用する場合はimport.meta.envをしようする
 };
