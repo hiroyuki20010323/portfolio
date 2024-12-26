@@ -23,6 +23,7 @@ const Profile = () => {
     signOut(auth);
     navigate("/login");
   }
+  const apiUrl = import.meta.env.VITE_API_URL
 
   const {control,handleSubmit,setValue} = useForm({mode:'onSubmit',defaultValues:{
     userName:'',
@@ -49,14 +50,14 @@ const token = await auth.currentUser?.getIdToken();
 
     //  await axios.post('http://localhost:3080/api/profile',formData);
 
-     const patchResponse = await axios.patch('http://localhost:3080/api/profile',formData,{
+     const patchResponse = await axios.patch(`${apiUrl}/api/profile`,formData,{
       headers:{
         Authorization: `Bearer ${token}`
       }
             });
      console.log(patchResponse.data)
       
-      const getResponse = await axios.get('http://localhost:3080/api/profile',{
+      const getResponse = await axios.get(`${apiUrl}/api/profile`,{
 headers:{
   Authorization: `Bearer ${token}`
 }
@@ -86,7 +87,7 @@ headers:{
       
       
       const token = await auth.currentUser?.getIdToken();
-      const getResponse = await axios.get('http://localhost:3080/api/profile',{
+      const getResponse = await axios.get(`${apiUrl}/api/profile`,{
         headers:{
           Authorization: `Bearer ${token}`
         }

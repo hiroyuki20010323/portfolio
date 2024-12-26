@@ -8,14 +8,16 @@ import { Link  } from 'react-router-dom';
 
 
 const Footer = () => {
-  const [value ,setValue] = useState(0);
+  const [value ] = useState(0);
+  // 上記もbuildのため、一時的にset関数を消した
   return (
     <>
      <Paper sx={{ width:'100vw',position:'fixed', bottom: 0, left: 0, right: 0, padding:2,borderTop:'solid 2px #E0E0E0',marginTop:2,height:'80px',zIndex:99}} elevation={0} >
       <BottomNavigation
         value={value}
-        onChange={(event, newValue) => {
-        }}
+        // onChange={(event, newValue) => {
+        // }}
+        // 上記もbuild
       >
       
 

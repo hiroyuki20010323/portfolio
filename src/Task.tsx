@@ -1,4 +1,4 @@
-import {  Box, Button, Fab, FormControl, InputAdornment, Modal, Tab, TextField, Typography} from '@mui/material'
+import {  Box, Button, Fab, FormControl,  Modal, Tab, TextField, Typography} from '@mui/material'
 
 import Header from './components/Header'
 import Footer from './components/Footer'
@@ -10,12 +10,12 @@ import TabContext from '@mui/lab/TabContext';
 import WeekTask from './WeekTask';
 import {  TabList } from '@mui/lab';
 import AddIcon from '@mui/icons-material/Add';
-import {  LocalizationProvider, TimePicker } from '@mui/x-date-pickers';
+// import {  LocalizationProvider, TimePicker } from '@mui/x-date-pickers';
 
 
 
-import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+// import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
+// import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 
 
 
@@ -25,6 +25,7 @@ const Task = () => {
 
 const handleChange = (event: React.SyntheticEvent, newValue: string) => {
   setValue(newValue);
+  event
 };
 
 const handleOpenModal = ()=>{

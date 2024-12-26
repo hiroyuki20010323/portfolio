@@ -1,4 +1,4 @@
-import React from 'react'
+
 import Header from './components/Header'
 import { Avatar, AvatarGroup, Box, Button, FormControl, TextField, Typography } from '@mui/material'
 import Footer from './components/Footer'

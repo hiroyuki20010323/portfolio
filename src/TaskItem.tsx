@@ -2,7 +2,7 @@
 
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { Accordion, AccordionDetails, AccordionSummary, Badge, Box,  Typography,  } from '@mui/material'
-import React from 'react'
+
 import EachTask from './EachTask';
 
 const TaskItem = () => {

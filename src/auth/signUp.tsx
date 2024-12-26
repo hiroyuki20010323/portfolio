@@ -23,7 +23,7 @@ export const SignUp =()=>{
   const [showPassword, setShowPassword] = useState(false);
   const [confirmShowPassword, setConfirmShowPassword] = useState(false)
   const [isOpenModal,setIsOpenModal] = useState(false)
-  
+  const apiUrl = import.meta.env.VITE_API_URL
 
 
 // const [email,setEmail] = useState<string>("");
@@ -53,7 +53,7 @@ const  navigate = useNavigate();
   const handleGoogleLogin= async()=>{
     try{
      const result =  await signInWithPopup(auth,provider)
-        const response = await axios.post('http://localhost:3080/api/user',{
+        const response = await axios.post(`${apiUrl}/api/user`,{
           uid : result.user.uid,
           displayName:result.user.displayName,
           icon_url:result.user.photoURL
@@ -75,7 +75,7 @@ const onSubmit = async({email,password}:UserData) =>{
  
     const user = userCredential.user
     const idToken = await user.getIdToken(true)
-    const response = await axios.post('http://localhost:3080/auth/verify',
+    const response = await axios.post(`${apiUrl}/auth/verify`,
       {message:'認証に成功しました！'},
       {
         headers:{
@@ -86,7 +86,7 @@ const onSubmit = async({email,password}:UserData) =>{
     )
     setIsOpenModal(true);
     console.log(response.data)
-    console.log(user);
+    // console.log(user);
     
    
    

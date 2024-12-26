@@ -13,13 +13,15 @@ export type GroupProfileData ={
 }
 
 const CreateGroup = () => {
+  const apiUrl = import.meta.env.VITE_API_URL
   const {control,handleSubmit,setValue} = useForm({mode:'onSubmit',defaultValues:{
 group_name:'',
 group_description:'',
 group_icon:''
   }})
 
-  const [groupIcon,setGroupIcon] = useState('')
+  const [groupIcon] = useState('')
+  // buildする時にset関数をしようしてないとエラーが出るので一時てきにset関数を削除する
 
   const onSubmit = async({group_icon,group_name,group_description}:GroupProfileData) =>{
     try{
@@ -32,7 +34,7 @@ group_icon:''
         console.log(pair[0] + ': ' + pair[1]);
       }
 
-     const groupPostResponse = await axios.post('http://localhost:3080/api/group',formData);
+     const groupPostResponse = await axios.post(`${apiUrl}/api/group`,formData);
      console.log(groupPostResponse.data)
    
     }catch(error){

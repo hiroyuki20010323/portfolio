@@ -17,12 +17,14 @@ const SignUpModal = ({setIsOpenModal}:ModalControl) => {
 const{control,handleSubmit} = useForm({mode:'onSubmit',defaultValues:{
   user_name:''
 }})
+const apiUrl = import.meta.env.VITE_API_URL
 
 const  navigate = useNavigate();
 
 
 
-  const [open, setOpen] = useState(true);
+  const [open] = useState(true);
+  
   // TODOuseStateを使用せずmodalを管理できないか・・・
   const onSubmit = async(data:{user_name:string}) =>{
     if(auth.currentUser){
@@ -32,7 +34,7 @@ const  navigate = useNavigate();
         displayName:data.user_name
       })
 
-      const response = await axios.post('http://localhost:3080/api/user',{
+      const response = await axios.post(`${apiUrl}/api/user`,{
         uid : uid,
         displayName:data.user_name,
         icon_url:null

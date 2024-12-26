@@ -52,7 +52,7 @@ try{
     }
   )
   console.log(response.data.message)
-  console.log(user);
+  // console.log(user);
   
   
   
