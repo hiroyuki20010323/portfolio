@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  api:
+    container_name: 'fast-share_server'
+    build:
+      context: .
+      dockerfile: Dockerfile  
+    volumes:
+      - ./:/src
+    ports:
+      - "3080:3080"  
+    
