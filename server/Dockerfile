@@ -1,6 +1,6 @@
 FROM node:18-alpine
 
-# RUN apk add --no-cache openssl
+RUN apk add --no-cache openssl
 # これにより、alpineのopensslパッケージをinstallする、https通信を実行する際に必要になる
 
 RUN mkdir /src
