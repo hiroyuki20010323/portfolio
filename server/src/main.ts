@@ -1,17 +1,17 @@
 import express from 'express';
 import {PrismaClient} from '@prisma/client';
 import cors from 'cors';
-import path from 'path';
+
 import  {S3Client} from '@aws-sdk/client-s3';
 import multer from 'multer';
 import multerS3 from 'multer-s3'
 import {v4 as uuidv4}  from 'uuid'
-import serviceAccount from './fast-share-5189c-firebase-adminsdk-56qis-6fd2cb3c05.json'
+// import serviceAccount from './fast-share-5189c-firebase-adminsdk-56qis-6fd2cb3c05.json'
 
 // import methodOverride from 'method-override';
 
-import admin, { messaging, ServiceAccount } from 'firebase-admin'
-import { log } from 'console';
+import admin from 'firebase-admin'
+
 
 
 
@@ -25,7 +25,11 @@ const PORT = 3080;
 
 
  admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount as ServiceAccount),
+  credential: admin.credential.cert({
+    projectId: process.env.FIREBASE_PROJECT_ID,
+    privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
+    clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+  }),
  })
 
 // app.use(methodOverride('_method'));

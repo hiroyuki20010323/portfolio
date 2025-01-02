@@ -46,7 +46,13 @@ secrets:
   DB_PASSWORD: /copilot/fast-share/prod/secrets/DB_PASSWORD
   DB_USER: /copilot/fast-share/prod/secrets/DB_USER
   DATABASE_URL: /copilot/fast-share/prod/secrets/DATABASE_URL
-
+  AWS_ACCESS_KEY_ID: /copilot/fast-share/prod/secrets/AWS_ACCESS_KEY_ID
+  AWS_REGION: /copilot/fast-share/prod/secrets/AWS_REGION
+  AWS_SECRET_ACCESS_KEY: /copilot/fast-share/prod/secrets/AWS_SECRET_ACCESS_KEY
+  S3_BUCKET_NAME: /copilot/fast-share/prod/secrets/S3_BUCKET_NAME
+  FIREBASE_CLIENT_EMAIL: /copilot/fast-share/prod/secrets/FIREBASE_CLIENT_EMAIL
+  FIREBASE_PRIVATE_KEY: /copilot/fast-share/prod/secrets/FIREBASE_PRIVATE_KEY
+  FIREBASE_PROJECT_ID: /copilot/fast-share/prod/secrets/FIREBASE_PROJECT_ID
 # You can override any of the values defined above by environment.
 #environments:
 #  test:
