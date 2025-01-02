@@ -67,6 +67,10 @@ app.get('/', (req, res) => {
   res.send('Hello Fast Share!!!!');
 });
 
+app.get('/health', (req, res) => {
+  res.status(200).send('OK');
+});
+
 
 app.post('/auth/verify',async(req,res)=>{
   const authHeader = req.headers.authorization;
