@@ -70,6 +70,7 @@ app.get('/', (req, res) => {
 app.get('/health', (req, res) => {
   res.status(200).send('OK');
 });
+// ヘルスチェックのためのぱす
 
 
 app.post('/auth/verify',async(req,res)=>{
