@@ -1,9 +1,9 @@
-# The manifest for the "fastshareserverprod" pipeline.
+# The manifest for the "portfolio-main" pipeline.
 # This YAML file defines your pipeline: the source repository it tracks and the order of the environments to deploy to.
 # For more info: https://aws.github.io/copilot-cli/docs/manifest/pipeline/
 
 # The name of the pipeline.
-name: fastshareserverprod
+name: portfolio-main
 
 # The version of the schema used in this template.
 version: 1
@@ -20,7 +20,7 @@ source:
     # Optional: specify the name of an existing CodeStar Connections connection.
     # connection_name: a-connection
 build:
-  image: aws/codebuild/amazonlinux2-aarch64-standard:3.0
+  image: aws/codebuild/amazonlinux2-aarch64-standard:3.0 
 # This section defines the order of the environments your pipeline will deploy to.
 stages:
   - # The name of the environment.
