@@ -104,7 +104,7 @@ const onSubmit = async({email,password}:UserData) =>{
 return(
   <Box display="flex" flexDirection="column" alignItems="center">
  
-  <Typography variant='h4' marginTop={10}>新規登録</Typography>
+  <Typography variant='h4' marginTop={2}>新規登録</Typography>
   <Typography variant='subtitle1'marginTop={5}>ログインは<Link to={'/login'}>こちら</Link></Typography>
 
 <Box component="form" flexDirection='column' display='flex' alignItems="center" onSubmit={handleSubmit(onSubmit)}>

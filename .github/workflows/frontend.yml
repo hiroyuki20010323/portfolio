@@ -1,0 +1,52 @@
+name: Frontend
+
+on:
+  push:
+    branches: 
+      - main 
+    paths:
+      - 'src/**' 
+      - 'package.json'
+      - 'vite.config.*' 
+      
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install dependencies
+        run: npm install
+        
+
+      - name: Build project
+        env:
+          VITE_FIREBASE_APIKEY: ${{secrets.FIREBASE_APIKEY}}
+          VITE_FIREBASE_AUTH_DOMAIN: ${{secrets.FIREBASE_AUTH_DOMAIN}}
+          VITE_FIREBASE_PROJECT_ID: ${{secrets.FIREBASE_PROJECT_ID}}
+          VITE_FIREBASE_STORAGE_BUCKET: ${{secrets.FIREBASE_STORAGE_BUCKET}}
+          VITE_FIREBASE_MESSAGE_SENDER_ID: ${{secrets.FIREBASE_MESSAGE_SENDER_ID}}
+          VITE_FIREBASE_APP_ID: ${{secrets.FIREBASE_APP_ID}}
+          VITE_FIREBASE_MEASUREMENT_ID: ${{secrets.FIREBASE_MEASUREMENT_ID}}
+          VITE_API_URL: ${{secrets.PROD_API_URL}}
+        run: npm run build
+        
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: 'ap-northeast-1'
+
+      - name: Upload to S3
+        run: aws s3 sync ./dist s3://fastshare-frontend --region ap-northeast-1
+
+      - name: Invalidate CloudFront cache
+        uses: aws-actions/cloudfront-invalidate@v1
+        with:
+          distribution-id: ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }}
+          paths: "/*"
+        
+       
+
+
