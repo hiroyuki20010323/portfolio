@@ -31,4 +31,26 @@ model Users {
   icon_url String? @db.Text 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  participations Participation[]
+}
+
+model Groups {
+  id Int @id @default(autoincrement())
+  group_name String @db.VarChar(255)
+  group_description String? @db.Text
+  // ?はオプショナルであり、nullを許可する
+  group_icon String? @db.Text 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  participations Participation[]
+}
+
+model Participation {
+  id String @id
+  userId String
+  groupId Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime? @updatedAt
+  user Users @relation(fields: [userId], references: [id])
+  group Groups @relation(fields: [groupId], references: [id])
 }

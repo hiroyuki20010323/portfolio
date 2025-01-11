@@ -6,9 +6,9 @@ import  {S3Client} from '@aws-sdk/client-s3';
 import multer from 'multer';
 import multerS3 from 'multer-s3'
 import {v4 as uuidv4}  from 'uuid'
-// import serviceAccount from './fast-share-5189c-firebase-adminsdk-56qis-6fd2cb3c05.json'
 
-// import methodOverride from 'method-override';
+
+
 
 import admin from 'firebase-admin'
 
@@ -53,6 +53,7 @@ const upload = multer({
     key: function (req, file, cb) {
       const uniqueFileName = `${uuidv4()}-${file.originalname}`
       const filePath = `userIcon/${uniqueFileName}`
+      // const groupFilePath = `groupIcon/${uniqueFileName}`
       cb(null, filePath)
     },
     
@@ -67,10 +68,7 @@ app.get('/', (req, res) => {
   res.send('Hello Fast Share!!!!');
 });
 
-app.get('/health', (req, res) => {
-  res.status(200).send('OK');
-});
-// ヘルスチェックのためのぱす
+
 
 
 app.post('/auth/verify',async(req,res)=>{
@@ -222,7 +220,7 @@ const uid = decodedToken.uid
   }
 });
 
-app.post('api/group',async(req,res)=>{
+app.post('api/group',upload.single('group_icon'),async(req,res)=>{
   try{
     console.log(req.body)
   }catch(error){
