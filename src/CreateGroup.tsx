@@ -21,13 +21,13 @@ group_icon:''
   }})
 
   const [groupIcon] = useState('')
-  // buildする時にset関数をしようしてないとエラーが出るので一時てきにset関数を削除する
+  // buildする時にset関数をしようしてないとエラーが出るので一時てきにset関数を削除する,この辺りの状態管理が全くなってない。
 
   const onSubmit = async({group_icon,group_name,group_description}:GroupProfileData) =>{
     try{
       const formData = new FormData();
       formData.append('group_name',group_name );
-      formData.append('group_icon', group_icon);
+      formData.append('group_icon',group_icon);
       formData.append('group_description',group_description)
 
       for (let pair of formData.entries()) {

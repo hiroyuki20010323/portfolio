@@ -16,6 +16,7 @@ import admin from 'firebase-admin'
 
 
 
+
 const prisma = new PrismaClient();
 const app = express();
 const PORT = 3080;
@@ -41,6 +42,8 @@ const s3 = new S3Client({
     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || '',
   },
 })
+
+
 
 const upload = multer({
   storage: multerS3({
@@ -220,13 +223,26 @@ const uid = decodedToken.uid
   }
 });
 
-app.post('api/group',upload.single('group_icon'),async(req,res)=>{
+app.post('/api/group',upload.single('group_icon'),async(req,res)=>{
   try{
-    console.log(req.body)
+    const groupIcon = (req.file as any)?.location
+    const group_name = req.body.group_name
+    const group_description = req.body.group_description
+    await prisma.groups.create({
+      data:{
+        group_name,
+        group_description,
+        group_icon:groupIcon
+      }
+    })
+    res.status(201).json({
+      message:'グループの作成に成功しました。'
+    })
   }catch(error){
     res.json({
       message:'データが送信されていません'
     })
+    console.log('データの処理に失敗')
   }
 })
 

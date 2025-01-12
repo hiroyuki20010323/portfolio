@@ -53,4 +53,5 @@ model Participation {
   updatedAt DateTime? @updatedAt
   user Users @relation(fields: [userId], references: [id])
   group Groups @relation(fields: [groupId], references: [id])
+  @@unique([userId, groupId])
 }
