@@ -1,29 +1,15 @@
 import express from 'express';
 import {PrismaClient} from '@prisma/client';
 import cors from 'cors';
-
 import  {S3Client} from '@aws-sdk/client-s3';
 import multer from 'multer';
 import multerS3 from 'multer-s3'
 import {v4 as uuidv4}  from 'uuid'
-
-
-
-
 import admin from 'firebase-admin'
-
-
-
-
-
 
 const prisma = new PrismaClient();
 const app = express();
 const PORT = 3080;
-// コメント
-
-
-
 
  admin.initializeApp({
   credential: admin.credential.cert({
@@ -33,8 +19,6 @@ const PORT = 3080;
   }),
  })
 
-// app.use(methodOverride('_method'));
-
 const s3 = new S3Client({
   region: process.env.AWS_REGION || '',
   credentials: {
@@ -42,8 +26,6 @@ const s3 = new S3Client({
     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || '',
   },
 })
-
-
 
 const upload = multer({
   storage: multerS3({
@@ -70,9 +52,6 @@ app.use(express.urlencoded({extended:true}))
 app.get('/', (req, res) => {
   res.send('Hello Fast Share!!!!');
 });
-
-
-
 
 app.post('/auth/verify',async(req,res)=>{
   const authHeader = req.headers.authorization;
@@ -130,22 +109,18 @@ res.status(201).json({message:'ユーザーの登録に成功しました。'})
 }
 })
 
+// 以下のエンドポイントは使用しない。patchで代替できる
+// app.post('/api/profile',upload.single('icon_url'),async(req,res)=>{
+//   try{
+// if(!req.file){
+//   console.log('ファイルがアップロードされていません')
+//   res.status(400).json({error: 'ファイルがアップロードされていません'})
+//   return
+// }
 
-
-app.post('/api/profile',upload.single('icon_url'),async(req,res)=>{
-  try{
-if(!req.file){
-  console.log('ファイルがアップロードされていません')
-  res.status(400).json({error: 'ファイルがアップロードされていません'})
-  return
-}
-
-
-const userName = req.body.user_name
-
-
+// const userName = req.body.user_name
     // const iconKey = (req.file as any)?.key
-const iconLocation = (req.file as any)?.location
+// const iconLocation = (req.file as any)?.location
    
 // await prisma.users.create({
 //   data:{
@@ -154,14 +129,14 @@ const iconLocation = (req.file as any)?.location
 //   }
 // })
 
-res.status(201).json({
-  message:'アップロード成功',
-})
-  }catch(error){
-    console.log('データ保存エラー:',error);
-     res.status(500).json({error:'サーバーエラー'})
-  }
-})
+// res.status(201).json({
+//   message:'アップロード成功',
+// })
+//   }catch(error){
+//     console.log('データ保存エラー:',error);
+//      res.status(500).json({error:'サーバーエラー'})
+//   }
+// })
 
 // プロフィール情報取得
 app.get('/api/profile',async(req,res)=>{
@@ -228,11 +203,18 @@ app.post('/api/group',upload.single('group_icon'),async(req,res)=>{
     const groupIcon = (req.file as any)?.location
     const group_name = req.body.group_name
     const group_description = req.body.group_description
-    await prisma.groups.create({
+    const newGroup = await prisma.groups.create({
       data:{
         group_name,
         group_description,
         group_icon:groupIcon
+      }
+    })
+    await prisma.participation.create({
+      data:{
+        id: uuidv4(),
+        userId: req.body.uid,
+        groupId: newGroup.id
       }
     })
     res.status(201).json({
@@ -243,6 +225,32 @@ app.post('/api/group',upload.single('group_icon'),async(req,res)=>{
       message:'データが送信されていません'
     })
     console.log('データの処理に失敗')
+  }
+})
+
+app.get('/api/group',async(req,res)=>{
+  try{
+    const token = req.headers.authorization?.split('Bearer ')[1];
+    if(!token){
+     res.status(400).json({message:'許可されていないリクエストです。'})
+     return
+    }
+    const decodedToken = await admin.auth().verifyIdToken(token);
+    console.log(decodedToken)
+   const uid = decodedToken.uid
+   const participations = await prisma.participation.findMany({
+    where:{userId:uid},
+    include:{group:true},
+   })
+
+   const groups = participations.map(participation => participation.group)
+   console.log(groups)
+   res.status(201).json(groups)
+  }catch(e){
+res.status(500).json({
+  message:'グループ情報を取得できませんでした。'
+})
+console.log(e)
   }
 })
 
