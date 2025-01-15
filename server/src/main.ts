@@ -6,6 +6,7 @@ import multer from 'multer';
 import multerS3 from 'multer-s3'
 import {v4 as uuidv4}  from 'uuid'
 import admin from 'firebase-admin'
+import { log } from 'console';
 
 const prisma = new PrismaClient();
 const app = express();
@@ -251,6 +252,63 @@ res.status(500).json({
   message:'グループ情報を取得できませんでした。'
 })
 console.log(e)
+  }
+})
+
+app.post('/api/open-group' ,async(req,res)=>{
+  try{
+    const token = req.headers.authorization?.split('Bearer ')[1];
+    if(!token){
+     res.status(400).json({message:'許可されていないリクエストです。'})
+     return
+    }
+    const decodedToken = await admin.auth().verifyIdToken(token);
+    console.log(decodedToken)
+   const userId = decodedToken.uid
+   const {groupId} =req.body
+  //  下記すでにtrueの値をfalseに変える。これにより別のグループの開くボタンを押した時に現在開かれているグループをcloseする。
+   await prisma.participation.updateMany({
+    where:{userId},
+    data:{isActive:false}
+   })
+   await prisma.participation.updateMany({
+    // 複合主キーで開くグループを一意に特的する。
+    where: {
+      AND: [
+        { userId },
+        { groupId }
+      ]
+    },
+    data:{isActive:true}
+  })
+  res.status(201).json({message:'グループを開きました！！'})
+  }catch(e){
+    console.log('何らかのエラー',e)
+    res.status(500).json({message:'グループひらけませんでした。。。'})
+  }
+})
+
+app.get('/api/open-group',async(req,res)=>{
+  try{
+    const token = req.headers.authorization?.split('Bearer ')[1];
+    if(!token){
+     res.status(400).json({message:'許可されていないリクエストです。'})
+     return
+    }
+    const decodedToken = await admin.auth().verifyIdToken(token);
+    console.log(decodedToken)
+   const userId = decodedToken.uid
+   const activeGroup = await prisma.participation.findFirst({
+    where:{
+      userId,
+      isActive: true
+    },
+    include:{group:true}
+   }) 
+   res.status(201).json(activeGroup?.group)
+  }catch(e){
+    console.log('グループのデータ取得できませんでした。。。',e)
+    res.status(500).json('処理に失敗しました。')
   }
 })
 
