@@ -12,18 +12,19 @@ const GroupIcon = ({setValue,value}:AvatarDataProps) => {
   
   const fileInputRef = useRef<HTMLInputElement | null>(null)
   const [icon ,setIcon] = useState<string | undefined>(value)
+
  
 
   const handleInput = () =>{
   const files = fileInputRef.current?.files
   if(!files) return
   const file = files[0];
-  setValue('userIcon',file)
+  setValue('group_icon',file)
   const reader = new FileReader();
   reader.readAsDataURL(file);
   reader.onload = (e) =>{
     setIcon(String(e.target?.result))
-    // console.log(icon)
+    console.log(icon)
   }
 
   }
