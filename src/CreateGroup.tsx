@@ -5,6 +5,9 @@ import { Controller, useForm } from 'react-hook-form'
 import axios from 'axios'
 import GroupIcon from  '../src/components/GroupIcon'
 import { useState } from 'react'
+import { useAuthContext } from './auth/AuthContext'
+import {  useNavigate } from 'react-router-dom'
+
 
 export type GroupProfileData ={
   group_name:string,
@@ -13,6 +16,8 @@ export type GroupProfileData ={
 }
 
 const CreateGroup = () => {
+  const  navigate = useNavigate();
+  const user = useAuthContext()
   const apiUrl = import.meta.env.VITE_API_URL
   const {control,handleSubmit,setValue} = useForm({mode:'onSubmit',defaultValues:{
 group_name:'',
@@ -21,14 +26,17 @@ group_icon:''
   }})
 
   const [groupIcon] = useState('')
-  // buildする時にset関数をしようしてないとエラーが出るので一時てきにset関数を削除する
+  // buildする時にset関数をしようしてないとエラーが出るので一時てきにset関数を削除する,この辺りの状態管理が全くなってない。
+
+  
 
   const onSubmit = async({group_icon,group_name,group_description}:GroupProfileData) =>{
     try{
       const formData = new FormData();
       formData.append('group_name',group_name );
-      formData.append('group_icon', group_icon);
-      formData.append('group_description',group_description)
+      formData.append('group_icon',group_icon);
+      formData.append('group_description',group_description);
+      formData.append('uid',user?.uid || '')
 
       for (let pair of formData.entries()) {
         console.log(pair[0] + ': ' + pair[1]);
@@ -36,7 +44,7 @@ group_icon:''
 
      const groupPostResponse = await axios.post(`${apiUrl}/api/group`,formData);
      console.log(groupPostResponse.data)
-   
+   navigate('/')
     }catch(error){
       console.log('アップロードに失敗しました',error)
     }
