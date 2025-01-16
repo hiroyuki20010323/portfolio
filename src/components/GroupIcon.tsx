@@ -29,7 +29,7 @@ const GroupIcon = ({setValue,value}:AvatarDataProps) => {
 
   }
 
-  const fileUpLoad =() =>{
+  const fileUpload =() =>{
     fileInputRef.current?.click()
   }
   
@@ -37,7 +37,7 @@ const GroupIcon = ({setValue,value}:AvatarDataProps) => {
   <Box>
   <Avatar sx={{width:140,height:140,marginTop:4,marginBottom:4}} 
   src={icon || undefined}
-  onClick={fileUpLoad}/>
+  onClick={fileUpload}/>
   <input type="file" 
   ref={fileInputRef}
   onChange={handleInput}

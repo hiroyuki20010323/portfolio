@@ -192,7 +192,7 @@ const uid = decodedToken.uid
         ...(req.file && { icon_url: (req.file as any)?.location }), 
       },
     });
-    res.json(updatedUser);
+    res.status(201).json(updatedUser);
   } catch (error) {
     console.error('Error updating user:', error);
     res.status(500).json({ error: 'ユーザーの更新に失敗しました。' });
@@ -312,6 +312,52 @@ app.get('/api/open-group',async(req,res)=>{
   }
 })
 
+app.patch('/api/group-profile',upload.single('group_icon'),async(req,res)=>{
+  try{
+    const token = req.headers.authorization?.split('Bearer ')[1];
+
+    if(!token){
+     res.status(400).json({message:'許可されていないリクエストです。'})
+     return
+    }
+   
+   
+   const { group_name,group_description,groupId } = req.body;
+   const groupIdInt = parseInt(groupId,10);
+  //  フロントからのFormDataは文字列でidが送信されてくるのでIntに変換する
+
+   const updateGroup = await prisma.groups.update({
+     where: {id:groupIdInt},
+     data: {
+       ...(req.file && { group_icon: (req.file as any)?.location }), 
+       ...(group_name && { group_name }),
+       ...(group_description && { group_description }),
+
+     },
+   });
+   res.status(201).json(updateGroup);
+   console.log(updateGroup)
+  }catch(e){
+    console.error('Error updating user:', e);
+    res.status(500).json({ error: 'グループプロフィールの更新に失敗しました。' });
+  }
+})
+
+app.delete('/api/group-profile',async(req,res)=>{
+  try{
+    // カスケードを設定しようとしたが、なぜかDBの権限の問題でうまく実行できなかったので、先に中間テーブルのレコードを削除した。
+    await prisma.participation.deleteMany({
+      where: { groupId:req.body.groupId }
+    });
+ await prisma.groups.delete({
+  where:{id:req.body.groupId}
+})
+res.status(200).json({message:'グループが削除されました。'})
+  }catch(e){
+console.log('削除できなかったエラー',e)
+res.status(500).json({message: `サーバー側で削除がうまく実行できませんでした`,e})
+  }
+})
 
 
 app.listen(PORT, () => {

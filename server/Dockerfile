@@ -15,4 +15,6 @@ COPY . .
 
 RUN npx prisma generate
 
-CMD ["npm","run","dev"]
+RUN npx prisma migrate deploy
+
+CMD ["npm","run","start"]

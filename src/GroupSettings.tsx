@@ -1,21 +1,96 @@
 import Header from './components/Header'
 import { Avatar, AvatarGroup, Box, Button, FormControl, TextField, Typography } from '@mui/material'
 import Footer from './components/Footer'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useAuthContext } from './auth/AuthContext'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { auth } from './auth/firebaseConfig'
 import axios from 'axios'
 import { Group } from './Home'
 import Loading from './Loading'
+import { Controller, useForm } from 'react-hook-form'
 
 
-
+type FormInputs = {
+  
+  group_name: string;
+  group_icon: File | string | null;
+  group_description: string;
+}
 
 const GroupSettings = () => {
+  const  navigate = useNavigate();
   const user = useAuthContext();
   const apiUrl = import.meta.env.VITE_API_URL
   const [groupData, setGroupData] = useState<Group | null>(null)
+  // TODO GETリクエストで受け取ったデータをgroupDataに格納してから、group_nameやgroup_descriptionのdefaultValueに設定している。
+  // しかし、react-hook-formのsetValueで状態を管理しないと、変更せずに送信するときにバリデーションに引っかかる。
+  const [groupIcon,setGroupIcon] = useState(groupData?.group_icon)
+  const {control,handleSubmit} = useForm<FormInputs>({mode:'onSubmit',defaultValues:{
+    group_icon:groupData?.group_icon,
+    group_name:groupData?.group_name,
+    group_description:groupData?.group_description,
+  }});
+  const fileInputRef = useRef<HTMLInputElement| null>(null)
+
+  const handleInput = () =>{
+    const files = fileInputRef.current?.files
+    if(!files) return
+    const file = files[0];
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = (e) =>{
+      setGroupIcon(String(e.target?.result))
+      // console.log(icon)
+    }
+  }
+
+  const fileUpload =() =>{
+    fileInputRef.current?.click()
+  }
+ const onDelete = async(groupId:number) => {
+  try {
+    console.log(groupId)
+    const response = await axios.delete(`${apiUrl}/api/group-profile`, {
+      data: { groupId }  
+    });
+    alert(response.data.message)
+    navigate('/')
+  } catch(e) {
+    console.log('うまく削除できませんでした',e)
+  }
+}
+
+  const onSubmit =async({group_icon,group_name,group_description}:FormInputs) =>{
+    try{
+      const token = await auth.currentUser?.getIdToken();
+      const formData = new FormData();
+      // 型ガードでフィルタリング
+      if (group_icon) {
+        formData.append('group_icon', group_icon);
+      }
+      formData.append('group_name', group_name);
+      formData.append('group_description', group_description);
+      formData.append('groupId', String(groupData?.id));
+
+
+      for (let pair of formData.entries()) {
+        console.log(pair[0] + ': ' + pair[1]);
+
+      }
+      console.log(groupData)
+
+      const patchResponse = await axios.patch(`${apiUrl}/api/group-profile`,formData,{
+        headers:{
+          Authorization: `Bearer ${token}`
+        }
+              });
+       console.log(patchResponse.data)
+       setGroupData(patchResponse.data)
+  }catch(e){
+    console.log('なんかのエラーが出ました',e)
+  }
+}
   useEffect(()=>{
     (async()=>{
       
@@ -33,12 +108,14 @@ const GroupSettings = () => {
         }
       });
       setGroupData(response.data)
-      
+     
+
+
     })()
     
     
     // useEffect第二引数のuserは、user情報の取得が非同期であるためから配列にするとuser情報が取得される前にapiが叩かれてしまう。
-  },[user])
+  },[user,groupData])
 
   if(!groupData){
     return <Loading/>
@@ -49,27 +126,43 @@ const GroupSettings = () => {
       <>
     
     <Header />
-    
-    <Box sx={{display:'flex',alignItems:'center',flexFlow:'column',paddingTop:'80px',paddingBottom:'80px'}}>
-    <Avatar sx={{width:140,height:140,marginTop:4,marginBottom:4}} src={groupData?.group_icon || undefined} />
-    <FormControl component='form' variant='standard' >
+    <Box sx={{display:'flex',justifyContent:'center',alignItems:'center',flexFlow:'column',paddingTop:'80px',paddingBottom:'80px'}}>
+    <FormControl component='form' variant='standard' onSubmit={handleSubmit(onSubmit)}>
+      <Box sx={{display:'flex',justifyContent:'center'}} >
+    <Avatar sx={{width:140,height:140,marginTop:4,marginBottom:4}} src={groupIcon || groupData?.group_icon || undefined  } onClick={fileUpload}/>
+    <input type="file" 
+  ref={fileInputRef}
+  onChange={handleInput}
+  style={{   
+    display:'none'
+    }}/>
+      </Box>
+      
       {/* <InputLabel>グループネーム</InputLabel> */}
+      <Controller name='group_name' control={control} rules={{required:{value:true,message:'入力は必須です'}}} render={({field,formState:{errors}}) =>(
       <TextField
+      {...field}
         id='outline-disabled'
         label='グループネーム'
         defaultValue={groupData?.group_name}
+        error={errors.group_name ? true : false}
         style={{width:280,marginBottom:50}}
+        helperText={errors.group_name?.message as string}
       />
-
+      )}/>
+ <Controller name='group_description' control={control} rules={{required:{value:true,message:'入力は必須です'}}} render={({field,formState:{errors}}) =>(
       <TextField
+        {...field}
         id='outlined-multiline-static'
         label='グループ説明'
         multiline
         rows={8}
+        error={errors.group_description ? true : false}
         defaultValue={groupData?.group_description}
         sx={{marginBottom:4}}
+        helperText={errors.group_description?.message as string}
       />
-      
+ )} />
       <Typography>
        メンバー
       </Typography>
@@ -84,9 +177,9 @@ const GroupSettings = () => {
 </AvatarGroup>
       </Box>
 
-      <Button variant='contained'sx={{height:40,marginTop:10}} >保存</Button>
+      <Button variant='contained'sx={{height:40,marginTop:10}}  onClick={handleSubmit(onSubmit)}  >保存</Button>
       <Button variant='outlined'sx={{height:40,marginTop:4,marginBottom:8}} component={Link} to='/invitation'>招待</Button>
-      <Button variant='outlined' color='error'sx={{marginTop:12,marginBottom:4}}>退出</Button>
+      <Button variant='outlined' color='error'sx={{marginTop:12,marginBottom:4}} onClick={()=>onDelete(groupData.id)}>グループ削除</Button>
     </FormControl>
     </Box>
     <Footer/>
