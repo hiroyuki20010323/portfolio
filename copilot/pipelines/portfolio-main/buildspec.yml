@@ -8,10 +8,6 @@ phases:
       # Download the copilot linux binary
       - wget -q https://ecs-cli-v2-release.s3.amazonaws.com/copilot-linux-arm64 -O copilot-linux
       - chmod +x ./copilot-linux
-  pre_build:
-    commands:
-      - echo "Logging in to Docker Hub..."
-      - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD" docker.io 
   build:
     commands:
       - echo "Run your tests"

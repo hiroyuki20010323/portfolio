@@ -53,8 +53,7 @@ secrets:
   FIREBASE_CLIENT_EMAIL: /copilot/fast-share/prod/secrets/FIREBASE_CLIENT_EMAIL
   FIREBASE_PRIVATE_KEY: /copilot/fast-share/prod/secrets/FIREBASE_PRIVATE_KEY
   FIREBASE_PROJECT_ID: /copilot/fast-share/prod/secrets/FIREBASE_PROJECT_ID
-  DOCKER_USERNAME: /copilot/fast-share/prod/secrets/DOCKER_USERNAME
-  DOCKER_PASSWORD: /copilot/fast-share/prod/secrets/DOCKER_PASSWORD
+  
 # You can override any of the values defined above by environment.
 #environments:
 #  test:
