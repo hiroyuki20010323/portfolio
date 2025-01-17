@@ -81,7 +81,7 @@ group_icon:''
       helperText={errors.group_description?.message as string }
       />
      )}  />
-      <Button variant='contained'sx={{height:40,marginTop:10,marginBottom:8,width:280}} onClick={handleSubmit(onSubmit)}>保存</Button>
+      <Button variant='contained'sx={{height:40,marginTop:10,marginBottom:8,width:280}} onClick={handleSubmit(onSubmit)}>作成</Button>
       
     </FormControl>
     </Box>

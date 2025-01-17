@@ -23,13 +23,11 @@ const GroupSettings = () => {
   const user = useAuthContext();
   const apiUrl = import.meta.env.VITE_API_URL
   const [groupData, setGroupData] = useState<Group | null>(null)
-  // TODO GETリクエストで受け取ったデータをgroupDataに格納してから、group_nameやgroup_descriptionのdefaultValueに設定している。
-  // しかし、react-hook-formのsetValueで状態を管理しないと、変更せずに送信するときにバリデーションに引っかかる。
-  const [groupIcon,setGroupIcon] = useState(groupData?.group_icon)
-  const {control,handleSubmit} = useForm<FormInputs>({mode:'onSubmit',defaultValues:{
-    group_icon:groupData?.group_icon,
-    group_name:groupData?.group_name,
-    group_description:groupData?.group_description,
+  const [groupIcon,setGroupIcon] = useState<string | null>(null)
+  const {control,handleSubmit,setValue} = useForm<FormInputs>({mode:'onSubmit',defaultValues:{
+    group_icon:'',
+    group_name:'',
+    group_description:'',
   }});
   const fileInputRef = useRef<HTMLInputElement| null>(null)
 
@@ -38,9 +36,10 @@ const GroupSettings = () => {
     if(!files) return
     const file = files[0];
     const reader = new FileReader();
+    setValue('group_icon',file)
     reader.readAsDataURL(file);
     reader.onload = (e) =>{
-      setGroupIcon(String(e.target?.result))
+    setGroupIcon(e.target?.result as string)
       // console.log(icon)
     }
   }
@@ -107,15 +106,17 @@ const GroupSettings = () => {
           Authorization: `Bearer ${token}`
         }
       });
-      setGroupData(response.data)
-     
-
+      // setGroupData(response.data)
+     setValue('group_name',response.data.group_name)
+     setValue('group_description',response.data.group_description)
+     setGroupIcon(response.data.group_icon)
+     setGroupData(response.data)
 
     })()
     
     
     // useEffect第二引数のuserは、user情報の取得が非同期であるためから配列にするとuser情報が取得される前にapiが叩かれてしまう。
-  },[user,groupData])
+  },[user])
 
   if(!groupData){
     return <Loading/>
@@ -129,7 +130,7 @@ const GroupSettings = () => {
     <Box sx={{display:'flex',justifyContent:'center',alignItems:'center',flexFlow:'column',paddingTop:'80px',paddingBottom:'80px'}}>
     <FormControl component='form' variant='standard' onSubmit={handleSubmit(onSubmit)}>
       <Box sx={{display:'flex',justifyContent:'center'}} >
-    <Avatar sx={{width:140,height:140,marginTop:4,marginBottom:4}} src={groupIcon || groupData?.group_icon || undefined  } onClick={fileUpload}/>
+    <Avatar sx={{width:140,height:140,marginTop:4,marginBottom:4}} src={groupIcon || '' || undefined  } onClick={fileUpload}/>
     <input type="file" 
   ref={fileInputRef}
   onChange={handleInput}
@@ -144,7 +145,6 @@ const GroupSettings = () => {
       {...field}
         id='outline-disabled'
         label='グループネーム'
-        defaultValue={groupData?.group_name}
         error={errors.group_name ? true : false}
         style={{width:280,marginBottom:50}}
         helperText={errors.group_name?.message as string}
@@ -158,7 +158,6 @@ const GroupSettings = () => {
         multiline
         rows={8}
         error={errors.group_description ? true : false}
-        defaultValue={groupData?.group_description}
         sx={{marginBottom:4}}
         helperText={errors.group_description?.message as string}
       />
