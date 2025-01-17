@@ -31,7 +31,7 @@ const Profile = () => {
   }});
 
   const [fileUrl,setFileUrl] = useState(null)
-  // const [userName,setUserName] =useState('');
+  
 
   
   const onSubmit = async({userName,userIcon}: UserProfileData) =>{

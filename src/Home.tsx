@@ -67,20 +67,20 @@ return null;
     <Header/>
     <List sx={{overflow:'scroll',paddingTop:'80px',paddingBottom:'80px'}}>
       {groups.map((group)=>(
-    <List key={group.id} sx={{display:'flex',border:'solid 2px  #E0E0E0',padding:'20px',borderTop:'none',alignItems:'center',overflow:'scroll'}}>
+    <List key={group.id} sx={{display:'flex',border:'solid 1px  #E0E0E0',padding:'14px',borderTop:'none',alignItems:'center',overflow:'scroll'}}>
       <Avatar 
-        sx={{marginTop:'3px',marginRight:'10px',sizes:'md'}} 
+        sx={{marginTop:'3px',marginRight:'10px',marginLeft:'10px',sizes:'md'}} 
         src={group.group_icon || undefined}
       />
       <ListItem  sx={{display:'flex',flexFlow:'column',alignItems:'flex-start'}}>
-      <Typography variant='subtitle1'>
+      <Typography variant='subtitle1' noWrap>
         {group.group_name}
         </Typography>
         <Typography variant='caption'>
         メンバー: 5
         </Typography>
       </ListItem>
-      <Button variant='contained' sx={{marginLeft:10,height:30}} onClick={() => openGroup(group.id)}>開く</Button>
+      <Button variant='contained' sx={{height:30}} onClick={() => openGroup(group.id)}>開く</Button>
     </List>
       ))
   }
