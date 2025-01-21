@@ -8,4 +8,4 @@
 ALTER TABLE `Participation` ADD COLUMN `isActive` BOOLEAN NOT NULL DEFAULT false;
 
 -- CreateIndex
-CREATE UNIQUE INDEX `Participation_userId_groupId_key` ON `Participation`(`userId`, `groupId`);
+-- CREATE UNIQUE INDEX `Participation_userId_groupId_key` ON `Participation`(`userId`, `groupId`);

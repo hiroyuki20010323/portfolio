@@ -173,6 +173,7 @@ const Task = () => {
 					</Modal>
 
 					{/* ページネーション用アイコン */}
+        
 					<Box
 						sx={{
 							display: "flex",
@@ -183,16 +184,23 @@ const Task = () => {
 						<IconButton aria-label="delete" size="large">
 							<ArrowBackIosNewIcon fontSize="inherit" />
 						</IconButton>
+           
 						<Typography
 							sx={{ marginRight: "20px", marginLeft: "20px" }}
 							variant="subtitle1"
 						>
-							1/12(土)~1/18(日)
+							1/12（土）&nbsp;~&nbsp;1/18（日）
 						</Typography>
 						<IconButton aria-label="delete" size="large">
 							<ArrowForwardIosIcon fontSize="inherit" />
 						</IconButton>
 					</Box>
+          <Typography
+							variant="subtitle1"
+              sx={{display:'flex',alignItems:'center',justifyContent:'center'}}
+						>
+							2025年
+						</Typography>
 					{/* ここまで */}
 				</Box>
 			</TabContext>

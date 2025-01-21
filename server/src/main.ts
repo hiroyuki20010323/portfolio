@@ -6,12 +6,17 @@ import multer from "multer";
 import multerS3 from "multer-s3";
 import { v4 as uuidv4 } from "uuid";
 import admin from "firebase-admin";
-import { log } from "console";
+
 
 const prisma = new PrismaClient();
 const app = express();
 const PORT = 3080;
 
+app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// admin SDKの接続設定
 admin.initializeApp({
 	credential: admin.credential.cert({
 		projectId: process.env.FIREBASE_PROJECT_ID,
@@ -20,6 +25,7 @@ admin.initializeApp({
 	}),
 });
 
+// S3の接続
 const s3 = new S3Client({
 	region: process.env.AWS_REGION || "",
 	credentials: {
@@ -28,6 +34,7 @@ const s3 = new S3Client({
 	},
 });
 
+// バケットに画像をアップロードするミドルウェアの処理
 const upload = multer({
 	storage: multerS3({
 		s3: s3,
@@ -38,21 +45,20 @@ const upload = multer({
 		},
 		key: function (req, file, cb) {
 			const uniqueFileName = `${uuidv4()}-${file.originalname}`;
+      // TODOuserIconというパスに画像関係を全てアップロードしてしまっているため、あとでパスを切る
 			const filePath = `userIcon/${uniqueFileName}`;
-			// const groupFilePath = `groupIcon/${uniqueFileName}`
 			cb(null, filePath);
 		},
 	}),
 });
 
-app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+
 
 app.get("/", (req, res) => {
-	res.send("Hello Fast Share!!!!");
+	res.status(200).send("Hello Fast Share!!!!");
 });
 
+// 認証トークンの検証
 app.post("/auth/verify", async (req, res) => {
 	const authHeader = req.headers.authorization;
 	const idToken = authHeader && authHeader.split("Bearer ")[1];
@@ -73,6 +79,7 @@ app.post("/auth/verify", async (req, res) => {
 		console.log("無効なトークンだよ");
 	}
 });
+
 // メールアドレスとパスワード新規登録
 app.post("/api/user", async (req, res) => {
 	try {
@@ -164,6 +171,7 @@ app.get("/api/profile", async (req, res) => {
 	}
 });
 
+// プロフィール情報の更新
 app.patch("/api/profile", upload.single("icon_url"), async (req, res) => {
 	console.log("Body:", req.body);
 	console.log("File:", req.file || "No file uploaded");
@@ -193,6 +201,7 @@ app.patch("/api/profile", upload.single("icon_url"), async (req, res) => {
 	}
 });
 
+// グループの作成
 app.post("/api/group", upload.single("group_icon"), async (req, res) => {
 	try {
 		const groupIcon = (req.file as any)?.location;
@@ -205,11 +214,11 @@ app.post("/api/group", upload.single("group_icon"), async (req, res) => {
 				group_icon: groupIcon,
 			},
 		});
-		await prisma.participation.create({
+		await prisma.participations.create({
 			data: {
 				id: uuidv4(),
-				userId: req.body.uid,
-				groupId: newGroup.id,
+				user_id: req.body.uid,
+				group_id: newGroup.id,
 			},
 		});
 		res.status(201).json({
@@ -223,6 +232,7 @@ app.post("/api/group", upload.single("group_icon"), async (req, res) => {
 	}
 });
 
+// グループ一覧取得
 app.get("/api/group", async (req, res) => {
 	try {
 		const token = req.headers.authorization?.split("Bearer ")[1];
@@ -233,12 +243,12 @@ app.get("/api/group", async (req, res) => {
 		const decodedToken = await admin.auth().verifyIdToken(token);
 		console.log(decodedToken);
 		const uid = decodedToken.uid;
-		const participations = await prisma.participation.findMany({
-			where: { userId: uid },
+		const participations = await prisma.participations.findMany({
+			where: { user_id: uid },
 			include: { group: true },
 		});
 
-		const groups = participations.map((participation) => participation.group);
+		const groups = participations.map((participations) => participations.group);
 		console.log(groups);
 		res.status(201).json(groups);
 	} catch (e) {
@@ -249,6 +259,7 @@ app.get("/api/group", async (req, res) => {
 	}
 });
 
+// グループを開く処理
 app.post("/api/open-group", async (req, res) => {
 	try {
 		const token = req.headers.authorization?.split("Bearer ")[1];
@@ -258,17 +269,17 @@ app.post("/api/open-group", async (req, res) => {
 		}
 		const decodedToken = await admin.auth().verifyIdToken(token);
 		console.log(decodedToken);
-		const userId = decodedToken.uid;
-		const { groupId } = req.body;
+		const user_id = decodedToken.uid;
+		const { group_id } = req.body;
 		//  下記すでにtrueの値をfalseに変える。これにより別のグループの開くボタンを押した時に現在開かれているグループをcloseする。
-		await prisma.participation.updateMany({
-			where: { userId },
+		await prisma.participations.updateMany({
+			where: { user_id },
 			data: { isActive: false },
 		});
-		await prisma.participation.updateMany({
+		await prisma.participations.updateMany({
 			// 複合主キーで開くグループを一意に特的する。
 			where: {
-				AND: [{ userId }, { groupId }],
+				AND: [{ user_id }, { group_id }],
 			},
 			data: { isActive: true },
 		});
@@ -279,6 +290,7 @@ app.post("/api/open-group", async (req, res) => {
 	}
 });
 
+// グループのプロフィールを取得する
 app.get("/api/open-group", async (req, res) => {
 	try {
 		const token = req.headers.authorization?.split("Bearer ")[1];
@@ -288,10 +300,10 @@ app.get("/api/open-group", async (req, res) => {
 		}
 		const decodedToken = await admin.auth().verifyIdToken(token);
 		console.log(decodedToken);
-		const userId = decodedToken.uid;
-		const activeGroup = await prisma.participation.findFirst({
+		const user_id = decodedToken.uid;
+		const activeGroup = await prisma.participations.findFirst({
 			where: {
-				userId,
+				user_id,
 				isActive: true,
 			},
 			include: { group: true },
@@ -303,6 +315,7 @@ app.get("/api/open-group", async (req, res) => {
 	}
 });
 
+// グループのプロフィールを更新する処理
 app.patch(
 	"/api/group-profile",
 	upload.single("group_icon"),
@@ -338,11 +351,12 @@ app.patch(
 	},
 );
 
+// グループを削除する処理
 app.delete("/api/group-profile", async (req, res) => {
 	try {
 		// カスケードを設定しようとしたが、なぜかDBの権限の問題でうまく実行できなかったので、先に中間テーブルのレコードを削除した。
-		await prisma.participation.deleteMany({
-			where: { groupId: req.body.groupId },
+		await prisma.participations.deleteMany({
+			where: { group_id: req.body.groupId },
 		});
 		await prisma.groups.delete({
 			where: { id: req.body.groupId },

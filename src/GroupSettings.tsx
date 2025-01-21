@@ -185,7 +185,7 @@ const GroupSettings = () => {
 					<Controller
 						name="group_description"
 						control={control}
-						rules={{ required: { value: true, message: "入力は必須です" } }}
+						rules={{ required: { value: false, message: "入力は必須です" } }}
 						render={({ field, formState: { errors } }) => (
 							<TextField
 								{...field}
