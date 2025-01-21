@@ -16,14 +16,6 @@ datasource db {
 }
 
 
-// ユーザテーブルの作成
-// model Users{
-//   id Int @default (autoincrement()) @id
-//   user_name String @db.VarChar(255)
-//   icon_url String @db.Text
-//   createdAt DateTime @default(now())
-//   updatedAt DateTime @updatedAt
-// }
 
 model Users {
   id String @id 
@@ -31,7 +23,7 @@ model Users {
   icon_url String? @db.Text 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  participations Participation[]
+  participations Participations[]
 }
 
 model Groups {
@@ -42,17 +34,51 @@ model Groups {
   group_icon String? @db.Text 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  participations Participation[]
+  participations Participations[]
 }
 
-model Participation {
+model Participations {
   id String @id
-  userId String
-  groupId Int
+  user_id String
+  group_id Int
   isActive Boolean @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime? @updatedAt
-  user Users @relation(fields: [userId], references: [id])
-  group Groups @relation(fields: [groupId], references: [id])
-  @@unique([userId, groupId])
+  user Users @relation(fields: [user_id], references: [id])
+  group Groups @relation(fields: [group_id], references: [id])
+  
+  created_tasks Task[] @relation("CreatedBy")
+  assigned_tasks Task[] @relation("AssignedTo")
+  @@unique([user_id, group_id])
 }
+
+model Calendar {
+  id        Int      @id @default(autoincrement())
+  date      DateTime @unique 
+  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now())
+
+  calender_tasks Task[]
+}
+
+
+model Task {
+  id                  Int      @id @default(autoincrement())
+  task_title          String
+  task_detail         String?
+  task_image_url      String?
+  period              DateTime? 
+  created_user_id     String
+  created_group_id    Int
+  assignee_user_id    String?
+  assignee_group_id   Int?
+  calendar_id         Int
+  updated_at          DateTime @updatedAt
+  created_at          DateTime @default(now())
+  deleted_at          DateTime?
+
+  calendar            Calendar @relation(fields: [calendar_id], references: [id])
+  created_participation Participations @relation("CreatedBy", fields: [created_user_id, created_group_id], references: [user_id, group_id])
+  assignee_participation Participations? @relation("AssignedTo", fields: [assignee_user_id, assignee_group_id], references: [user_id, group_id])
+}
+

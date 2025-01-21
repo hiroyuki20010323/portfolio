@@ -1,31 +1,30 @@
 @charset "UTF-8";
 .highlight-line {
-  background-color: #050505;
-  z-index: -1;
+	background-color: #050505;
+	z-index: -1;
 }
 
 .margin-decorations {
-  background-color: #050505;
+	background-color: #050505;
 }
 
 .line-decorations {
-  background: #9cdcfe;
-  width: 4px !important;
-  margin-left: 5px !important;
-  margin-right: 5px !important;
+	background: #9cdcfe;
+	width: 4px !important;
+	margin-left: 5px !important;
+	margin-right: 5px !important;
 }
 
 #challenge-container {
-  scrollbar-width: none; /*Firefox対応のスクロールバー非表示コード*/
-  -ms-overflow-style: none; /*Internet Explore対応のスクロールバー非表示コード*/
+	scrollbar-width: none; /*Firefox対応のスクロールバー非表示コード*/
+	-ms-overflow-style: none; /*Internet Explore対応のスクロールバー非表示コード*/
 }
 
 #challenge-container::-webkit-scrollbar {
-  display: none; /*Google Chrome、Safari、Microsoft Edge対応のスクロールバー非表示コード*/
+	display: none; /*Google Chrome、Safari、Microsoft Edge対応のスクロールバー非表示コード*/
 }
 
 .no-scrollbar::-webkit-scrollbar {
-  width: 0;
-  height: 6px;
+	width: 0;
+	height: 6px;
 }
-
