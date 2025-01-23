@@ -214,11 +214,11 @@ app.post("/api/group", upload.single("group_icon"), async (req, res) => {
 				group_icon: groupIcon,
 			},
 		});
-		await prisma.participations.create({
+		await prisma.participation.create({
 			data: {
 				id: uuidv4(),
-				user_id: req.body.uid,
-				group_id: newGroup.id,
+				userId: req.body.uid,
+				groupId: newGroup.id,
 			},
 		});
 		res.status(201).json({
@@ -243,8 +243,8 @@ app.get("/api/group", async (req, res) => {
 		const decodedToken = await admin.auth().verifyIdToken(token);
 		console.log(decodedToken);
 		const uid = decodedToken.uid;
-		const participations = await prisma.participations.findMany({
-			where: { user_id: uid },
+		const participations = await prisma.participation.findMany({
+			where: { userId: uid },
 			include: { group: true },
 		});
 
@@ -269,17 +269,17 @@ app.post("/api/open-group", async (req, res) => {
 		}
 		const decodedToken = await admin.auth().verifyIdToken(token);
 		console.log(decodedToken);
-		const user_id = decodedToken.uid;
-		const { group_id } = req.body;
+		const userId = decodedToken.uid;
+		const { groupId } = req.body;
 		//  下記すでにtrueの値をfalseに変える。これにより別のグループの開くボタンを押した時に現在開かれているグループをcloseする。
-		await prisma.participations.updateMany({
-			where: { user_id },
+		await prisma.participation.updateMany({
+			where: { userId },
 			data: { isActive: false },
 		});
-		await prisma.participations.updateMany({
+		await prisma.participation.updateMany({
 			// 複合主キーで開くグループを一意に特的する。
 			where: {
-				AND: [{ user_id }, { group_id }],
+				AND: [{ userId }, { groupId }],
 			},
 			data: { isActive: true },
 		});
@@ -300,10 +300,10 @@ app.get("/api/open-group", async (req, res) => {
 		}
 		const decodedToken = await admin.auth().verifyIdToken(token);
 		console.log(decodedToken);
-		const user_id = decodedToken.uid;
-		const activeGroup = await prisma.participations.findFirst({
+		const userId = decodedToken.uid;
+		const activeGroup = await prisma.participation.findFirst({
 			where: {
-				user_id,
+				userId,
 				isActive: true,
 			},
 			include: { group: true },
@@ -355,8 +355,8 @@ app.patch(
 app.delete("/api/group-profile", async (req, res) => {
 	try {
 		// カスケードを設定しようとしたが、なぜかDBの権限の問題でうまく実行できなかったので、先に中間テーブルのレコードを削除した。
-		await prisma.participations.deleteMany({
-			where: { group_id: req.body.groupId },
+		await prisma.participation.deleteMany({
+			where: { groupId: req.body.groupId },
 		});
 		await prisma.groups.delete({
 			where: { id: req.body.groupId },
