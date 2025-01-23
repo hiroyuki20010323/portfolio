@@ -5,80 +5,54 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider = "prisma-client-js"
-  binaryTargets = ["native", "linux-musl-arm64-openssl-1.1.x", "linux-musl-arm64-openssl-3.0.x"]
-    
+ provider = "prisma-client-js"
+ binaryTargets = ["native", "linux-musl-arm64-openssl-1.1.x", "linux-musl-arm64-openssl-3.0.x"]
+   
 }
 
 datasource db {
-  provider = "mysql"
-  url      = env("DATABASE_URL")
+ provider = "mysql"
+ url      = env("DATABASE_URL")
 }
 
 
+// ユーザテーブルの作成
+// model Users{
+//   id Int @default (autoincrement()) @id
+//   user_name String @db.VarChar(255)
+//   icon_url String @db.Text
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+// }
 
 model Users {
-  id String @id 
-  user_name String @db.VarChar(255)
-  icon_url String? @db.Text 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  participations Participations[]
+ id String @id 
+ user_name String @db.VarChar(255)
+ icon_url String? @db.Text 
+ createdAt DateTime @default(now())
+ updatedAt DateTime @updatedAt
+ participations Participation[]
 }
 
 model Groups {
-  id Int @id @default(autoincrement())
-  group_name String @db.VarChar(255)
-  group_description String? @db.Text
-  // ?はオプショナルであり、nullを許可する
-  group_icon String? @db.Text 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  participations Participations[]
+ id Int @id @default(autoincrement())
+ group_name String @db.VarChar(255)
+ group_description String? @db.Text
+ // ?はオプショナルであり、nullを許可する
+ group_icon String? @db.Text 
+ createdAt DateTime @default(now())
+ updatedAt DateTime @updatedAt
+ participations Participation[]
 }
 
-model Participations {
-  id String @id
-  user_id String
-  group_id Int
+model Participation {
+ id String @id
+ userId String
+ groupId Int
   isActive Boolean @default(false)
-  createdAt DateTime @default(now())
-  updatedAt DateTime? @updatedAt
-  user Users @relation(fields: [user_id], references: [id])
-  group Groups @relation(fields: [group_id], references: [id])
-  
-  created_tasks Task[] @relation("CreatedBy")
-  assigned_tasks Task[] @relation("AssignedTo")
-  @@unique([user_id, group_id])
+ createdAt DateTime @default(now())
+ updatedAt DateTime? @updatedAt
+ user Users @relation(fields: [userId], references: [id])
+ group Groups @relation(fields: [groupId], references: [id])
+ @@unique([userId, groupId])
 }
-
-model Calendar {
-  id        Int      @id @default(autoincrement())
-  date      DateTime @unique 
-  updatedAt DateTime @updatedAt
-  createdAt DateTime @default(now())
-
-  calender_tasks Task[]
-}
-
-
-model Task {
-  id                  Int      @id @default(autoincrement())
-  task_title          String
-  task_detail         String?
-  task_image_url      String?
-  period              DateTime? 
-  created_user_id     String
-  created_group_id    Int
-  assignee_user_id    String?
-  assignee_group_id   Int?
-  calendar_id         Int
-  updated_at          DateTime @updatedAt
-  created_at          DateTime @default(now())
-  deleted_at          DateTime?
-
-  calendar            Calendar @relation(fields: [calendar_id], references: [id])
-  created_participation Participations @relation("CreatedBy", fields: [created_user_id, created_group_id], references: [user_id, group_id])
-  assignee_participation Participations? @relation("AssignedTo", fields: [assignee_user_id, assignee_group_id], references: [user_id, group_id])
-}
-
