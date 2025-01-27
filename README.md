@@ -4,7 +4,7 @@
 FastShareは、グループを作成し、メンバー同士でタスク(買い物や家事)を共有できるアプリです。
 
 ## 作成の経緯・詳細
-お風呂掃除中に洗剤が切れていることに気づき、外出中の家族に購入を依頼しようとしました。ところが、複数の家族にそれぞれ連絡するのは面倒ですし、一人が「買ってくるよ」と承諾した場合には、もう一方に「大丈夫になった」と連絡して断る必要があります。そうしないと、同じものを重複して買ってきてしまうからです。
+お風呂掃除中に洗剤が切れていることに気づき、外出中の家族に購入を依頼しようとしました。ところが、複数の家族にそれぞれ連絡するのは面倒ですし、一人が「買ってくるよ」と承諾した場合には、もう一方に「大丈夫になった」と連絡して断る必要があります。
 
 さらに、買い物が複数アイテムにわたる場合には、この「誰が何を買うのか」を逐一調整する手間が増えてしまいます。また、「さっき買い物に行ったのに、必要なものを伝えそびれてしまった」ということも起こりがちで、必要な情報を事前に整理・共有しておけば良かったと後悔する場面もあります。
 
@@ -19,4 +19,110 @@ FastShareは、グループを作成し、メンバー同士でタスク(買い�
 このように、家族や仲間内で買い物を共有・管理できる仕組みを整えることで、重複購入や連絡漏れの問題を解消し、時間をより有意義に使えるようになります。
 
 FastShareは、こうした日常のちょっとした煩わしさをなくすためのソリューションとして開発したものです。
+
+## URL
+URL: https://fastshare.jp/login　<br>
+※現状ルートURLは何も設定しておらず、白飛びしてしまいますので、/login または　/signupで検索してください。
+
+## 機能一覧
+* サインアップ<br>
+* ログイン・ログアウト(google、パスワード・email)<br>
+* プロフィール編集<br>
+* グループ作成、編集、削除
+
+2025-1/24時点
+## 実装予定機能
+  1. タスクCRUD（実装中...）
+  2. グループ招待
+  3. Spinnerの実装
+  4. Snackbarの作成
+## 使用技術
+- フロントエンド
+  - React
+  - TypeScript
+  - Material UI
+  - Firebase Authentication
+  - Vite
+- バックエンド
+  - Node.js 
+  - Express
+  - Prisma
+  - TypeScript
+  - Firebase Admin SDK
+  - Docker / Docker Compose
+  - Multer-S3（画像アップロード）
+- インフラストラクチャ
+  - AWS
+    - フロントエンド: S3, CloudFront
+    - バックエンド: ECS (Fargate), ECR, S3
+    - データベース: RDS (MySQL)
+  - CI/CD
+    - GitHub Actions (フロントエンド)
+    - AWS Copilot CLI (バックエンド)
+- 開発ツール
+  - Git/GitHub
+  - Figma
+
+## UIプロトタイプ
+[プロトタイプ](  https://www.figma.com/proto/owXvBVTldegJC01y0D0bce/%E3%83%9D%E3%83%BC%E3%83%88%E3%83%95%E3%82%A9%E3%83%AA%E3%82%AA%E8%A8%AD%E8%A8%88?node-id=10-4&t=u7yScyvT6wpmj2fp-1)<br>
+
+## ER図
+```mermaid
+erDiagram
+    Users {
+        String id PK
+        String user_name
+        String icon_url
+        DateTime createdAt
+        DateTime updatedAt
+    }
+    Groups {
+        Int id PK
+        String group_name
+        String group_description
+        String group_icon
+        DateTime createdAt
+        DateTime updatedAt
+    }
+    Participations {
+        String id PK
+        String user_id FK
+        Int group_id FK
+        Boolean isActive
+        DateTime createdAt
+        DateTime updatedAt
+    }
+    Calendar {
+        Int id PK
+        DateTime date
+        DateTime createdAt
+        DateTime updatedAt
+    }
+    Task {
+        Int id PK
+        String task_title
+        String task_detail
+        String task_image_url
+        DateTime period
+        String created_user_id FK
+        Int created_group_id FK
+        String assignee_user_id FK
+        Int assignee_group_id FK
+        Int calendar_id FK
+        DateTime createdAt
+        DateTime updatedAt
+    }
+
+    %% Relationships
+    Users ||--o{ Participations : "ユーザーは複数のグループに参加可能"
+    Groups ||--o{ Participations : "グループは複数の参加者を持つ"
+    Calendar ||--o{ Task : "1つの日付に複数のタスクを登録可能"
+    Participations ||--o{ Task : "参加者は複数のタスクを作成・割当可能"
+```
+## インフラ構成
+<img width='550' src='https://github.com/user-attachments/assets/ed0d28f6-c120-44ef-964f-d0f823d39958'><br>
+
+
+
+ 
 
