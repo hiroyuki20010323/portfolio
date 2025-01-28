@@ -47,5 +47,34 @@ model Participation {
  updatedAt DateTime? @updatedAt
  user Users @relation(fields: [userId], references: [id])
  group Groups @relation(fields: [groupId], references: [id])
+ createdTasks Task[] @relation("TaskCreator")
+ assignedTasks Task[] @relation("TaskAssignee")
  @@unique([userId, groupId])
+}
+
+model Calendar {
+  id Int @id
+  date DateTime
+  createdAt DateTime
+  updatedAt DateTime
+  tasks Task[]
+}
+
+model Task {
+  id              Int @id @default(autoincrement())
+  taskTitle       String
+  taskDetail      String?
+  taskImageUrl    String?
+  period          DateTime
+  createdUser Participation @relation("TaskCreator", fields: [createdUserId, createdGroupId], references: [userId, groupId])
+  createdUserId   String   
+  createdGroupId  Int
+  assignee Participation? @relation("TaskAssignee", fields: [assigneeUserId, assigneeGroupId], references: [userId, groupId])      
+  assigneeUserId  String?   
+  assigneeGroupId Int?  
+  calenderId      Int      
+  createdAt       DateTime
+  updatedAt       DateTime
+  calendar Calendar @relation(fields: [calendar_id], references: [id])
+  calendar_id Int
 }
