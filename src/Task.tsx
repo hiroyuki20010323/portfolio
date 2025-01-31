@@ -20,12 +20,11 @@ import TabContext from "@mui/lab/TabContext";
 import WeekTask from "./WeekTask";
 import { TabList } from "@mui/lab";
 import AddIcon from "@mui/icons-material/Add";
-// import {  LocalizationProvider, TimePicker } from '@mui/x-date-pickers';
+
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 
-// import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
-// import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+
 
 const Task = () => {
 	const [value, setValue] = useState<string>("1");
@@ -93,13 +92,13 @@ const Task = () => {
 						<AddIcon />
 					</Fab>
 					<Modal
-						// openプロパティがtrueの時にモーダル表示、falseの時にモーダル閉じる
+						
 						open={open}
 						onClose={handleCloseModal}
 						aria-labelledby="modal-modal-title"
 						aria-describedby="modal-modal-description"
 					>
-						{/* モーダルのレイアウト別コンポーネントに切り出す */}
+						{/* TODOモーダルのレイアウト別コンポーネントに切り出す */}
 						<Box sx={style}>
 							<Box
 								sx={{
@@ -159,8 +158,8 @@ const Task = () => {
 									<TextField id="inputDate" type="date" />
 									<TextField
 										id="time"
-										type="time" // タイプを "time" に指定
-										defaultValue="12:00" // 初期値（オプション）
+										type="time" 
+										defaultValue="12:00" 
 									/>
 
 									<Button variant="contained" sx={{ height: 40, marginTop: 2 }}>
@@ -172,7 +171,7 @@ const Task = () => {
 						{/* ここまで */}
 					</Modal>
 
-					{/* ページネーション用アイコン */}
+					
         
 					<Box
 						sx={{
@@ -201,7 +200,7 @@ const Task = () => {
 						>
 							2025年
 						</Typography>
-					{/* ここまで */}
+					
 				</Box>
 			</TabContext>
 

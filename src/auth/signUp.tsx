@@ -35,8 +35,7 @@ export const SignUp = () => {
 	const [isOpenModal, setIsOpenModal] = useState(false);
 	const apiUrl = import.meta.env.VITE_API_URL;
 
-	// const [email,setEmail] = useState<string>("");
-	// const [password,setPassword] = useState<string>("");
+	
 	const { handleSubmit, control, watch } = useForm({
 		mode: "onSubmit",
 		defaultValues: {
@@ -102,7 +101,7 @@ export const SignUp = () => {
 			);
 			setIsOpenModal(true);
 			console.log(response.data);
-			// console.log(user);
+			
 		} catch (e) {
 			console.log("処理がうまくいきませんでした。");
 		}
@@ -261,9 +260,9 @@ export const SignUp = () => {
 					height: 50,
 					margin: 3,
 					color: "#e3f2fd",
-					backgroundColor: "#e3f2fd", // 背景色
+					backgroundColor: "#e3f2fd", 
 					"&:hover": {
-						backgroundColor: "#bbdefb", // ホバー時の背景色
+						backgroundColor: "#bbdefb", 
 					},
 				}}
 			>

@@ -63,13 +63,13 @@ const EachTask = () => {
 	const [open, setOpen] = useState(false);
 	const [selectedTask, setSelectedTask] = useState<TaskStyle | null>(null);
 
-	// モーダルを開く関数
+	
 	const handleOpen = (task: TaskStyle) => {
 		setSelectedTask(task);
 		setOpen(true);
 	};
 
-	// モーダルを閉じる関数
+	
 	const handleClose = () => {
 		setOpen(false);
 		setSelectedTask(null);
@@ -78,7 +78,7 @@ const EachTask = () => {
 	return (
 		<>
 			{tasks.map((task) => {
-				// {console.log(selectedTask)}
+				
 				return (
 					<>
 						<Paper
@@ -105,8 +105,8 @@ const EachTask = () => {
 									sx: {
 										padding: "20px",
 										borderRadius: "8px",
-										width: "400px", // 固定幅
-										height: "300px", // 固定高さ
+										width: "400px", 
+										height: "300px", 
 									},
 								}}
 							>

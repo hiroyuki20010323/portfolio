@@ -46,7 +46,7 @@ const Profile = () => {
 
 			const token = await auth.currentUser?.getIdToken();
 
-			//  await axios.post('http://localhost:3080/api/profile',formData);
+			
 
 			const patchResponse = await axios.patch(
 				`${apiUrl}/api/profile`,
@@ -64,7 +64,7 @@ const Profile = () => {
 					Authorization: `Bearer ${token}`,
 				},
 			});
-			// console.log(getResponse)
+			
 			const { newUserName, fileUrl } = getResponse.data;
 			setFileUrl(fileUrl);
 			setValue("userName", newUserName);
@@ -88,7 +88,7 @@ const Profile = () => {
 					Authorization: `Bearer ${token}`,
 				},
 			});
-			// console.log(getResponse)
+			
 
 			const { newUserName, fileUrl } = getResponse.data;
 

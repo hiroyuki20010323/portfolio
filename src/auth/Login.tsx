@@ -43,8 +43,7 @@ const Login = () => {
 
 	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
-		// 通常はeventが発生した時に、デフォルトでページのリロードが行われるがそれを防ぐ。つまりリロードされない。
-		// リロードと再レンダリングは違う、リロードはサーバーからすべてのデータを取得してページの生成を再実行するのに対して、再レンダリングは、reactのコンポーネントを再描画すると言う意味
+	
 
 		try {
 			const userCredential = await signInWithEmailAndPassword(
@@ -55,7 +54,7 @@ const Login = () => {
 			const user = userCredential.user;
 
 			const idToken = await user.getIdToken(true);
-			// console.log(idToken);
+			
 			const response = await axios.post(
 				`${apiUrl}/auth/verify`,
 				{ message: "認証に成功しました！" },
@@ -67,7 +66,7 @@ const Login = () => {
 				},
 			);
 			console.log(response.data.message);
-			// console.log(user);
+			
 
 			navigate("/");
 		} catch (e) {
@@ -84,7 +83,7 @@ const Login = () => {
 	const handleChangePassword = (
 		event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
 	) => {
-		// TextFieldコンポーネントが内部でinput（一行）およびtext（複数行）属性を使用することがあるため、eventの引数はユニオン型で定義した。
+		
 		setPassword(event.target.value);
 	};
 
@@ -106,7 +105,7 @@ const Login = () => {
 		}
 	};
 
-	// テストメモ削除して良い
+	
 	return (
 		<Box display="flex" flexDirection="column" alignItems="center">
 			<Typography variant="h4" marginTop={10}>
@@ -170,9 +169,9 @@ const Login = () => {
 						height: 50,
 						margin: 3,
 						color: "#e3f2fd",
-						backgroundColor: "#e3f2fd", // 背景色
+						backgroundColor: "#e3f2fd", 
 						"&:hover": {
-							backgroundColor: "#bbdefb", // ホバー時の背景色
+							backgroundColor: "#bbdefb", 
 						},
 					}}
 				>

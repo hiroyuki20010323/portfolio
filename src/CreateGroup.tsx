@@ -28,7 +28,7 @@ const CreateGroup = () => {
 	});
 
 	const [groupIcon] = useState("");
-	// buildする時にset関数をしようしてないとエラーが出るので一時てきにset関数を削除する,この辺りの状態管理が全くなってない。
+	// buildする時にset関数をしようしてないとエラーが出るので一時てきにset関数を削除する。
 
 	const onSubmit = async ({
 		group_icon,
@@ -75,7 +75,7 @@ const CreateGroup = () => {
 					sx={{ alignItems: "center" }}
 				>
 					<GroupIcon setValue={setValue} value={groupIcon} />
-					{/* <InputLabel>グループネーム</InputLabel> */}
+					
 					<Controller
 						name="group_name"
 						control={control}

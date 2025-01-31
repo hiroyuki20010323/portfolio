@@ -16,7 +16,7 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// admin SDKの接続設定
+
 admin.initializeApp({
 	credential: admin.credential.cert({
 		projectId: process.env.FIREBASE_PROJECT_ID,
@@ -25,7 +25,7 @@ admin.initializeApp({
 	}),
 });
 
-// S3の接続
+
 const s3 = new S3Client({
 	region: process.env.AWS_REGION || "",
 	credentials: {
@@ -34,7 +34,7 @@ const s3 = new S3Client({
 	},
 });
 
-// バケットに画像をアップロードするミドルウェアの処理
+
 const upload = multer({
 	storage: multerS3({
 		s3: s3,
@@ -58,7 +58,7 @@ app.get("/", (req, res) => {
 	res.status(200).send("Hello Fast Share!!!!");
 });
 
-// 認証トークンの検証
+
 app.post("/auth/verify", async (req, res) => {
 	const authHeader = req.headers.authorization;
 	const idToken = authHeader && authHeader.split("Bearer ")[1];
@@ -114,35 +114,6 @@ app.post("/api/user", async (req, res) => {
 		res.status(500).json({ error: "データの保存に失敗しました" });
 	}
 });
-
-// 以下のエンドポイントは使用しない。patchで代替できる
-// app.post('/api/profile',upload.single('icon_url'),async(req,res)=>{
-//   try{
-// if(!req.file){
-//   console.log('ファイルがアップロードされていません')
-//   res.status(400).json({error: 'ファイルがアップロードされていません'})
-//   return
-// }
-
-// const userName = req.body.user_name
-// const iconKey = (req.file as any)?.key
-// const iconLocation = (req.file as any)?.location
-
-// await prisma.users.create({
-//   data:{
-//     user_name:userName,
-//     icon_url:iconLocation
-//   }
-// })
-
-// res.status(201).json({
-//   message:'アップロード成功',
-// })
-//   }catch(error){
-//     console.log('データ保存エラー:',error);
-//      res.status(500).json({error:'サーバーエラー'})
-//   }
-// })
 
 // プロフィール情報取得
 app.get("/api/profile", async (req, res) => {

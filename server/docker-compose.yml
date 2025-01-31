@@ -10,4 +10,19 @@ services:
       - ./:/src
     ports:
       - "3080:3080"  
-    
+  db:
+    container_name: 'fast-share_db'
+    image: mysql:8.0
+    environment:
+      - MYSQL_ROOT_PASSWORD=rootpassword
+      - MYSQL_DATABASE=fast_share
+      - MYSQL_USER=hiroyuki
+      - MYSQL_PASSWORD=password
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./mysql/conf.d:/etc/mysql/conf.d
+    command: --lower_case_table_names=0
+volumes:
+  mysql_data:    

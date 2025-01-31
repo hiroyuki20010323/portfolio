@@ -1,6 +1,6 @@
 import { createTheme } from "@mui/material";
 
-// TODO 作りかけのデザインシステム
+// TODO デザインシステムを完成させる
 export const theme = createTheme({
 	palette: {
 		primary: {
