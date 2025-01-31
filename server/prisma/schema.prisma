@@ -55,8 +55,8 @@ model Participation {
 model Calendar {
   id Int @id
   date DateTime
-  createdAt DateTime
-  updatedAt DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
   tasks Task[]
 }
 
@@ -73,8 +73,8 @@ model Task {
   assigneeUserId  String?   
   assigneeGroupId Int?  
   calenderId      Int      
-  createdAt       DateTime
-  updatedAt       DateTime
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
   calendar Calendar @relation(fields: [calendar_id], references: [id])
   calendar_id Int
 }
