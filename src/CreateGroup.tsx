@@ -75,7 +75,7 @@ const CreateGroup = () => {
 					sx={{ alignItems: "center" }}
 				>
 					<GroupIcon setValue={setValue} value={groupIcon} />
-					
+
 					<Controller
 						name="group_name"
 						control={control}

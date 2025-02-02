@@ -31,8 +31,5 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
 	// TODO ローディング画面を作る。
 
-	return (
-		<AuthContext.Provider value={user}>{children}</AuthContext.Provider>
-		
-	);
+	return <AuthContext.Provider value={user}>{children}</AuthContext.Provider>;
 };

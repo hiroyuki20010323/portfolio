@@ -23,7 +23,7 @@ const tasks = [
 	},
 
 	{
-		id: 1,
+		id: 2,
 		taskName: "歯磨き粉",
 		taskDetails: {
 			description: "クリニカでお願いします。",
@@ -32,7 +32,7 @@ const tasks = [
 	},
 
 	{
-		id: 1,
+		id: 3,
 		taskName: "目薬",
 		taskDetails: {
 			description: "サンテメディカルプラスの赤いやつお願いします。",
@@ -41,7 +41,7 @@ const tasks = [
 	},
 
 	{
-		id: 1,
+		id: 4,
 		taskName: "チョコレート",
 		taskDetails: {
 			description: "なるべくカカオの配合が高いものを買ってきてください",
@@ -63,13 +63,11 @@ const EachTask = () => {
 	const [open, setOpen] = useState(false);
 	const [selectedTask, setSelectedTask] = useState<TaskStyle | null>(null);
 
-	
 	const handleOpen = (task: TaskStyle) => {
 		setSelectedTask(task);
 		setOpen(true);
 	};
 
-	
 	const handleClose = () => {
 		setOpen(false);
 		setSelectedTask(null);
@@ -78,9 +76,8 @@ const EachTask = () => {
 	return (
 		<>
 			{tasks.map((task) => {
-				
 				return (
-					<>
+					<Box key={task.id}>
 						<Paper
 							elevation={0}
 							onClick={() => handleOpen(task)}
@@ -105,8 +102,8 @@ const EachTask = () => {
 									sx: {
 										padding: "20px",
 										borderRadius: "8px",
-										width: "400px", 
-										height: "300px", 
+										width: "400px",
+										height: "300px",
 									},
 								}}
 							>
@@ -129,7 +126,7 @@ const EachTask = () => {
 								</DialogActions>
 							</Dialog>
 						)}
-					</>
+					</Box>
 				);
 			})}
 		</>

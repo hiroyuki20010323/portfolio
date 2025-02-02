@@ -6,7 +6,8 @@ import multer from "multer";
 import multerS3 from "multer-s3";
 import { v4 as uuidv4 } from "uuid";
 import admin from "firebase-admin";
-
+import { startOfDay, addDays } from "date-fns";
+import { toZonedTime } from "date-fns-tz";
 
 const prisma = new PrismaClient();
 const app = express();
@@ -16,7 +17,6 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-
 admin.initializeApp({
 	credential: admin.credential.cert({
 		projectId: process.env.FIREBASE_PROJECT_ID,
@@ -25,7 +25,6 @@ admin.initializeApp({
 	}),
 });
 
-
 const s3 = new S3Client({
 	region: process.env.AWS_REGION || "",
 	credentials: {
@@ -33,7 +32,6 @@ const s3 = new S3Client({
 		secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || "",
 	},
 });
-
 
 const upload = multer({
 	storage: multerS3({
@@ -45,19 +43,16 @@ const upload = multer({
 		},
 		key: function (req, file, cb) {
 			const uniqueFileName = `${uuidv4()}-${file.originalname}`;
-      // TODOuserIconというパスに画像関係を全てアップロードしてしまっているため、あとでパスを切る
+			// TODOuserIconというパスに画像関係を全てアップロードしてしまっているため、あとでパスを切る
 			const filePath = `userIcon/${uniqueFileName}`;
 			cb(null, filePath);
 		},
 	}),
 });
 
-
-
 app.get("/", (req, res) => {
 	res.status(200).send("Hello Fast Share!!!!");
 });
-
 
 app.post("/auth/verify", async (req, res) => {
 	const authHeader = req.headers.authorization;
@@ -338,6 +333,34 @@ app.delete("/api/group-profile", async (req, res) => {
 		res
 			.status(500)
 			.json({ message: `サーバー側で削除がうまく実行できませんでした`, e });
+	}
+});
+
+app.get("/api/task", async (req, res) => {
+	try {
+		const timeZone = "Asia/Tokyo";
+		const todayJST = startOfDay(toZonedTime(new Date(), timeZone));
+
+		const oneWeekLaterJST = addDays(todayJST, 6);
+
+		const tasks = await prisma.calendar.findMany({
+			where: {
+				date: {
+					gte: todayJST,
+					lte: oneWeekLaterJST,
+				},
+			},
+			include: {
+				tasks: true,
+			},
+			orderBy: {
+				date: "asc",
+			},
+		});
+
+		res.status(200).json(tasks);
+	} catch (e) {
+		console.log("タスクデータの取得失敗しました。", e);
 	}
 });
 

@@ -9,35 +9,54 @@ import {
 } from "@mui/material";
 
 import EachTask from "./EachTask";
+import { TaskData } from "./Task";
 
-const TaskItem = () => {
+type TaskItemProps = {
+	tasks: TaskData[];
+};
+
+const TaskItem: React.FC<TaskItemProps> = ({ tasks }) => {
 	return (
-		<Accordion sx={{ minHeight: 84, border: "none", boxShadow: "none" }}>
-			<AccordionSummary
-				expandIcon={<ExpandMoreIcon />}
-				aria-controls="panel1-content"
-				id="panel1-header"
-			>
-				<Box
-					sx={{
-						display: "flex",
-						justifyContent: "space-between",
-						alignItems: "center",
-						width: "100%",
-					}}
+		<>
+			{tasks.map((task) => (
+				<Accordion
+					key={task.id}
+					sx={{ minHeight: 84, border: "none", boxShadow: "none" }}
 				>
-					<Typography variant="h6">12/1(月)</Typography>
-					<Badge
-						badgeContent={4}
-						color="success"
-						sx={{ marginRight: 4 }}
-					></Badge>
-				</Box>
-			</AccordionSummary>
-			<AccordionDetails>
-				<EachTask />
-			</AccordionDetails>
-		</Accordion>
+					<AccordionSummary
+						expandIcon={<ExpandMoreIcon />}
+						aria-controls="panel1-content"
+						id="panel1-header"
+					>
+						<Box
+							sx={{
+								display: "flex",
+								justifyContent: "space-between",
+								alignItems: "center",
+								width: "100%",
+							}}
+						>
+							<Typography variant="h6">
+								{" "}
+								{new Date(task.date).toLocaleDateString("ja-JP", {
+									month: "numeric",
+									day: "numeric",
+									weekday: "short",
+								})}
+							</Typography>
+							<Badge
+								badgeContent={4}
+								color="success"
+								sx={{ marginRight: 4 }}
+							></Badge>
+						</Box>
+					</AccordionSummary>
+					<AccordionDetails>
+						<EachTask />
+					</AccordionDetails>
+				</Accordion>
+			))}
+		</>
 	);
 };
 

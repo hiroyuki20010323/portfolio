@@ -24,7 +24,6 @@ const UserIcon = ({ setValue, value }: AvatarDataProps) => {
 		reader.readAsDataURL(file);
 		reader.onload = (e) => {
 			setIcon(String(e.target?.result));
-			
 		};
 	};
 

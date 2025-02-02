@@ -49,7 +49,6 @@ const GroupSettings = () => {
 		reader.readAsDataURL(file);
 		reader.onload = (e) => {
 			setGroupIcon(e.target?.result as string);
-			
 		};
 	};
 
@@ -77,7 +76,7 @@ const GroupSettings = () => {
 		try {
 			const token = await auth.currentUser?.getIdToken();
 			const formData = new FormData();
-			
+
 			if (group_icon) {
 				formData.append("group_icon", group_icon);
 			}
@@ -118,7 +117,7 @@ const GroupSettings = () => {
 					Authorization: `Bearer ${token}`,
 				},
 			});
-			
+
 			setValue("group_name", response.data.group_name);
 			setValue("group_description", response.data.group_description);
 			setGroupIcon(response.data.group_icon);
@@ -166,7 +165,6 @@ const GroupSettings = () => {
 						/>
 					</Box>
 
-					
 					<Controller
 						name="group_name"
 						control={control}

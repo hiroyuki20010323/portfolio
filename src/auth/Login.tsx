@@ -43,7 +43,6 @@ const Login = () => {
 
 	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
-	
 
 		try {
 			const userCredential = await signInWithEmailAndPassword(
@@ -54,7 +53,7 @@ const Login = () => {
 			const user = userCredential.user;
 
 			const idToken = await user.getIdToken(true);
-			
+
 			const response = await axios.post(
 				`${apiUrl}/auth/verify`,
 				{ message: "認証に成功しました！" },
@@ -66,7 +65,6 @@ const Login = () => {
 				},
 			);
 			console.log(response.data.message);
-			
 
 			navigate("/");
 		} catch (e) {
@@ -83,7 +81,6 @@ const Login = () => {
 	const handleChangePassword = (
 		event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
 	) => {
-		
 		setPassword(event.target.value);
 	};
 
@@ -105,7 +102,6 @@ const Login = () => {
 		}
 	};
 
-	
 	return (
 		<Box display="flex" flexDirection="column" alignItems="center">
 			<Typography variant="h4" marginTop={10}>
@@ -169,9 +165,9 @@ const Login = () => {
 						height: 50,
 						margin: 3,
 						color: "#e3f2fd",
-						backgroundColor: "#e3f2fd", 
+						backgroundColor: "#e3f2fd",
 						"&:hover": {
-							backgroundColor: "#bbdefb", 
+							backgroundColor: "#bbdefb",
 						},
 					}}
 				>

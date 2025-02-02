@@ -4,7 +4,7 @@ import { UseFormSetValue } from "react-hook-form";
 
 type AvatarDataProps = {
 	setValue: UseFormSetValue<any>;
-	value: any;
+	value: string;
 };
 
 const GroupIcon = ({ setValue, value }: AvatarDataProps) => {

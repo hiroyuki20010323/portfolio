@@ -52,7 +52,7 @@ const Home = () => {
 			console.error("アクションの実行に失敗しました。", e);
 		}
 	};
-	
+
 	if (!user) {
 		navigate("/login");
 		return null;
