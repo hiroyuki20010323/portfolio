@@ -52,7 +52,7 @@ const TaskItem: React.FC<TaskItemProps> = ({ tasks }) => {
 						</Box>
 					</AccordionSummary>
 					<AccordionDetails>
-            {/* TODOあとでpropsの命名を修正する */}
+						{/* TODOあとでpropsの命名を修正する */}
 						<EachTask taskItems={task.tasks} />
 					</AccordionDetails>
 				</Accordion>

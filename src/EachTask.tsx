@@ -8,6 +8,7 @@ import {
 	DialogContent,
 	DialogTitle,
 	Paper,
+	TextField,
 	Typography,
 } from "@mui/material";
 import { useState } from "react";
@@ -42,14 +43,23 @@ const EachTask: React.FC<TaskItems> = ({ taskItems }) => {
 							variant="outlined"
 							sx={{
 								display: "flex",
-								justifyContent: "space-between",
-								border: "1px solid  #E0E0E0",
+								alignItems: "center",
 								padding: 3,
 								borderRadius: "4px",
+								border: "1px solid #E0E0E0",
 							}}
 						>
 							<Avatar src={task.createdUser.user.icon_url} />
-							<Typography>{task.taskTitle}</Typography>
+							<Typography
+								sx={{
+									flex: 1,
+									textAlign: "center",
+								}}
+								variant="h6"
+							>
+								{task.taskTitle}
+							</Typography>
+							<Box sx={{ width: 40 }} />
 						</Paper>
 
 						{selectedTask && (
@@ -57,31 +67,56 @@ const EachTask: React.FC<TaskItems> = ({ taskItems }) => {
 								open={open}
 								onClose={handleClose}
 								PaperProps={{
-									sx: {
+								  sx: {
 										padding: "20px",
 										borderRadius: "8px",
-										width: "800px",
-										height: "800px",
-									},
+										width: "100%",        
+										maxWidth: "800px",    
+										height: "auto",      
+										maxHeight: "800x", 
+										overflow: "hidden"    
+								},
 								}}
 							>
-								<Box sx={{ display: "flex", alignItems: "center" }}>
-									<DialogTitle sx={{ marginRight: 4 }}>
+								<Box
+									sx={{
+										display: "flex",
+										alignItems: "center",
+										justifyContent: "space-between",
+										
+									}}
+								>
+									<Avatar src={task.createdUser.user.icon_url} />
+									<DialogTitle
+										sx={{
+											flex: 1, 
+											textAlign: "center", 
+										}}
+									>
 										{selectedTask.taskTitle}
 									</DialogTitle>
-									<Avatar src={task.createdUser.user.icon_url} />
+									<Box sx={{ width: 40 }} />
 								</Box>
 								<DialogContent>
-									<Typography>{selectedTask.taskDetail}</Typography>
+
+								<TextField
+						   defaultValue={selectedTask.taskDetail}
+								id="outlined-multiline-static"
+								label="タスク詳細"
+								multiline
+								rows={8}
+								sx={{ marginBottom: 2 ,width:260}}
+							/>
+								
 									{selectedTask.taskImageUrl && (
 										<CardMedia
 											component="img"
 											height="194"
 											image={selectedTask.taskImageUrl}
-											sx={{ width: 280, objectFit: "cover" }}
+											sx={{ width: 240, objectFit: "cover"  }}
 										/>
 									)}
-									<Typography sx={{ marginTop: 2 }}>
+									<Typography sx={{ marginTop: 4}}>
 										期限：
 										{new Date(selectedTask.period).toLocaleString("ja-JP", {
 											year: "numeric",
