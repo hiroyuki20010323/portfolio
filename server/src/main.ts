@@ -351,7 +351,15 @@ app.get("/api/task", async (req, res) => {
 				},
 			},
 			include: {
-				tasks: true,
+				tasks: {
+					include: {
+						createdUser: {
+							include: {
+								user: true,
+							},
+						},
+					},
+				},
 			},
 			orderBy: {
 				date: "asc",
@@ -364,49 +372,47 @@ app.get("/api/task", async (req, res) => {
 	}
 });
 
-app.post('/api/task',upload.single("taskImage"),async(req,res)=>{
-  try {
-    const token = req.headers.authorization?.split("Bearer ")[1];
+app.post("/api/task", upload.single("taskImage"), async (req, res) => {
+	try {
+		const token = req.headers.authorization?.split("Bearer ")[1];
 
-    if (!token) {
-      res.status(400).json({ message: "許可されていないリクエストです。" });
-      return;
-    }
-    const decodedToken = await admin.auth().verifyIdToken(token);
-    const userId = decodedToken.uid;
-    const { taskTitle, taskDetail, dueDate, dueTime } = req.body;
+		if (!token) {
+			res.status(400).json({ message: "許可されていないリクエストです。" });
+			return;
+		}
+		const decodedToken = await admin.auth().verifyIdToken(token);
+		const userId = decodedToken.uid;
+		const { taskTitle, taskDetail, dueDate, dueTime } = req.body;
 
-    const period = new Date(`${dueDate}T${dueTime || '00:00'}:00`);
-    
-    const calenderDate = new Date(`${dueDate}T00:00:00`);
-   try{
+		const period = new Date(`${dueDate}T${dueTime || "00:00"}:00`);
 
-     const calender = await prisma.calendar.findUnique({
-      where:{date: calenderDate}
-     });
-   
-    const task = await prisma.task.create({
-      data: {
-          taskTitle,
-          taskDetail,
-          ...(req.file && { taskImageUrl: (req.file as any)?.location }),
-          period,
-          createdUserId: userId,
-          createdGroupId: 1,
-          calenderId: 1,
-          calendar_id: calender!.id,
-      }
-  });
+		const calenderDate = new Date(`${dueDate}T00:00:00`);
+		try {
+			const calender = await prisma.calendar.findUnique({
+				where: { date: calenderDate },
+			});
 
-  res.status(201).json({message: 'タスクが作成されました',task})
-}catch(e){
-  res.status(500).json({message:'指定された日にタスクは追加できません'})
- }
-  }catch(e){
-    console.log('タスクの投稿に失敗しました。', e)
-  }
+			const task = await prisma.task.create({
+				data: {
+					taskTitle,
+					taskDetail,
+					...(req.file && { taskImageUrl: (req.file as any)?.location }),
+					period,
+					createdUserId: userId,
+					createdGroupId: 1,
+					calenderId: 1,
+					calendar_id: calender!.id,
+				},
+			});
 
-})
+			res.status(201).json({ message: "タスクが作成されました", task });
+		} catch (e) {
+			res.status(500).json({ message: "指定された日にタスクは追加できません" });
+		}
+	} catch (e) {
+		console.log("タスクの投稿に失敗しました。", e);
+	}
+});
 
 app.listen(PORT, () => {
 	console.log(`Server is running at http://localhost:${PORT}`);

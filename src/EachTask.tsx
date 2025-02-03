@@ -2,6 +2,7 @@ import {
 	Avatar,
 	Box,
 	Button,
+	CardMedia,
 	Dialog,
 	DialogActions,
 	DialogContent,
@@ -10,14 +11,13 @@ import {
 	Typography,
 } from "@mui/material";
 import { useState } from "react";
-import { Task } from "./Task";
+import Task from "./Task";
 
+type TaskItems = {
+	taskItems: Task[];
+};
 
-type TaskItems ={
-	taskItems:Task[]
-}
-
-const EachTask:React.FC<TaskItems> = ({taskItems}) => {
+const EachTask: React.FC<TaskItems> = ({ taskItems }) => {
 	const [open, setOpen] = useState(false);
 	const [selectedTask, setSelectedTask] = useState<Task | null>(null);
 
@@ -48,7 +48,7 @@ const EachTask:React.FC<TaskItems> = ({taskItems}) => {
 								borderRadius: "4px",
 							}}
 						>
-							<Avatar />
+							<Avatar src={task.createdUser.user.icon_url} />
 							<Typography>{task.taskTitle}</Typography>
 						</Paper>
 
@@ -60,8 +60,8 @@ const EachTask:React.FC<TaskItems> = ({taskItems}) => {
 									sx: {
 										padding: "20px",
 										borderRadius: "8px",
-										width: "400px",
-										height: "300px",
+										width: "800px",
+										height: "800px",
 									},
 								}}
 							>
@@ -69,20 +69,27 @@ const EachTask:React.FC<TaskItems> = ({taskItems}) => {
 									<DialogTitle sx={{ marginRight: 4 }}>
 										{selectedTask.taskTitle}
 									</DialogTitle>
-									<Avatar />
+									<Avatar src={task.createdUser.user.icon_url} />
 								</Box>
 								<DialogContent>
-									<Typography>
-										{selectedTask.taskDetail}
-									</Typography>
+									<Typography>{selectedTask.taskDetail}</Typography>
+									{selectedTask.taskImageUrl && (
+										<CardMedia
+											component="img"
+											height="194"
+											image={selectedTask.taskImageUrl}
+											sx={{ width: 280, objectFit: "cover" }}
+										/>
+									)}
 									<Typography sx={{ marginTop: 2 }}>
-									期限：{new Date(selectedTask.period).toLocaleString('ja-JP', {
-        year: 'numeric',
-        month: 'numeric',
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit'
-    })}
+										期限：
+										{new Date(selectedTask.period).toLocaleString("ja-JP", {
+											year: "numeric",
+											month: "numeric",
+											day: "numeric",
+											hour: "2-digit",
+											minute: "2-digit",
+										})}
 									</Typography>
 								</DialogContent>
 								<DialogActions>

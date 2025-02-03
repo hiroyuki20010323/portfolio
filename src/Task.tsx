@@ -30,20 +30,35 @@ export type TaskData = {
 	tasks: Task[];
 };
 
-export type Task = {
+type Task = {
 	id: number;
 	taskTitle: string;
-	taskDetail: string | null;
+	taskDetail: string;
 	taskImageUrl: string | null;
-	period: Date;
+	period: string; // ISO 8601 形式の日時文字列
 	createdUserId: string;
 	createdGroupId: number;
 	assigneeUserId: string | null;
 	assigneeGroupId: number | null;
 	calenderId: number;
-	createdAt: Date;
-	updatedAt: Date;
+	createdAt: string;
+	updatedAt: string;
 	calendar_id: number;
+	createdUser: {
+		id: string;
+		userId: string;
+		groupId: number;
+		isActive: boolean;
+		createdAt: string;
+		updatedAt: string;
+		user: {
+			id: string;
+			user_name: string;
+			icon_url: string;
+			createdAt: string;
+			updatedAt: string;
+		};
+	};
 };
 
 type TaskFormInputs = {
@@ -124,15 +139,13 @@ const Task = () => {
 				console.log(pair[0] + ": " + pair[1]);
 			}
 
-      const response = await axios.post(`${apiUrl}/api/task`, formData, {
-        headers: {
-            Authorization: `Bearer ${token}`,
-        },
-    });
+			const response = await axios.post(`${apiUrl}/api/task`, formData, {
+				headers: {
+					Authorization: `Bearer ${token}`,
+				},
+			});
 
-    console.log(response)
-
-
+			console.log(response);
 		} catch (e) {
 			console.log("なんかのエラーが出ました", e);
 		}
@@ -358,24 +371,23 @@ const Task = () => {
 								sx={{ marginRight: "20px", marginLeft: "20px" }}
 								variant="subtitle1"
 							>
-                	{tasks.length > 0 ? (
-                <>
-
-														{new Date(tasks[0].date).toLocaleDateString("ja-JP", {
-										month: "numeric",
-										day: "numeric",
-										weekday: "short",
-									})}
-									&nbsp;~&nbsp;
-									{new Date(tasks[6].date).toLocaleDateString("ja-JP", {
-										month: "numeric",
-										day: "numeric",
-										weekday: "short",
-									})}
-								</>
-							) : (
-								"データ読み込み中..."
-							)}
+								{tasks.length > 0 ? (
+									<>
+										{new Date(tasks[0].date).toLocaleDateString("ja-JP", {
+											month: "numeric",
+											day: "numeric",
+											weekday: "short",
+										})}
+										&nbsp;~&nbsp;
+										{new Date(tasks[6].date).toLocaleDateString("ja-JP", {
+											month: "numeric",
+											day: "numeric",
+											weekday: "short",
+										})}
+									</>
+								) : (
+									"データ読み込み中..."
+								)}
 							</Typography>
 						</Typography>
 						<IconButton aria-label="delete" size="large">
@@ -390,13 +402,11 @@ const Task = () => {
 							justifyContent: "center",
 						}}
 					>
-								{tasks.length > 0 ? (
-							new Date(tasks[0].date).toLocaleDateString("ja-JP", {
-								year: "numeric"
-							})
-						) : (
-							""
-						)}
+						{tasks.length > 0
+							? new Date(tasks[0].date).toLocaleDateString("ja-JP", {
+									year: "numeric",
+								})
+							: ""}
 					</Typography>
 				</Box>
 			</TabContext>
