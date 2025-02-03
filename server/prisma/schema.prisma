@@ -54,7 +54,7 @@ model Participation {
 
 model Calendar {
   id Int @id
-  date DateTime
+  date DateTime @unique
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   tasks Task[]
@@ -64,8 +64,8 @@ model Task {
   id              Int @id @default(autoincrement())
   taskTitle       String
   taskDetail      String?
-  taskImageUrl    String?
-  period          DateTime
+  taskImageUrl    String? @db.Text
+  period          DateTime 
   createdUser Participation @relation("TaskCreator", fields: [createdUserId, createdGroupId], references: [userId, groupId])
   createdUserId   String   
   createdGroupId  Int

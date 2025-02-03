@@ -11,7 +11,7 @@ import {
 import EachTask from "./EachTask";
 import { TaskData } from "./Task";
 
-type TaskItemProps = {
+export type TaskItemProps = {
 	tasks: TaskData[];
 };
 
@@ -52,7 +52,7 @@ const TaskItem: React.FC<TaskItemProps> = ({ tasks }) => {
 						</Box>
 					</AccordionSummary>
 					<AccordionDetails>
-						<EachTask />
+						<EachTask taskItems={task.tasks}/>
 					</AccordionDetails>
 				</Accordion>
 			))}

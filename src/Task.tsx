@@ -10,16 +10,13 @@ import {
 	TextField,
 	Typography,
 } from "@mui/material";
-
 import Header from "./components/Header";
 import Footer from "./components/Footer";
-
 import TabPanel from "@mui/lab/TabPanel";
 import { useEffect, useRef, useState } from "react";
 import TabContext from "@mui/lab/TabContext";
 import { TabList } from "@mui/lab";
 import AddIcon from "@mui/icons-material/Add";
-
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import TaskItem from "./TaskItem";
@@ -32,6 +29,7 @@ export type TaskData = {
 	date: Date;
 	tasks: Task[];
 };
+
 export type Task = {
 	id: number;
 	taskTitle: string;
@@ -125,6 +123,16 @@ const Task = () => {
 			for (let pair of formData.entries()) {
 				console.log(pair[0] + ": " + pair[1]);
 			}
+
+      const response = await axios.post(`${apiUrl}/api/task`, formData, {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    });
+
+    console.log(response)
+
+
 		} catch (e) {
 			console.log("なんかのエラーが出ました", e);
 		}
@@ -350,17 +358,24 @@ const Task = () => {
 								sx={{ marginRight: "20px", marginLeft: "20px" }}
 								variant="subtitle1"
 							>
-								{new Date(tasks[0].date).toLocaleDateString("ja-JP", {
-									month: "numeric",
-									day: "numeric",
-									weekday: "short",
-								})}
-								&nbsp;~&nbsp;
-								{new Date(tasks[6].date).toLocaleDateString("ja-JP", {
-									month: "numeric",
-									day: "numeric",
-									weekday: "short",
-								})}
+                	{tasks.length > 0 ? (
+                <>
+
+														{new Date(tasks[0].date).toLocaleDateString("ja-JP", {
+										month: "numeric",
+										day: "numeric",
+										weekday: "short",
+									})}
+									&nbsp;~&nbsp;
+									{new Date(tasks[6].date).toLocaleDateString("ja-JP", {
+										month: "numeric",
+										day: "numeric",
+										weekday: "short",
+									})}
+								</>
+							) : (
+								"データ読み込み中..."
+							)}
 							</Typography>
 						</Typography>
 						<IconButton aria-label="delete" size="large">
@@ -375,9 +390,13 @@ const Task = () => {
 							justifyContent: "center",
 						}}
 					>
-							{new Date(tasks[0].date).toLocaleDateString("ja-JP", {
-								year:'numeric'
-								})}
+								{tasks.length > 0 ? (
+							new Date(tasks[0].date).toLocaleDateString("ja-JP", {
+								year: "numeric"
+							})
+						) : (
+							""
+						)}
 					</Typography>
 				</Box>
 			</TabContext>
