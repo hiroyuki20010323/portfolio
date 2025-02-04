@@ -414,6 +414,82 @@ app.post("/api/task", upload.single("taskImage"), async (req, res) => {
 	}
 });
 
+// 先週のタスクを取得する
+app.get("/api/task/prev-week", async (req, res) => {
+  try {
+      const timeZone = "Asia/Tokyo";
+      const currentDate = req.query.date ? new Date(String(req.query.date)) : new Date();
+      const endDate = startOfDay(toZonedTime(addDays(currentDate, -1), timeZone));
+      const startDate = addDays(endDate, -6);
+
+      const tasks = await prisma.calendar.findMany({
+          where: {
+              date: {
+                  gte: startDate,
+                  lte: endDate,
+              }
+          },
+          include: {
+              tasks: {
+                  include: {
+                      createdUser: {
+                          include: {
+                              user: true,
+                          },
+                      },
+                  },
+              },
+          },
+          orderBy: {
+              date: "asc",
+          },
+      });
+
+      res.status(200).json(tasks);
+  } catch (e) {
+      console.log("前週のタスクデータの取得に失敗しました。", e);
+      res.status(500).json({ error: "データの取得に失敗しました" });
+  }
+});
+
+// 来週のデータを取得する
+app.get("/api/task/next-week", async (req, res) => {
+  try {
+      const timeZone = "Asia/Tokyo";
+      const currentDate = req.query.date ? new Date(String(req.query.date)) : new Date();
+      const startDate = startOfDay(toZonedTime(addDays(currentDate, 1), timeZone));  
+      const endDate = addDays(startDate, 6);
+
+      const tasks = await prisma.calendar.findMany({
+          where: {
+              date: {
+                  gte: startDate,
+                  lte: endDate,
+              }
+          },
+          include: {
+              tasks: {
+                  include: {
+                      createdUser: {
+                          include: {
+                              user: true,
+                          },
+                      },
+                  },
+              },
+          },
+          orderBy: {
+              date: "asc",
+          },
+      });
+
+      res.status(200).json(tasks);
+  } catch (e) {
+      console.log("次週のタスクデータの取得に失敗しました。", e);
+      res.status(500).json({ error: "データの取得に失敗しました" });
+  }
+});
+
 app.listen(PORT, () => {
 	console.log(`Server is running at http://localhost:${PORT}`);
 });

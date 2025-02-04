@@ -163,6 +163,25 @@ const Task = () => {
 		setOpen(false);
 	};
 
+  const getPrevWeekTasks = async()=>{
+    const currentDate = tasks[0].date
+    const response = await axios.get(`${apiUrl}/api/task/prev-week`,{
+      params:{date:currentDate}
+    })
+    setTasks(response.data)
+    console.log(tasks[0].date)
+  }
+
+  const getNextWeekTasks = async()=>{
+    const currentDate = tasks[6].date
+    const response = await axios.get(`${apiUrl}/api/task/next-week`,{
+      params:{date:currentDate}
+    })
+    setTasks(response.data)
+    console.log(tasks[6].date)
+  }
+  
+
 	const style = {
 		position: "absolute",
 		top: "50%",
@@ -181,7 +200,7 @@ const Task = () => {
 
 			<TabContext value={taskValue}>
 				<Box
-					sx={{ overflow: "scroll", paddingTop: "80px", paddingBottom: "80px" }}
+					sx={{ overflow: "scroll", paddingTop: "80px", paddingBottom: "120px" }}
 				>
 					<TabList onChange={handleChange} centered>
 						<Tab label="全体タスク" value="1" />
@@ -205,7 +224,7 @@ const Task = () => {
 						aria-label="add"
 						sx={{
 							position: "fixed",
-							bottom: 100,
+							bottom: 80,
 							right: 16,
 						}}
 						onClick={handleOpenModal}
@@ -357,16 +376,13 @@ const Task = () => {
 							display: "flex",
 							alignItems: "center",
 							justifyContent: "center",
+              
 						}}
 					>
-						<IconButton aria-label="delete" size="large">
+						<IconButton aria-label="delete" size="large" onClick={getPrevWeekTasks}>
 							<ArrowBackIosNewIcon fontSize="inherit" />
 						</IconButton>
-
-						<Typography
-							sx={{ marginRight: "20px", marginLeft: "20px" }}
-							variant="subtitle1"
-						>
+						
 							<Typography
 								sx={{ marginRight: "20px", marginLeft: "20px" }}
 								variant="subtitle1"
@@ -389,8 +405,8 @@ const Task = () => {
 									"データ読み込み中..."
 								)}
 							</Typography>
-						</Typography>
-						<IconButton aria-label="delete" size="large">
+						 
+						<IconButton aria-label="delete" size="large" onClick={getNextWeekTasks}>
 							<ArrowForwardIosIcon fontSize="inherit" />
 						</IconButton>
 					</Box>
