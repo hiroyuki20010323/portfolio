@@ -23,6 +23,7 @@ import TaskItem from "./TaskItem";
 import axios from "axios";
 import { Controller, useForm } from "react-hook-form";
 import { auth } from "./auth/firebaseConfig";
+import { useNavigate } from "react-router-dom";
 
 export type TaskData = {
 	id: number;
@@ -71,6 +72,7 @@ type TaskFormInputs = {
 
 const Task = () => {
 	const apiUrl = import.meta.env.VITE_API_URL;
+  const navigate = useNavigate();
 	const fileInputRef = useRef<HTMLInputElement | null>(null);
 	const [image, setImage] = useState<string | undefined>(undefined);
 	const [taskValue, setTaskValue] = useState<string>("1");
@@ -145,6 +147,8 @@ const Task = () => {
 				},
 			});
 
+      navigate('/task')
+
 			console.log(response);
 		} catch (e) {
 			console.log("なんかのエラーが出ました", e);
@@ -163,24 +167,23 @@ const Task = () => {
 		setOpen(false);
 	};
 
-  const getPrevWeekTasks = async()=>{
-    const currentDate = tasks[0].date
-    const response = await axios.get(`${apiUrl}/api/task/prev-week`,{
-      params:{date:currentDate}
-    })
-    setTasks(response.data)
-    console.log(tasks[0].date)
-  }
+	const getPrevWeekTasks = async () => {
+		const currentDate = tasks[0].date;
+		const response = await axios.get(`${apiUrl}/api/task/prev-week`, {
+			params: { date: currentDate },
+		});
+		setTasks(response.data);
+		console.log(tasks[0].date);
+	};
 
-  const getNextWeekTasks = async()=>{
-    const currentDate = tasks[6].date
-    const response = await axios.get(`${apiUrl}/api/task/next-week`,{
-      params:{date:currentDate}
-    })
-    setTasks(response.data)
-    console.log(tasks[6].date)
-  }
-  
+	const getNextWeekTasks = async () => {
+		const currentDate = tasks[6].date;
+		const response = await axios.get(`${apiUrl}/api/task/next-week`, {
+			params: { date: currentDate },
+		});
+		setTasks(response.data);
+		console.log(tasks[6].date);
+	};
 
 	const style = {
 		position: "absolute",
@@ -200,7 +203,11 @@ const Task = () => {
 
 			<TabContext value={taskValue}>
 				<Box
-					sx={{ overflow: "scroll", paddingTop: "80px", paddingBottom: "120px" }}
+					sx={{
+						overflow: "scroll",
+						paddingTop: "80px",
+						paddingBottom: "120px",
+					}}
 				>
 					<TabList onChange={handleChange} centered>
 						<Tab label="全体タスク" value="1" />
@@ -245,6 +252,9 @@ const Task = () => {
 									display: "flex",
 									flexDirection: "column",
 									width: "100%",
+                  height: "calc(100vh - 100px)",  
+                  overflowY: "auto",              
+                  overflowX: "hidden"  
 								}}
 							>
 								<Box
@@ -360,7 +370,7 @@ const Task = () => {
 
 									<Button
 										variant="contained"
-										sx={{ height: 40, marginTop: 2 }}
+										sx={{ height: 40, marginTop: 6,marginBottom:4 }}
 										onClick={handleSubmit(onSubmit)}
 									>
 										追加
@@ -376,37 +386,44 @@ const Task = () => {
 							display: "flex",
 							alignItems: "center",
 							justifyContent: "center",
-              
 						}}
 					>
-						<IconButton aria-label="delete" size="large" onClick={getPrevWeekTasks}>
+						<IconButton
+							aria-label="delete"
+							size="large"
+							onClick={getPrevWeekTasks}
+						>
 							<ArrowBackIosNewIcon fontSize="inherit" />
 						</IconButton>
-						
-							<Typography
-								sx={{ marginRight: "20px", marginLeft: "20px" }}
-								variant="subtitle1"
-							>
-								{tasks.length > 0 ? (
-									<>
-										{new Date(tasks[0].date).toLocaleDateString("ja-JP", {
-											month: "numeric",
-											day: "numeric",
-											weekday: "short",
-										})}
-										&nbsp;~&nbsp;
-										{new Date(tasks[6].date).toLocaleDateString("ja-JP", {
-											month: "numeric",
-											day: "numeric",
-											weekday: "short",
-										})}
-									</>
-								) : (
-									"データ読み込み中..."
-								)}
-							</Typography>
-						 
-						<IconButton aria-label="delete" size="large" onClick={getNextWeekTasks}>
+
+						<Typography
+							sx={{ marginRight: "10px", marginLeft: "10px", width:'200px', textAlign: "center", }}
+							variant="subtitle1"
+						>
+							{tasks.length > 0 ? (
+								<>
+									{new Date(tasks[0].date).toLocaleDateString("ja-JP", {
+										month: "numeric",
+										day: "numeric",
+										weekday: "short",
+									})}
+									&nbsp;~&nbsp;
+									{new Date(tasks[6].date).toLocaleDateString("ja-JP", {
+										month: "numeric",
+										day: "numeric",
+										weekday: "short",
+									})}
+								</>
+							) : (
+								"データ読み込み中..."
+							)}
+						</Typography>
+
+						<IconButton
+							aria-label="delete"
+							size="large"
+							onClick={getNextWeekTasks}
+						>
 							<ArrowForwardIosIcon fontSize="inherit" />
 						</IconButton>
 					</Box>

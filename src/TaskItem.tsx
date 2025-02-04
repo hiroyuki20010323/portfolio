@@ -45,7 +45,7 @@ const TaskItem: React.FC<TaskItemProps> = ({ tasks }) => {
 								})}
 							</Typography>
 							<Badge
-								badgeContent={4}
+								badgeContent={task.tasks.length}
 								color="success"
 								sx={{ marginRight: 4 }}
 							></Badge>

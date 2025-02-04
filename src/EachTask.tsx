@@ -67,56 +67,62 @@ const EachTask: React.FC<TaskItems> = ({ taskItems }) => {
 								open={open}
 								onClose={handleClose}
 								PaperProps={{
-								  sx: {
-										padding: "20px",
+									sx: {
+										width:'100vw',
 										borderRadius: "8px",
-										width: "100%",        
-										maxWidth: "800px",    
-										height: "auto",      
-										maxHeight: "800x", 
-										overflow: "hidden"    
-								},
+									},
 								}}
 							>
 								<Box
 									sx={{
 										display: "flex",
 										alignItems: "center",
-										justifyContent: "space-between",
-										
 									}}
 								>
-									<Avatar src={task.createdUser.user.icon_url} />
+									<Avatar src={task.createdUser.user.icon_url} sx={{marginLeft:2}}/>
 									<DialogTitle
 										sx={{
-											flex: 1, 
-											textAlign: "center", 
+											flex: 1,
+											textAlign: "center",
 										}}
 									>
 										{selectedTask.taskTitle}
 									</DialogTitle>
 									<Box sx={{ width: 40 }} />
 								</Box>
-								<DialogContent>
+								<DialogContent sx={{ 
+									display: 'flex',
+									flexDirection: 'column',
+									alignItems: 'center',
+									width: '100%',
+									maxWidth: '800px',
+									margin: '0 auto'
+								}}>
+									<TextField
+										defaultValue={selectedTask.taskDetail}
+										id="outlined-multiline-static"
+										label="タスク詳細"
+										multiline
+										rows={8}
+										sx={{ 
+											marginBottom: 2, 
+											width: '100%',
+											maxWidth: '500px'
+										}}
+									/>
 
-								<TextField
-						   defaultValue={selectedTask.taskDetail}
-								id="outlined-multiline-static"
-								label="タスク詳細"
-								multiline
-								rows={8}
-								sx={{ marginBottom: 2 ,width:260}}
-							/>
-								
 									{selectedTask.taskImageUrl && (
 										<CardMedia
 											component="img"
 											height="194"
 											image={selectedTask.taskImageUrl}
-											sx={{ width: 240, objectFit: "cover"  }}
+											sx={{ 
+												width: '100%',
+												maxWidth: '500px',
+											}}
 										/>
 									)}
-									<Typography sx={{ marginTop: 4}}>
+									<Typography sx={{ marginTop: 4 }}>
 										期限：
 										{new Date(selectedTask.period).toLocaleString("ja-JP", {
 											year: "numeric",

@@ -1,4 +1,8 @@
 # FastShare
+| | |
+|:---:|:---:|
+| <img width="423" alt="Image" src="https://github.com/user-attachments/assets/27066c04-96f4-41e1-bbdb-5cdf0137ea27" /> | <img width="405" alt="Image" src="https://github.com/user-attachments/assets/d766c8d6-4609-4ead-9e9d-ceeb3cc69739" /> |
+
 
 ## 概要
 FastShareは、グループを作成し、メンバー同士でタスク(買い物や家事)を共有できるアプリです。
@@ -120,7 +124,7 @@ erDiagram
     participations ||--o{ tasks : "参加者は複数のタスクを作成・割当可能"
 ```
 ## インフラ構成
-<img width='550' src='https://github.com/user-attachments/assets/ed0d28f6-c120-44ef-964f-d0f823d39958'><br>
+<img width="577" alt="Image" src="https://github.com/user-attachments/assets/a3e9d3d1-9be3-40b5-9867-54080844004c" />
 
 
 
