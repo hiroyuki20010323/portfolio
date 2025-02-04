@@ -124,7 +124,7 @@ erDiagram
     participations ||--o{ tasks : "参加者は複数のタスクを作成・割当可能"
 ```
 ## インフラ構成
-<img width="577" alt="Image" src="https://github.com/user-attachments/assets/a3e9d3d1-9be3-40b5-9867-54080844004c" />
+<img width="100%" alt="Image" src="https://github.com/user-attachments/assets/a3e9d3d1-9be3-40b5-9867-54080844004c" />
 
 
 
