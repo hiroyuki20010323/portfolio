@@ -9,7 +9,6 @@ import {
 	Tab,
 	TextField,
 	Typography,
-	
 } from "@mui/material";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
@@ -25,7 +24,6 @@ import axios from "axios";
 import { Controller, useForm } from "react-hook-form";
 import { auth } from "./auth/firebaseConfig";
 import Loading from "./Loading";
-
 
 export type TaskData = {
 	id: number;
@@ -74,7 +72,7 @@ type TaskFormInputs = {
 
 const Task = () => {
 	const apiUrl = import.meta.env.VITE_API_URL;
-  
+
 	const fileInputRef = useRef<HTMLInputElement | null>(null);
 	const [image, setImage] = useState<string | undefined>(undefined);
 	const [taskValue, setTaskValue] = useState<string>("1");
@@ -92,16 +90,16 @@ const Task = () => {
 		},
 	});
 
-  useEffect(() => {
+	useEffect(() => {
 		const getTasks = async () => {
 			try {
 				setIsLoading(true);
 				const token = await auth.currentUser?.getIdToken();
 				const taskData = await axios.get(`${apiUrl}/api/task`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-      });
+					headers: {
+						Authorization: `Bearer ${token}`,
+					},
+				});
 				console.log(taskData.data);
 				setTasks(taskData.data);
 			} catch (e) {
@@ -112,7 +110,6 @@ const Task = () => {
 		};
 		getTasks();
 	}, []);
-
 
 	const handleInput = () => {
 		const files = fileInputRef.current?.files;
@@ -158,20 +155,18 @@ const Task = () => {
 					Authorization: `Bearer ${token}`,
 				},
 			});
-      handleCloseModal()
-      const taskData = await axios.get(`${apiUrl}/api/task`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-    });
-      setTasks(taskData.data);
+			handleCloseModal();
+			const taskData = await axios.get(`${apiUrl}/api/task`, {
+				headers: {
+					Authorization: `Bearer ${token}`,
+				},
+			});
+			setTasks(taskData.data);
 			console.log(response);
 		} catch (e) {
 			console.log("なんかのエラーが出ました", e);
 		}
 	};
-
-
 
 	const handleChange = (event: React.SyntheticEvent, newValue: string) => {
 		setTaskValue(newValue);
@@ -186,12 +181,12 @@ const Task = () => {
 	};
 
 	const getPrevWeekTasks = async () => {
-    const token = await auth.currentUser?.getIdToken();
+		const token = await auth.currentUser?.getIdToken();
 		const currentDate = tasks[0].date;
 		const response = await axios.get(`${apiUrl}/api/task/prev-week`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+			headers: {
+				Authorization: `Bearer ${token}`,
+			},
 			params: { date: currentDate },
 		});
 		setTasks(response.data);
@@ -199,12 +194,12 @@ const Task = () => {
 	};
 
 	const getNextWeekTasks = async () => {
-    const token = await auth.currentUser?.getIdToken();
+		const token = await auth.currentUser?.getIdToken();
 		const currentDate = tasks[6].date;
 		const response = await axios.get(`${apiUrl}/api/task/next-week`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+			headers: {
+				Authorization: `Bearer ${token}`,
+			},
 			params: { date: currentDate },
 		});
 		setTasks(response.data);
@@ -243,9 +238,18 @@ const Task = () => {
 
 					<TabPanel value="1" sx={{ padding: 0 }}>
 						{isLoading ? (
-							<Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center',height: '28vh' ,flexFlow:"column",marginBottom:40}}>
-								<Loading/>
-                <Typography>グループは作成しましたか？</Typography>
+							<Box
+								sx={{
+									display: "flex",
+									justifyContent: "center",
+									alignItems: "center",
+									height: "28vh",
+									flexFlow: "column",
+									marginBottom: 40,
+								}}
+							>
+								<Loading />
+								<Typography>グループは作成しましたか？</Typography>
 							</Box>
 						) : (
 							<TaskItem tasks={tasks} />
@@ -285,9 +289,9 @@ const Task = () => {
 									display: "flex",
 									flexDirection: "column",
 									width: "100%",
-                  height: "calc(100vh - 100px)",  
-                  overflowY: "auto",              
-                  overflowX: "hidden"  
+									height: "calc(100vh - 100px)",
+									overflowY: "auto",
+									overflowX: "hidden",
 								}}
 							>
 								<Box
@@ -352,11 +356,11 @@ const Task = () => {
 									<Box sx={{ display: "flex", alignItems: "center" }}>
 										{image ? (
 											<CardMedia
-                       onClick={fileUpload}
+												onClick={fileUpload}
 												component="img"
 												height="300"
 												image={image}
-												sx={{ width: 280 ,objectFit: "contain",}}
+												sx={{ width: 280, objectFit: "contain" }}
 											/>
 										) : (
 											<Button
@@ -404,7 +408,7 @@ const Task = () => {
 
 									<Button
 										variant="contained"
-										sx={{ height: 40, marginTop: 6,marginBottom:4 }}
+										sx={{ height: 40, marginTop: 6, marginBottom: 4 }}
 										onClick={handleSubmit(onSubmit)}
 									>
 										追加
@@ -414,8 +418,6 @@ const Task = () => {
 						</Box>
 						{/* ここまで */}
 					</Modal>
-
-         
 
 					<Box
 						sx={{
@@ -433,7 +435,12 @@ const Task = () => {
 						</IconButton>
 
 						<Typography
-							sx={{ marginRight: "10px", marginLeft: "10px", width:'200px', textAlign: "center", }}
+							sx={{
+								marginRight: "10px",
+								marginLeft: "10px",
+								width: "200px",
+								textAlign: "center",
+							}}
 							variant="subtitle1"
 						>
 							{tasks.length > 0 ? (

@@ -68,7 +68,7 @@ const EachTask: React.FC<TaskItems> = ({ taskItems }) => {
 								onClose={handleClose}
 								PaperProps={{
 									sx: {
-										width:'100vw',
+										width: "100vw",
 										borderRadius: "8px",
 									},
 								}}
@@ -79,7 +79,10 @@ const EachTask: React.FC<TaskItems> = ({ taskItems }) => {
 										alignItems: "center",
 									}}
 								>
-									<Avatar src={task.createdUser.user.icon_url} sx={{marginLeft:2}}/>
+									<Avatar
+										src={task.createdUser.user.icon_url}
+										sx={{ marginLeft: 2 }}
+									/>
 									<DialogTitle
 										sx={{
 											flex: 1,
@@ -90,24 +93,26 @@ const EachTask: React.FC<TaskItems> = ({ taskItems }) => {
 									</DialogTitle>
 									<Box sx={{ width: 40 }} />
 								</Box>
-								<DialogContent sx={{ 
-									display: 'flex',
-									flexDirection: 'column',
-									alignItems: 'center',
-									width: '100%',
-									maxWidth: '800px',
-									margin: '0 auto'
-								}}>
+								<DialogContent
+									sx={{
+										display: "flex",
+										flexDirection: "column",
+										alignItems: "center",
+										width: "100%",
+										maxWidth: "800px",
+										margin: "0 auto",
+									}}
+								>
 									<TextField
 										defaultValue={selectedTask.taskDetail}
 										id="outlined-multiline-static"
 										label="タスク詳細"
 										multiline
 										rows={8}
-										sx={{ 
-											marginBottom: 2, 
-											width: '100%',
-											maxWidth: '500px'
+										sx={{
+											marginBottom: 2,
+											width: "100%",
+											maxWidth: "500px",
 										}}
 									/>
 
@@ -116,10 +121,10 @@ const EachTask: React.FC<TaskItems> = ({ taskItems }) => {
 											component="img"
 											height="194"
 											image={selectedTask.taskImageUrl}
-											sx={{ 
-												width: '100%',
-												maxWidth: '500px',
-												objectFit:'contain'
+											sx={{
+												width: "100%",
+												maxWidth: "500px",
+												objectFit: "contain",
 											}}
 										/>
 									)}

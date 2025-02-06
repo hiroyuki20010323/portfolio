@@ -339,27 +339,28 @@ app.delete("/api/group-profile", async (req, res) => {
 // タスクの取得
 app.get("/api/task", async (req, res) => {
 	try {
-    const token = req.headers.authorization?.split("Bearer ")[1];
+		const token = req.headers.authorization?.split("Bearer ")[1];
 		if (!token) {
 			res.status(400).json({ message: "許可されていないリクエストです。" });
 			return;
 		}
 		const decodedToken = await admin.auth().verifyIdToken(token);
 		const uid = decodedToken.uid;
-    const activeParticipation = await prisma.participation.findFirst({
-      where: {
-        userId:uid,
-        isActive: true,
-      },
-    });
+		const activeParticipation = await prisma.participation.findFirst({
+			where: {
+				userId: uid,
+				isActive: true,
+			},
+		});
 
-if (!activeParticipation) {
-   res.status(404).json({ message: "アクティブなグループが見つかりません。" });
-   return
-}
+		if (!activeParticipation) {
+			res
+				.status(404)
+				.json({ message: "アクティブなグループが見つかりません。" });
+			return;
+		}
 
-
-const activeGroupId = activeParticipation.groupId;
+		const activeGroupId = activeParticipation.groupId;
 
 		const timeZone = "Asia/Tokyo";
 		const todayJST = startOfDay(toZonedTime(new Date(), timeZone));
@@ -374,19 +375,19 @@ const activeGroupId = activeParticipation.groupId;
 				},
 			},
 			include: {
-        tasks: {
-          where: {
-            participationCreatedGroupId: activeGroupId,
-          },
-          include: {
-            createdUser: {
-              include: {
-                user: true,
-              },
-            },
-          },
-        },
-      },
+				tasks: {
+					where: {
+						participationCreatedGroupId: activeGroupId,
+					},
+					include: {
+						createdUser: {
+							include: {
+								user: true,
+							},
+						},
+					},
+				},
+			},
 			orderBy: {
 				date: "asc",
 			},
@@ -409,19 +410,21 @@ app.post("/api/task", upload.single("taskImage"), async (req, res) => {
 		}
 		const decodedToken = await admin.auth().verifyIdToken(token);
 		const userId = decodedToken.uid;
-    const activeParticipation = await prisma.participation.findFirst({
-      where: {
-        userId,
-        isActive: true,
-      },
-    });
+		const activeParticipation = await prisma.participation.findFirst({
+			where: {
+				userId,
+				isActive: true,
+			},
+		});
 
-if (!activeParticipation) {
-   res.status(404).json({ message: "アクティブなグループが見つかりません。" });
-   return
-}
+		if (!activeParticipation) {
+			res
+				.status(404)
+				.json({ message: "アクティブなグループが見つかりません。" });
+			return;
+		}
 
-const activeGroupId = activeParticipation.groupId;
+		const activeGroupId = activeParticipation.groupId;
 
 		const { taskTitle, taskDetail, dueDate, dueTime } = req.body;
 
@@ -457,26 +460,28 @@ const activeGroupId = activeParticipation.groupId;
 // 先週のタスクを取得する
 app.get("/api/task/prev-week", async (req, res) => {
 	try {
-    const token = req.headers.authorization?.split("Bearer ")[1];
+		const token = req.headers.authorization?.split("Bearer ")[1];
 		if (!token) {
 			res.status(400).json({ message: "許可されていないリクエストです。" });
 			return;
 		}
 		const decodedToken = await admin.auth().verifyIdToken(token);
 		const uid = decodedToken.uid;
-    const activeParticipation = await prisma.participation.findFirst({
-      where: {
-        userId:uid,
-        isActive: true,
-      },
-    });
+		const activeParticipation = await prisma.participation.findFirst({
+			where: {
+				userId: uid,
+				isActive: true,
+			},
+		});
 
-if (!activeParticipation) {
-   res.status(404).json({ message: "アクティブなグループが見つかりません。" });
-   return
-}
+		if (!activeParticipation) {
+			res
+				.status(404)
+				.json({ message: "アクティブなグループが見つかりません。" });
+			return;
+		}
 
-const activeGroupId = activeParticipation.groupId;
+		const activeGroupId = activeParticipation.groupId;
 		const timeZone = "Asia/Tokyo";
 		const currentDate = req.query.date
 			? new Date(String(req.query.date))
@@ -491,20 +496,20 @@ const activeGroupId = activeParticipation.groupId;
 					lte: endDate,
 				},
 			},
-      include: {
-        tasks: {
-          where: {
-            participationCreatedGroupId: activeGroupId,
-          },
-          include: {
-            createdUser: {
-              include: {
-                user: true,
-              },
-            },
-          },
-        },
-      },
+			include: {
+				tasks: {
+					where: {
+						participationCreatedGroupId: activeGroupId,
+					},
+					include: {
+						createdUser: {
+							include: {
+								user: true,
+							},
+						},
+					},
+				},
+			},
 			orderBy: {
 				date: "asc",
 			},
@@ -520,26 +525,28 @@ const activeGroupId = activeParticipation.groupId;
 // 来週のデータを取得する
 app.get("/api/task/next-week", async (req, res) => {
 	try {
-    const token = req.headers.authorization?.split("Bearer ")[1];
+		const token = req.headers.authorization?.split("Bearer ")[1];
 		if (!token) {
 			res.status(400).json({ message: "許可されていないリクエストです。" });
 			return;
 		}
 		const decodedToken = await admin.auth().verifyIdToken(token);
 		const uid = decodedToken.uid;
-    const activeParticipation = await prisma.participation.findFirst({
-      where: {
-        userId:uid,
-        isActive: true,
-      },
-    });
+		const activeParticipation = await prisma.participation.findFirst({
+			where: {
+				userId: uid,
+				isActive: true,
+			},
+		});
 
-if (!activeParticipation) {
-   res.status(404).json({ message: "アクティブなグループが見つかりません。" });
-   return
-}
+		if (!activeParticipation) {
+			res
+				.status(404)
+				.json({ message: "アクティブなグループが見つかりません。" });
+			return;
+		}
 
-const activeGroupId = activeParticipation.groupId;
+		const activeGroupId = activeParticipation.groupId;
 		const timeZone = "Asia/Tokyo";
 		const currentDate = req.query.date
 			? new Date(String(req.query.date))
@@ -557,19 +564,19 @@ const activeGroupId = activeParticipation.groupId;
 				},
 			},
 			include: {
-        tasks: {
-          where: {
-            participationCreatedGroupId: activeGroupId,
-          },
-          include: {
-            createdUser: {
-              include: {
-                user: true,
-              },
-            },
-          },
-        },
-      },
+				tasks: {
+					where: {
+						participationCreatedGroupId: activeGroupId,
+					},
+					include: {
+						createdUser: {
+							include: {
+								user: true,
+							},
+						},
+					},
+				},
+			},
 			orderBy: {
 				date: "asc",
 			},

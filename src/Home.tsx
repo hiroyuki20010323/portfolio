@@ -62,9 +62,7 @@ const Home = () => {
 		return (
 			<Box>
 				<Header />
-				<List
-					sx={{ paddingTop: "80px", paddingBottom: "80px" }}
-				>
+				<List sx={{ paddingTop: "80px", paddingBottom: "80px" }}>
 					{groups.map((group) => (
 						<List
 							key={group.id}
@@ -74,7 +72,6 @@ const Home = () => {
 								padding: "14px",
 								borderTop: "none",
 								alignItems: "center",
-								
 							}}
 						>
 							<Avatar
