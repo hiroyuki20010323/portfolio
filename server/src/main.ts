@@ -358,6 +358,7 @@ if (!activeParticipation) {
    return
 }
 
+
 const activeGroupId = activeParticipation.groupId;
 
 		const timeZone = "Asia/Tokyo";

@@ -9,6 +9,7 @@ import {
 	Tab,
 	TextField,
 	Typography,
+	
 } from "@mui/material";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
@@ -23,6 +24,7 @@ import TaskItem from "./TaskItem";
 import axios from "axios";
 import { Controller, useForm } from "react-hook-form";
 import { auth } from "./auth/firebaseConfig";
+import Loading from "./Loading";
 
 
 export type TaskData = {
@@ -78,6 +80,7 @@ const Task = () => {
 	const [taskValue, setTaskValue] = useState<string>("1");
 	const [open, setOpen] = useState<boolean>(false);
 	const [tasks, setTasks] = useState<TaskData[]>([]);
+	const [isLoading, setIsLoading] = useState(true);
 	const { control, handleSubmit, setValue } = useForm<TaskFormInputs>({
 		mode: "onSubmit",
 		defaultValues: {
@@ -92,7 +95,8 @@ const Task = () => {
   useEffect(() => {
 		const getTasks = async () => {
 			try {
-        const token = await auth.currentUser?.getIdToken();
+				setIsLoading(true);
+				const token = await auth.currentUser?.getIdToken();
 				const taskData = await axios.get(`${apiUrl}/api/task`, {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -102,6 +106,8 @@ const Task = () => {
 				setTasks(taskData.data);
 			} catch (e) {
 				console.error("タスクの取得に失敗しました。");
+			} finally {
+				setIsLoading(false);
 			}
 		};
 		getTasks();
@@ -236,7 +242,14 @@ const Task = () => {
 					</TabList>
 
 					<TabPanel value="1" sx={{ padding: 0 }}>
-						<TaskItem tasks={tasks} />
+						{isLoading ? (
+							<Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center',height: '28vh' ,flexFlow:"column",marginBottom:40}}>
+								<Loading/>
+                <Typography>グループは作成しましたか？</Typography>
+							</Box>
+						) : (
+							<TaskItem tasks={tasks} />
+						)}
 					</TabPanel>
 					{/* <TabPanel value="2" sx={{ padding: 0 }}>
 						<WeekTask />
@@ -401,6 +414,8 @@ const Task = () => {
 						</Box>
 						{/* ここまで */}
 					</Modal>
+
+         
 
 					<Box
 						sx={{
