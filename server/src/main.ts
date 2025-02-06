@@ -375,7 +375,7 @@ const activeGroupId = activeParticipation.groupId;
 			include: {
         tasks: {
           where: {
-            createdGroupId: activeGroupId,
+            participationCreatedGroupId: activeGroupId,
           },
           include: {
             createdUser: {
@@ -438,10 +438,9 @@ const activeGroupId = activeParticipation.groupId;
 					taskDetail,
 					...(req.file && { taskImageUrl: (req.file as any)?.location }),
 					period,
-					createdUserId: userId,
-					createdGroupId: activeGroupId,
-					calenderId: 1,
-					calendar_id: calender!.id,
+					participationCreatedUserId: userId,
+					participationCreatedGroupId: activeGroupId,
+					calendarId: calender!.id,
 				},
 			});
 
@@ -494,7 +493,7 @@ const activeGroupId = activeParticipation.groupId;
       include: {
         tasks: {
           where: {
-            createdGroupId: activeGroupId,
+            participationCreatedGroupId: activeGroupId,
           },
           include: {
             createdUser: {
@@ -559,7 +558,7 @@ const activeGroupId = activeParticipation.groupId;
 			include: {
         tasks: {
           where: {
-            createdGroupId: activeGroupId,
+            participationCreatedGroupId: activeGroupId,
           },
           include: {
             createdUser: {

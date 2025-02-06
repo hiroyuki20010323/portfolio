@@ -66,15 +66,14 @@ model Task {
   taskDetail      String?
   taskImageUrl    String? @db.Text
   period          DateTime 
-  createdUser Participation @relation("TaskCreator", fields: [createdUserId, createdGroupId], references: [userId, groupId])
-  createdUserId   String   
-  createdGroupId  Int
-  assignee Participation? @relation("TaskAssignee", fields: [assigneeUserId, assigneeGroupId], references: [userId, groupId])      
-  assigneeUserId  String?   
-  assigneeGroupId Int?  
-  calenderId      Int      
+  createdUser Participation @relation("TaskCreator", fields: [participationCreatedUserId, participationCreatedGroupId], references: [userId, groupId])
+  participationCreatedUserId   String   
+  participationCreatedGroupId  Int
+  assignee Participation? @relation("TaskAssignee", fields: [participationAssigneeUserId, participationAssigneeGroupId], references: [userId, groupId])      
+  participationAssigneeUserId  String?   
+  participationAssigneeGroupId Int?  
+  calendar Calendar @relation(fields: [calendarId], references: [id])
+  calendarId Int
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
-  calendar Calendar @relation(fields: [calendar_id], references: [id])
-  calendar_id Int
 }
