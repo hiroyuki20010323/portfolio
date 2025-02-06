@@ -63,7 +63,7 @@ const Home = () => {
 			<Box>
 				<Header />
 				<List
-					sx={{ overflow: "scroll", paddingTop: "80px", paddingBottom: "80px" }}
+					sx={{ paddingTop: "80px", paddingBottom: "80px" }}
 				>
 					{groups.map((group) => (
 						<List
@@ -74,7 +74,7 @@ const Home = () => {
 								padding: "14px",
 								borderTop: "none",
 								alignItems: "center",
-								overflow: "scroll",
+								
 							}}
 						>
 							<Avatar

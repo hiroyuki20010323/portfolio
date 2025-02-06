@@ -119,6 +119,7 @@ const EachTask: React.FC<TaskItems> = ({ taskItems }) => {
 											sx={{ 
 												width: '100%',
 												maxWidth: '500px',
+												objectFit:'contain'
 											}}
 										/>
 									)}

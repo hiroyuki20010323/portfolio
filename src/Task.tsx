@@ -23,7 +23,7 @@ import TaskItem from "./TaskItem";
 import axios from "axios";
 import { Controller, useForm } from "react-hook-form";
 import { auth } from "./auth/firebaseConfig";
-import { useNavigate } from "react-router-dom";
+
 
 export type TaskData = {
 	id: number;
@@ -72,7 +72,7 @@ type TaskFormInputs = {
 
 const Task = () => {
 	const apiUrl = import.meta.env.VITE_API_URL;
-  const navigate = useNavigate();
+  
 	const fileInputRef = useRef<HTMLInputElement | null>(null);
 	const [image, setImage] = useState<string | undefined>(undefined);
 	const [taskValue, setTaskValue] = useState<string>("1");
@@ -89,10 +89,15 @@ const Task = () => {
 		},
 	});
 
-	useEffect(() => {
+  useEffect(() => {
 		const getTasks = async () => {
 			try {
-				const taskData = await axios.get(`${apiUrl}/api/task`);
+        const token = await auth.currentUser?.getIdToken();
+				const taskData = await axios.get(`${apiUrl}/api/task`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+      });
 				console.log(taskData.data);
 				setTasks(taskData.data);
 			} catch (e) {
@@ -101,6 +106,7 @@ const Task = () => {
 		};
 		getTasks();
 	}, []);
+
 
 	const handleInput = () => {
 		const files = fileInputRef.current?.files;
@@ -146,14 +152,20 @@ const Task = () => {
 					Authorization: `Bearer ${token}`,
 				},
 			});
-
-      navigate('/task')
-
+      handleCloseModal()
+      const taskData = await axios.get(`${apiUrl}/api/task`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+    });
+      setTasks(taskData.data);
 			console.log(response);
 		} catch (e) {
 			console.log("なんかのエラーが出ました", e);
 		}
 	};
+
+
 
 	const handleChange = (event: React.SyntheticEvent, newValue: string) => {
 		setTaskValue(newValue);
@@ -168,8 +180,12 @@ const Task = () => {
 	};
 
 	const getPrevWeekTasks = async () => {
+    const token = await auth.currentUser?.getIdToken();
 		const currentDate = tasks[0].date;
 		const response = await axios.get(`${apiUrl}/api/task/prev-week`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
 			params: { date: currentDate },
 		});
 		setTasks(response.data);
@@ -177,8 +193,12 @@ const Task = () => {
 	};
 
 	const getNextWeekTasks = async () => {
+    const token = await auth.currentUser?.getIdToken();
 		const currentDate = tasks[6].date;
 		const response = await axios.get(`${apiUrl}/api/task/next-week`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
 			params: { date: currentDate },
 		});
 		setTasks(response.data);
@@ -319,10 +339,11 @@ const Task = () => {
 									<Box sx={{ display: "flex", alignItems: "center" }}>
 										{image ? (
 											<CardMedia
+                       onClick={fileUpload}
 												component="img"
-												height="194"
+												height="300"
 												image={image}
-												sx={{ width: 280, objectFit: "cover" }}
+												sx={{ width: 280 ,objectFit: "contain",}}
 											/>
 										) : (
 											<Button
