@@ -1,4 +1,8 @@
 # FastShare
+| | |
+|:---:|:---:|
+| <img width="423" alt="Image" src="https://github.com/user-attachments/assets/27066c04-96f4-41e1-bbdb-5cdf0137ea27" /> | <img width="405" alt="Image" src="https://github.com/user-attachments/assets/d766c8d6-4609-4ead-9e9d-ceeb3cc69739" /> |
+
 
 ## 概要
 FastShareは、グループを作成し、メンバー同士でタスク(買い物や家事)を共有できるアプリです。
@@ -21,7 +25,7 @@ FastShareは、グループを作成し、メンバー同士でタスク(買い�
 FastShareは、こうした日常のちょっとした煩わしさをなくすためのソリューションとして開発したものです。
 
 ## URL
-URL: https://fastshare.jp/login　<br>
+URL: https://fastshare.jp/login<br>
 ※現状ルートURLは何も設定しておらず、白飛びしてしまいますので、/login または　/signupで検索してください。
 
 ## 機能一覧
@@ -69,58 +73,62 @@ URL: https://fastshare.jp/login　<br>
 ## ER図
 ```mermaid
 erDiagram
-    Users {
+    users {
         String id PK
         String user_name
         String icon_url
-        DateTime createdAt
-        DateTime updatedAt
+        DateTime created_at
+        DateTime updated_at
     }
-    Groups {
+    groups {
         Int id PK
         String group_name
         String group_description
         String group_icon
-        DateTime createdAt
-        DateTime updatedAt
+        DateTime created_at
+        DateTime updated_at
     }
-    Participations {
+    participations {
         String id PK
         String user_id FK
         Int group_id FK
-        Boolean isActive
-        DateTime createdAt
-        DateTime updatedAt
+        Boolean is_active
+        DateTime created_at
+        DateTime updated_at
     }
-    Calendar {
+    calendars {
         Int id PK
         DateTime date
-        DateTime createdAt
-        DateTime updatedAt
+        DateTime created_at
+        DateTime updated_at
     }
-    Task {
+    tasks {
         Int id PK
         String task_title
         String task_detail
         String task_image_url
         DateTime period
-        String created_user_id FK
-        Int created_group_id FK
-        String assignee_user_id FK
-        Int assignee_group_id FK
+        String participation_created_user_id FK
+        Int participation_created_group_id FK
+        String participation_assignee_user_id FK
+        Int participation_assignee_group_id FK
         Int calendar_id FK
-        DateTime createdAt
-        DateTime updatedAt
+        DateTime created_at
+        DateTime updated_at
     }
 
-    %% Relationships
-    Users ||--o{ Participations : "ユーザーは複数のグループに参加可能"
-    Groups ||--o{ Participations : "グループは複数の参加者を持つ"
-    Calendar ||--o{ Task : "1つの日付に複数のタスクを登録可能"
-    Participations ||--o{ Task : "参加者は複数のタスクを作成・割当可能"
+%% 既存のリレーションシップ
+    users ||--o{ participations : "ユーザーは複数のグループに参加可能"
+    groups ||--o{ participations : "グループは複数の参加者を持つ"
+    calendars ||--o{ tasks : "1つの日付に複数のタスクを登録可能"
+    participations ||--o{ tasks : "参加者は複数のタスクを作成・割当可能"
+
+    %% タスクとユーザー／グループ間の直接的な関係（概念上の関連）
+    users ||--o{ tasks : "タスクは作成者／担当者のユーザー情報と関連"
+    groups ||--o{ tasks : "タスクは作成グループ／担当グループと関連"
 ```
 ## インフラ構成
-<img width='550' src='https://github.com/user-attachments/assets/ed0d28f6-c120-44ef-964f-d0f823d39958'><br>
+<img width="100%" alt="Image" src="https://github.com/user-attachments/assets/a3e9d3d1-9be3-40b5-9867-54080844004c" />
 
 
 

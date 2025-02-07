@@ -14,7 +14,6 @@ import { useEffect, useState } from "react";
 
 const Footer = () => {
 	const [value, setValue] = useState(location.pathname);
-	console.log(location.pathname);
 	const handleChange = (event: React.BaseSyntheticEvent, newValue: string) => {
 		event;
 		setValue(newValue);

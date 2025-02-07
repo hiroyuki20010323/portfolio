@@ -4,6 +4,7 @@ import { auth, provider } from "./firebaseConfig";
 import { createUserWithEmailAndPassword, signInWithPopup } from "firebase/auth";
 import { Link, useNavigate } from "react-router-dom";
 import {
+	AppBar,
 	Avatar,
 	Box,
 	Button,
@@ -15,6 +16,7 @@ import {
 	InputLabel,
 	OutlinedInput,
 	TextField,
+	Toolbar,
 	Typography,
 } from "@mui/material";
 import VisibilityIcon from "@mui/icons-material/Visibility";
@@ -35,8 +37,6 @@ export const SignUp = () => {
 	const [isOpenModal, setIsOpenModal] = useState(false);
 	const apiUrl = import.meta.env.VITE_API_URL;
 
-	// const [email,setEmail] = useState<string>("");
-	// const [password,setPassword] = useState<string>("");
 	const { handleSubmit, control, watch } = useForm({
 		mode: "onSubmit",
 		defaultValues: {
@@ -102,7 +102,6 @@ export const SignUp = () => {
 			);
 			setIsOpenModal(true);
 			console.log(response.data);
-			// console.log(user);
 		} catch (e) {
 			console.log("処理がうまくいきませんでした。");
 		}
@@ -110,7 +109,40 @@ export const SignUp = () => {
 
 	return (
 		<Box display="flex" flexDirection="column" alignItems="center">
-			<Typography variant="h4" marginTop={2}>
+			<AppBar
+				elevation={0}
+				sx={{
+					width: "100vw",
+					top: 0,
+					height: "74px",
+					backgroundColor: "white",
+					borderBottom: "solid 2px #E0E0E0",
+					position: "fixed",
+				}}
+			>
+				<Toolbar
+					sx={{
+						marginTop: 2,
+						display: "flex",
+						alignItems: "center",
+						position: "relative",
+					}}
+				>
+					<Typography
+						variant="h6"
+						component="div"
+						color="black"
+						sx={{
+							position: "absolute",
+							left: "50%",
+							transform: "translateX(-50%)",
+						}}
+					>
+						FastShare
+					</Typography>
+				</Toolbar>
+			</AppBar>
+			<Typography variant="h4" marginTop={20}>
 				新規登録
 			</Typography>
 			<Typography variant="subtitle1" marginTop={5}>
@@ -261,9 +293,9 @@ export const SignUp = () => {
 					height: 50,
 					margin: 3,
 					color: "#e3f2fd",
-					backgroundColor: "#e3f2fd", // 背景色
+					backgroundColor: "#e3f2fd",
 					"&:hover": {
-						backgroundColor: "#bbdefb", // ホバー時の背景色
+						backgroundColor: "#bbdefb",
 					},
 				}}
 			>

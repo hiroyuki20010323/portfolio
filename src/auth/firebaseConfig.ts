@@ -18,13 +18,10 @@ const firebaseConfig = {
 	messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGE_SENDER_ID,
 	appId: import.meta.env.VITE_FIREBASE_APP_ID,
 	measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
-
-	// viteを使用する場合はimport.meta.envをしようする
 };
 
-// Initialize Firebase
 const app = initializeApp(firebaseConfig);
-// const analytics = getAnalytics(app);
+
 export const auth = getAuth(app);
-// firebaseSDKの初期化を行い、認証情報を使用できるようにしているgetAuthを使用して。
+
 export const provider = new GoogleAuthProvider();

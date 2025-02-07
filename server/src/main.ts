@@ -6,7 +6,8 @@ import multer from "multer";
 import multerS3 from "multer-s3";
 import { v4 as uuidv4 } from "uuid";
 import admin from "firebase-admin";
-
+import { startOfDay, addDays } from "date-fns";
+import { toZonedTime } from "date-fns-tz";
 
 const prisma = new PrismaClient();
 const app = express();
@@ -16,7 +17,6 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// admin SDKの接続設定
 admin.initializeApp({
 	credential: admin.credential.cert({
 		projectId: process.env.FIREBASE_PROJECT_ID,
@@ -25,7 +25,6 @@ admin.initializeApp({
 	}),
 });
 
-// S3の接続
 const s3 = new S3Client({
 	region: process.env.AWS_REGION || "",
 	credentials: {
@@ -34,7 +33,6 @@ const s3 = new S3Client({
 	},
 });
 
-// バケットに画像をアップロードするミドルウェアの処理
 const upload = multer({
 	storage: multerS3({
 		s3: s3,
@@ -45,20 +43,17 @@ const upload = multer({
 		},
 		key: function (req, file, cb) {
 			const uniqueFileName = `${uuidv4()}-${file.originalname}`;
-      // TODOuserIconというパスに画像関係を全てアップロードしてしまっているため、あとでパスを切る
+			// TODOuserIconというパスに画像関係を全てアップロードしてしまっているため、あとでパスを切る
 			const filePath = `userIcon/${uniqueFileName}`;
 			cb(null, filePath);
 		},
 	}),
 });
 
-
-
 app.get("/", (req, res) => {
 	res.status(200).send("Hello Fast Share!!!!");
 });
 
-// 認証トークンの検証
 app.post("/auth/verify", async (req, res) => {
 	const authHeader = req.headers.authorization;
 	const idToken = authHeader && authHeader.split("Bearer ")[1];
@@ -114,35 +109,6 @@ app.post("/api/user", async (req, res) => {
 		res.status(500).json({ error: "データの保存に失敗しました" });
 	}
 });
-
-// 以下のエンドポイントは使用しない。patchで代替できる
-// app.post('/api/profile',upload.single('icon_url'),async(req,res)=>{
-//   try{
-// if(!req.file){
-//   console.log('ファイルがアップロードされていません')
-//   res.status(400).json({error: 'ファイルがアップロードされていません'})
-//   return
-// }
-
-// const userName = req.body.user_name
-// const iconKey = (req.file as any)?.key
-// const iconLocation = (req.file as any)?.location
-
-// await prisma.users.create({
-//   data:{
-//     user_name:userName,
-//     icon_url:iconLocation
-//   }
-// })
-
-// res.status(201).json({
-//   message:'アップロード成功',
-// })
-//   }catch(error){
-//     console.log('データ保存エラー:',error);
-//      res.status(500).json({error:'サーバーエラー'})
-//   }
-// })
 
 // プロフィール情報取得
 app.get("/api/profile", async (req, res) => {
@@ -367,6 +333,298 @@ app.delete("/api/group-profile", async (req, res) => {
 		res
 			.status(500)
 			.json({ message: `サーバー側で削除がうまく実行できませんでした`, e });
+	}
+});
+
+// タスクの取得
+app.get("/api/task", async (req, res) => {
+	try {
+		const token = req.headers.authorization?.split("Bearer ")[1];
+		if (!token) {
+			res.status(400).json({ message: "許可されていないリクエストです。" });
+			return;
+		}
+		const decodedToken = await admin.auth().verifyIdToken(token);
+		const uid = decodedToken.uid;
+		const activeParticipation = await prisma.participation.findFirst({
+			where: {
+				userId: uid,
+				isActive: true,
+			},
+		});
+
+		if (!activeParticipation) {
+			res
+				.status(404)
+				.json({ message: "アクティブなグループが見つかりません。" });
+			return;
+		}
+
+		const activeGroupId = activeParticipation.groupId;
+
+		const timeZone = "Asia/Tokyo";
+		const todayJST = startOfDay(toZonedTime(new Date(), timeZone));
+
+		const oneWeekLaterJST = addDays(todayJST, 6);
+
+		const tasks = await prisma.calendar.findMany({
+			where: {
+				date: {
+					gte: todayJST,
+					lte: oneWeekLaterJST,
+				},
+			},
+			select: {
+				id: true,
+				date: true,
+				tasks: {
+					where: {
+						participationCreatedGroupId: activeGroupId,
+					},
+					select: {
+						id: true,
+						taskTitle: true,
+						taskImageUrl: true,
+						taskDetail: true,
+						period: true,
+						createdUser: {
+							select: {
+								user: {
+									select: {
+										id: true,
+										user_name: true,
+										icon_url: true,
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+			orderBy: {
+				date: "asc",
+			},
+		});
+
+		res.status(200).json(tasks);
+	} catch (e) {
+		console.log("タスクデータの取得失敗しました。", e);
+	}
+});
+
+// タスクの追加
+app.post("/api/task", upload.single("taskImage"), async (req, res) => {
+	try {
+		const token = req.headers.authorization?.split("Bearer ")[1];
+
+		if (!token) {
+			res.status(400).json({ message: "許可されていないリクエストです。" });
+			return;
+		}
+		const decodedToken = await admin.auth().verifyIdToken(token);
+		const userId = decodedToken.uid;
+		const activeParticipation = await prisma.participation.findFirst({
+			where: {
+				userId,
+				isActive: true,
+			},
+		});
+
+		if (!activeParticipation) {
+			res
+				.status(404)
+				.json({ message: "アクティブなグループが見つかりません。" });
+			return;
+		}
+
+		const activeGroupId = activeParticipation.groupId;
+
+		const { taskTitle, taskDetail, dueDate, dueTime } = req.body;
+
+		const period = new Date(`${dueDate}T${dueTime || "00:00"}:00`);
+
+		const calenderDate = new Date(`${dueDate}T00:00:00`);
+		try {
+			const calender = await prisma.calendar.findUnique({
+				where: { date: calenderDate },
+			});
+
+			const task = await prisma.task.create({
+				data: {
+					taskTitle,
+					taskDetail,
+					...(req.file && { taskImageUrl: (req.file as any)?.location }),
+					period,
+					participationCreatedUserId: userId,
+					participationCreatedGroupId: activeGroupId,
+					calendarId: calender!.id,
+				},
+			});
+
+			res.status(201).json({ message: "タスクが作成されました", task });
+		} catch (e) {
+			res.status(500).json({ message: "指定された日にタスクは追加できません" });
+		}
+	} catch (e) {
+		console.log("タスクの投稿に失敗しました。", e);
+	}
+});
+
+// 先週のタスクを取得する
+app.get("/api/task/prev-week", async (req, res) => {
+	try {
+		const token = req.headers.authorization?.split("Bearer ")[1];
+		if (!token) {
+			res.status(400).json({ message: "許可されていないリクエストです。" });
+			return;
+		}
+		const decodedToken = await admin.auth().verifyIdToken(token);
+		const uid = decodedToken.uid;
+		const activeParticipation = await prisma.participation.findFirst({
+			where: {
+				userId: uid,
+				isActive: true,
+			},
+		});
+
+		if (!activeParticipation) {
+			res
+				.status(404)
+				.json({ message: "アクティブなグループが見つかりません。" });
+			return;
+		}
+
+		const activeGroupId = activeParticipation.groupId;
+		const timeZone = "Asia/Tokyo";
+		const currentDate = req.query.date
+			? new Date(String(req.query.date))
+			: new Date();
+		const endDate = startOfDay(toZonedTime(addDays(currentDate, -1), timeZone));
+		const startDate = addDays(endDate, -6);
+
+		const tasks = await prisma.calendar.findMany({
+			where: {
+				date: {
+					gte: startDate,
+					lte: endDate,
+				},
+			},
+			select: {
+				id: true,
+				date: true,
+				tasks: {
+					where: {
+						participationCreatedGroupId: activeGroupId,
+					},
+					select: {
+						id: true,
+						taskTitle: true,
+						taskImageUrl: true,
+						taskDetail: true,
+						period: true,
+						createdUser: {
+							select: {
+								user: {
+									select: {
+										id: true,
+										user_name: true,
+										icon_url: true,
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+			orderBy: {
+				date: "asc",
+			},
+		});
+
+		res.status(200).json(tasks);
+	} catch (e) {
+		console.log("前週のタスクデータの取得に失敗しました。", e);
+		res.status(500).json({ error: "データの取得に失敗しました" });
+	}
+});
+
+// 来週のデータを取得する
+app.get("/api/task/next-week", async (req, res) => {
+	try {
+		const token = req.headers.authorization?.split("Bearer ")[1];
+		if (!token) {
+			res.status(400).json({ message: "許可されていないリクエストです。" });
+			return;
+		}
+		const decodedToken = await admin.auth().verifyIdToken(token);
+		const uid = decodedToken.uid;
+		const activeParticipation = await prisma.participation.findFirst({
+			where: {
+				userId: uid,
+				isActive: true,
+			},
+		});
+
+		if (!activeParticipation) {
+			res
+				.status(404)
+				.json({ message: "アクティブなグループが見つかりません。" });
+			return;
+		}
+
+		const activeGroupId = activeParticipation.groupId;
+		const timeZone = "Asia/Tokyo";
+		const currentDate = req.query.date
+			? new Date(String(req.query.date))
+			: new Date();
+		const startDate = startOfDay(
+			toZonedTime(addDays(currentDate, 1), timeZone),
+		);
+		const endDate = addDays(startDate, 6);
+
+		const tasks = await prisma.calendar.findMany({
+			where: {
+				date: {
+					gte: startDate,
+					lte: endDate,
+				},
+			},
+			select: {
+				id: true,
+				date: true,
+				tasks: {
+					where: {
+						participationCreatedGroupId: activeGroupId,
+					},
+					select: {
+						id: true,
+						taskTitle: true,
+						taskImageUrl: true,
+						taskDetail: true,
+						period: true,
+						createdUser: {
+							select: {
+								user: {
+									select: {
+										id: true,
+										user_name: true,
+										icon_url: true,
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+			orderBy: {
+				date: "asc",
+			},
+		});
+
+		res.status(200).json(tasks);
+	} catch (e) {
+		console.log("次週のタスクデータの取得に失敗しました。", e);
+		res.status(500).json({ error: "データの取得に失敗しました" });
 	}
 });
 

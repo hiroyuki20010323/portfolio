@@ -52,19 +52,17 @@ const Home = () => {
 			console.error("アクションの実行に失敗しました。", e);
 		}
 	};
-	// console.log(user)
+
 	if (!user) {
 		navigate("/login");
 		return null;
 
-		// リアクトコンポーネントは必ず何か返却する必要があるため、nullを返却する・
+		// リアクトコンポーネントは必ず何か返却する必要があるため、nullを返却する
 	} else {
 		return (
 			<Box>
 				<Header />
-				<List
-					sx={{ overflow: "scroll", paddingTop: "80px", paddingBottom: "80px" }}
-				>
+				<List sx={{ paddingTop: "80px", paddingBottom: "80px" }}>
 					{groups.map((group) => (
 						<List
 							key={group.id}
@@ -74,7 +72,6 @@ const Home = () => {
 								padding: "14px",
 								borderTop: "none",
 								alignItems: "center",
-								overflow: "scroll",
 							}}
 						>
 							<Avatar
