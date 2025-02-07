@@ -374,15 +374,28 @@ app.get("/api/task", async (req, res) => {
 					lte: oneWeekLaterJST,
 				},
 			},
-			include: {
+			select: {
+				id: true,
+				date: true,
 				tasks: {
 					where: {
 						participationCreatedGroupId: activeGroupId,
 					},
-					include: {
+					select: {
+						id: true,
+						taskTitle: true,
+						taskImageUrl: true,
+						taskDetail: true,
+						period: true,
 						createdUser: {
-							include: {
-								user: true,
+							select: {
+								user: {
+									select: {
+										id: true,
+										user_name: true,
+										icon_url: true,
+									},
+								},
 							},
 						},
 					},
@@ -496,15 +509,28 @@ app.get("/api/task/prev-week", async (req, res) => {
 					lte: endDate,
 				},
 			},
-			include: {
+			select: {
+				id: true,
+				date: true,
 				tasks: {
 					where: {
 						participationCreatedGroupId: activeGroupId,
 					},
-					include: {
+					select: {
+						id: true,
+						taskTitle: true,
+						taskImageUrl: true,
+						taskDetail: true,
+						period: true,
 						createdUser: {
-							include: {
-								user: true,
+							select: {
+								user: {
+									select: {
+										id: true,
+										user_name: true,
+										icon_url: true,
+									},
+								},
 							},
 						},
 					},
@@ -563,15 +589,28 @@ app.get("/api/task/next-week", async (req, res) => {
 					lte: endDate,
 				},
 			},
-			include: {
+			select: {
+				id: true,
+				date: true,
 				tasks: {
 					where: {
 						participationCreatedGroupId: activeGroupId,
 					},
-					include: {
+					select: {
+						id: true,
+						taskTitle: true,
+						taskImageUrl: true,
+						taskDetail: true,
+						period: true,
 						createdUser: {
-							include: {
-								user: true,
+							select: {
+								user: {
+									select: {
+										id: true,
+										user_name: true,
+										icon_url: true,
+									},
+								},
 							},
 						},
 					},

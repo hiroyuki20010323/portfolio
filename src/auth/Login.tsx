@@ -15,6 +15,8 @@ import {
 	IconButton,
 	Divider,
 	Avatar,
+	AppBar,
+	Toolbar,
 } from "@mui/material";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
@@ -104,7 +106,40 @@ const Login = () => {
 
 	return (
 		<Box display="flex" flexDirection="column" alignItems="center">
-			<Typography variant="h4" marginTop={10}>
+			<AppBar
+				elevation={0}
+				sx={{
+					width: "100vw",
+					top: 0,
+					height: "74px",
+					backgroundColor: "white",
+					borderBottom: "solid 2px #E0E0E0",
+					position: "fixed",
+				}}
+			>
+				<Toolbar
+					sx={{
+						marginTop: 2,
+						display: "flex",
+						alignItems: "center",
+						position: "relative",
+					}}
+				>
+					<Typography
+						variant="h6"
+						component="div"
+						color="black"
+						sx={{
+							position: "absolute",
+							left: "50%",
+							transform: "translateX(-50%)",
+						}}
+					>
+						FastShare
+					</Typography>
+				</Toolbar>
+			</AppBar>
+			<Typography variant="h4" marginTop={20}>
 				ログイン
 			</Typography>
 			<Typography variant="subtitle1" marginTop={5}>

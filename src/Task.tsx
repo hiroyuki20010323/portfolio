@@ -34,30 +34,14 @@ export type TaskData = {
 type Task = {
 	id: number;
 	taskTitle: string;
-	taskDetail: string;
 	taskImageUrl: string | null;
-	period: string; // ISO 8601 形式の日時文字列
-	createdUserId: string;
-	createdGroupId: number;
-	assigneeUserId: string | null;
-	assigneeGroupId: number | null;
-	calenderId: number;
-	createdAt: string;
-	updatedAt: string;
-	calendar_id: number;
+	taskDetail: string;
+	period: string;
 	createdUser: {
-		id: string;
-		userId: string;
-		groupId: number;
-		isActive: boolean;
-		createdAt: string;
-		updatedAt: string;
 		user: {
 			id: string;
 			user_name: string;
 			icon_url: string;
-			createdAt: string;
-			updatedAt: string;
 		};
 	};
 };
@@ -249,7 +233,6 @@ const Task = () => {
 								}}
 							>
 								<Loading />
-								<Typography>グループは作成しましたか？</Typography>
 							</Box>
 						) : (
 							<TaskItem tasks={tasks} />
