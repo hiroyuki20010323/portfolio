@@ -16,7 +16,7 @@ source:
   # Additional properties that further specify the location of the artifacts.
   properties:
     branch: main
-    repository: https://github.com/hiroyuki20010323/portfolio
+    repository: https://github.com/hiroyuki20010323/FastShare
     # Optional: specify the name of an existing CodeStar Connections connection.
     # connection_name: a-connection
 build:
