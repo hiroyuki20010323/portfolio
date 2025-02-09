@@ -1,4 +1,4 @@
-import Header from "./components/Header";
+import Header from "./components/Header"
 import {
 	Avatar,
 	AvatarGroup,
@@ -6,129 +6,129 @@ import {
 	Button,
 	FormControl,
 	TextField,
-	Typography,
-} from "@mui/material";
-import Footer from "./components/Footer";
-import { Link, useNavigate } from "react-router-dom";
-import { useAuthContext } from "./auth/AuthContext";
-import { useEffect, useRef, useState } from "react";
-import { auth } from "./auth/firebaseConfig";
-import axios from "axios";
-import { Group } from "./Home";
-import Loading from "./Loading";
-import { Controller, useForm } from "react-hook-form";
+	Typography
+} from "@mui/material"
+import Footer from "./components/Footer"
+import { Link, useNavigate } from "react-router-dom"
+import { useAuthContext } from "./auth/AuthContext"
+import { useEffect, useRef, useState } from "react"
+import { auth } from "./auth/firebaseConfig"
+import axios from "axios"
+import { Group } from "./Home"
+import Loading from "./Loading"
+import { Controller, useForm } from "react-hook-form"
 
 type FormInputs = {
-	group_name: string;
-	group_icon: File | string | null;
-	group_description: string;
-};
+	group_name: string
+	group_icon: File | string | null
+	group_description: string
+}
 
 const GroupSettings = () => {
-	const navigate = useNavigate();
-	const user = useAuthContext();
-	const apiUrl = import.meta.env.VITE_API_URL;
-	const [groupData, setGroupData] = useState<Group | null>(null);
-	const [groupIcon, setGroupIcon] = useState<string | null>(null);
+	const navigate = useNavigate()
+	const user = useAuthContext()
+	const apiUrl = import.meta.env.VITE_API_URL
+	const [groupData, setGroupData] = useState<Group | null>(null)
+	const [groupIcon, setGroupIcon] = useState<string | null>(null)
 	const { control, handleSubmit, setValue } = useForm<FormInputs>({
 		mode: "onSubmit",
 		defaultValues: {
 			group_icon: "",
 			group_name: "",
-			group_description: "",
-		},
-	});
-	const fileInputRef = useRef<HTMLInputElement | null>(null);
+			group_description: ""
+		}
+	})
+	const fileInputRef = useRef<HTMLInputElement | null>(null)
 
 	const handleInput = () => {
-		const files = fileInputRef.current?.files;
-		if (!files) return;
-		const file = files[0];
-		const reader = new FileReader();
-		setValue("group_icon", file);
-		reader.readAsDataURL(file);
+		const files = fileInputRef.current?.files
+		if (!files) return
+		const file = files[0]
+		const reader = new FileReader()
+		setValue("group_icon", file)
+		reader.readAsDataURL(file)
 		reader.onload = (e) => {
-			setGroupIcon(e.target?.result as string);
-		};
-	};
+			setGroupIcon(e.target?.result as string)
+		}
+	}
 
 	const fileUpload = () => {
-		fileInputRef.current?.click();
-	};
+		fileInputRef.current?.click()
+	}
 	const onDelete = async (groupId: number) => {
 		try {
-			console.log(groupId);
+			console.log(groupId)
 			const response = await axios.delete(`${apiUrl}/api/group-profile`, {
-				data: { groupId },
-			});
-			alert(response.data.message);
-			navigate("/");
+				data: { groupId }
+			})
+			alert(response.data.message)
+			navigate("/")
 		} catch (e) {
-			console.log("うまく削除できませんでした", e);
+			console.log("うまく削除できませんでした", e)
 		}
-	};
+	}
 
 	const onSubmit = async ({
 		group_icon,
 		group_name,
-		group_description,
+		group_description
 	}: FormInputs) => {
 		try {
-			const token = await auth.currentUser?.getIdToken();
-			const formData = new FormData();
+			const token = await auth.currentUser?.getIdToken()
+			const formData = new FormData()
 
 			if (group_icon) {
-				formData.append("group_icon", group_icon);
+				formData.append("group_icon", group_icon)
 			}
-			formData.append("group_name", group_name);
-			formData.append("group_description", group_description);
-			formData.append("groupId", String(groupData?.id));
+			formData.append("group_name", group_name)
+			formData.append("group_description", group_description)
+			formData.append("groupId", String(groupData?.id))
 
 			for (let pair of formData.entries()) {
-				console.log(pair[0] + ": " + pair[1]);
+				console.log(pair[0] + ": " + pair[1])
 			}
-			console.log(groupData);
+			console.log(groupData)
 
 			const patchResponse = await axios.patch(
 				`${apiUrl}/api/group-profile`,
 				formData,
 				{
 					headers: {
-						Authorization: `Bearer ${token}`,
-					},
-				},
-			);
-			console.log(patchResponse.data);
-			setGroupData(patchResponse.data);
+						Authorization: `Bearer ${token}`
+					}
+				}
+			)
+			console.log(patchResponse.data)
+			setGroupData(patchResponse.data)
 		} catch (e) {
-			console.log("なんかのエラーが出ました", e);
+			console.log("なんかのエラーが出ました", e)
 		}
-	};
+	}
 	useEffect(() => {
-		(async () => {
+		;(async () => {
 			if (!user) {
-				console.log("ログインしてません");
-				return;
+				console.log("ログインしてません")
+				return
 			}
 
-			const token = await auth.currentUser?.getIdToken();
+			const token = await auth.currentUser?.getIdToken()
 			const response = await axios.get(`${apiUrl}/api/open-group`, {
 				headers: {
-					Authorization: `Bearer ${token}`,
-				},
-			});
+					Authorization: `Bearer ${token}`
+				}
+			})
 
-			setValue("group_name", response.data.group_name);
-			setValue("group_description", response.data.group_description);
-			setGroupIcon(response.data.group_icon);
-			setGroupData(response.data);
-		})();
+			setValue("group_name", response.data.group_name)
+			setValue("group_description", response.data.group_description)
+			setGroupIcon(response.data.group_icon)
+			setGroupData(response.data)
+		})()
 
 		// useEffect第二引数のuserは、user情報の取得が非同期であるためから配列にするとuser情報が取得される前にapiが叩かれてしまう。
-	}, [user]);
+	}, [user])
 
 	if (!groupData) {
-		return <Loading />;
+		return <Loading />
 	}
 
 	return (
@@ -141,7 +141,7 @@ const GroupSettings = () => {
 					alignItems: "center",
 					flexFlow: "column",
 					paddingTop: "80px",
-					paddingBottom: "80px",
+					paddingBottom: "80px"
 				}}
 			>
 				<FormControl
@@ -160,7 +160,7 @@ const GroupSettings = () => {
 							ref={fileInputRef}
 							onChange={handleInput}
 							style={{
-								display: "none",
+								display: "none"
 							}}
 						/>
 					</Box>
@@ -235,7 +235,7 @@ const GroupSettings = () => {
 			</Box>
 			<Footer />
 		</>
-	);
-};
+	)
+}
 
-export default GroupSettings;
+export default GroupSettings

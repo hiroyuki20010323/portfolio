@@ -1,15 +1,15 @@
-import { Route, Routes } from "react-router-dom";
-import { AuthProvider } from "./auth/AuthContext";
-import { SignUp } from "./auth/signUp";
-import Home from "./Home";
-import Login from "./auth/Login";
-import "./style.css";
-import Profile from "./components/Profile/index";
-import CreateGroup from "./CreateGroup";
-import Notification from "./Notification";
-import Invitations from "./Invitations";
-import GroupSettings from "./GroupSettings";
-import Task from "./Task";
+import { Route, Routes } from "react-router-dom"
+import { AuthProvider } from "./auth/AuthContext"
+import { SignUp } from "./auth/signUp"
+import Home from "./Home"
+import Login from "./auth/Login"
+import "./style.css"
+import Profile from "./components/Profile/index"
+import CreateGroup from "./CreateGroup"
+import Notification from "./Notification"
+import Invitations from "./Invitations"
+import GroupSettings from "./GroupSettings"
+import Task from "./Task"
 
 const App = () => {
 	return (
@@ -28,7 +28,7 @@ const App = () => {
 				</Routes>
 			</AuthProvider>
 		</>
-	);
-};
+	)
+}
 
-export default App;
+export default App

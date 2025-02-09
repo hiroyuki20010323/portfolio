@@ -1,8 +1,8 @@
 // Import the functions you need from the SDKs you need
-import { useState } from "react";
-import { auth, provider } from "./firebaseConfig";
-import { createUserWithEmailAndPassword, signInWithPopup } from "firebase/auth";
-import { Link, useNavigate } from "react-router-dom";
+import { useState } from "react"
+import { auth, provider } from "./firebaseConfig"
+import { createUserWithEmailAndPassword, signInWithPopup } from "firebase/auth"
+import { Link, useNavigate } from "react-router-dom"
 import {
 	AppBar,
 	Avatar,
@@ -17,95 +17,95 @@ import {
 	OutlinedInput,
 	TextField,
 	Toolbar,
-	Typography,
-} from "@mui/material";
-import VisibilityIcon from "@mui/icons-material/Visibility";
-import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
-import axios from "axios";
-import { Controller, useForm } from "react-hook-form";
-import SignUpModal from "./SignUpModal";
+	Typography
+} from "@mui/material"
+import VisibilityIcon from "@mui/icons-material/Visibility"
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff"
+import axios from "axios"
+import { Controller, useForm } from "react-hook-form"
+import SignUpModal from "./SignUpModal"
 
 type UserData = {
-	email: string;
-	password: string;
-	confirmPassword: string;
-};
+	email: string
+	password: string
+	confirmPassword: string
+}
 
 export const SignUp = () => {
-	const [showPassword, setShowPassword] = useState(false);
-	const [confirmShowPassword, setConfirmShowPassword] = useState(false);
-	const [isOpenModal, setIsOpenModal] = useState(false);
-	const apiUrl = import.meta.env.VITE_API_URL;
+	const [showPassword, setShowPassword] = useState(false)
+	const [confirmShowPassword, setConfirmShowPassword] = useState(false)
+	const [isOpenModal, setIsOpenModal] = useState(false)
+	const apiUrl = import.meta.env.VITE_API_URL
 
 	const { handleSubmit, control, watch } = useForm({
 		mode: "onSubmit",
 		defaultValues: {
 			email: "",
 			password: "",
-			confirmPassword: "",
-		},
-	});
-	const password = watch("password");
-	const navigate = useNavigate();
+			confirmPassword: ""
+		}
+	})
+	const password = watch("password")
+	const navigate = useNavigate()
 
-	const handleClickShowPassword = () => setShowPassword((prev) => !prev);
+	const handleClickShowPassword = () => setShowPassword((prev) => !prev)
 	const handleClickConfirmShowPassword = () =>
-		setConfirmShowPassword((prev) => !prev);
+		setConfirmShowPassword((prev) => !prev)
 
 	const handleMouseDownPassword = (
-		event: React.MouseEvent<HTMLButtonElement>,
+		event: React.MouseEvent<HTMLButtonElement>
 	) => {
-		event.preventDefault();
-	};
+		event.preventDefault()
+	}
 
 	const handleMouseUpPassword = (
-		event: React.MouseEvent<HTMLButtonElement>,
+		event: React.MouseEvent<HTMLButtonElement>
 	) => {
-		event.preventDefault();
-	};
+		event.preventDefault()
+	}
 
 	const handleGoogleLogin = async () => {
 		try {
-			const result = await signInWithPopup(auth, provider);
+			const result = await signInWithPopup(auth, provider)
 			const response = await axios.post(`${apiUrl}/api/user`, {
 				uid: result.user.uid,
 				displayName: result.user.displayName,
-				icon_url: result.user.photoURL,
-			});
-			console.log(response.data.message);
+				icon_url: result.user.photoURL
+			})
+			console.log(response.data.message)
 
-			navigate("/");
+			navigate("/")
 		} catch (error) {
-			console.log(error);
+			console.log(error)
 		}
-	};
+	}
 
 	const onSubmit = async ({ email, password }: UserData) => {
 		try {
 			const userCredential = await createUserWithEmailAndPassword(
 				auth,
 				email,
-				password,
-			);
+				password
+			)
 
-			const user = userCredential.user;
-			const idToken = await user.getIdToken(true);
+			const user = userCredential.user
+			const idToken = await user.getIdToken(true)
 			const response = await axios.post(
 				`${apiUrl}/auth/verify`,
 				{ message: "認証に成功しました！" },
 				{
 					headers: {
 						Authorization: `Bearer ${idToken}`,
-						"Content-Type": "application/json",
-					},
-				},
-			);
-			setIsOpenModal(true);
-			console.log(response.data);
+						"Content-Type": "application/json"
+					}
+				}
+			)
+			setIsOpenModal(true)
+			console.log(response.data)
 		} catch (e) {
-			console.log("処理がうまくいきませんでした。");
+			console.log("処理がうまくいきませんでした。")
 		}
-	};
+	}
 
 	return (
 		<Box display="flex" flexDirection="column" alignItems="center">
@@ -117,7 +117,7 @@ export const SignUp = () => {
 					height: "74px",
 					backgroundColor: "white",
 					borderBottom: "solid 2px #E0E0E0",
-					position: "fixed",
+					position: "fixed"
 				}}
 			>
 				<Toolbar
@@ -125,7 +125,7 @@ export const SignUp = () => {
 						marginTop: 2,
 						display: "flex",
 						alignItems: "center",
-						position: "relative",
+						position: "relative"
 					}}
 				>
 					<Typography
@@ -135,7 +135,7 @@ export const SignUp = () => {
 						sx={{
 							position: "absolute",
 							left: "50%",
-							transform: "translateX(-50%)",
+							transform: "translateX(-50%)"
 						}}
 					>
 						FastShare
@@ -163,8 +163,8 @@ export const SignUp = () => {
 						required: "入力は必須です!",
 						pattern: {
 							value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-							message: "有効なメールアドレスを入力してください",
-						},
+							message: "有効なメールアドレスを入力してください"
+						}
 					}}
 					render={({ field, formState: { errors } }) => (
 						<TextField
@@ -187,8 +187,8 @@ export const SignUp = () => {
 							required: "パスワードは必須です!",
 							minLength: {
 								value: 8,
-								message: "パスワードは8文字以上で入力してください!",
-							},
+								message: "パスワードは8文字以上で入力してください!"
+							}
 						}}
 						render={({ field, formState: { errors } }) => (
 							<>
@@ -233,7 +233,7 @@ export const SignUp = () => {
 						rules={{
 							required: "確認用パスワードは必須です!",
 							validate: (value) =>
-								value == password || "パスワードが一致しません",
+								value == password || "パスワードが一致しません"
 						}}
 						render={({ field, formState: { errors } }) => (
 							<>
@@ -295,8 +295,8 @@ export const SignUp = () => {
 					color: "#e3f2fd",
 					backgroundColor: "#e3f2fd",
 					"&:hover": {
-						backgroundColor: "#bbdefb",
-					},
+						backgroundColor: "#bbdefb"
+					}
 				}}
 			>
 				<Avatar
@@ -314,5 +314,5 @@ export const SignUp = () => {
 
 			{isOpenModal && <SignUpModal setIsOpenModal={setIsOpenModal} />}
 		</Box>
-	);
-};
+	)
+}

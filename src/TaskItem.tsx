@@ -1,19 +1,19 @@
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore"
 import {
 	Accordion,
 	AccordionDetails,
 	AccordionSummary,
 	Badge,
 	Box,
-	Typography,
-} from "@mui/material";
+	Typography
+} from "@mui/material"
 
-import EachTask from "./EachTask";
-import { TaskData } from "./Task";
+import EachTask from "./EachTask"
+import { TaskData } from "./Task"
 
 export type TaskItemProps = {
-	tasks: TaskData[];
-};
+	tasks: TaskData[]
+}
 
 const TaskItem: React.FC<TaskItemProps> = ({ tasks }) => {
 	return (
@@ -33,7 +33,7 @@ const TaskItem: React.FC<TaskItemProps> = ({ tasks }) => {
 								display: "flex",
 								justifyContent: "space-between",
 								alignItems: "center",
-								width: "100%",
+								width: "100%"
 							}}
 						>
 							<Typography variant="h6">
@@ -41,7 +41,7 @@ const TaskItem: React.FC<TaskItemProps> = ({ tasks }) => {
 								{new Date(task.date).toLocaleDateString("ja-JP", {
 									month: "numeric",
 									day: "numeric",
-									weekday: "short",
+									weekday: "short"
 								})}
 							</Typography>
 							<Badge
@@ -58,7 +58,7 @@ const TaskItem: React.FC<TaskItemProps> = ({ tasks }) => {
 				</Accordion>
 			))}
 		</>
-	);
-};
+	)
+}
 
-export default TaskItem;
+export default TaskItem

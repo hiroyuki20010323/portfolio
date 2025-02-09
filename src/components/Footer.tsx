@@ -2,25 +2,25 @@ import {
 	Avatar,
 	BottomNavigation,
 	BottomNavigationAction,
-	Paper,
-} from "@mui/material";
+	Paper
+} from "@mui/material"
 
-import GroupsIcon from "@mui/icons-material/Groups";
-import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
-import NotificationsIcon from "@mui/icons-material/Notifications";
-import ListAltIcon from "@mui/icons-material/ListAlt";
-import { Link } from "react-router-dom";
-import { useEffect, useState } from "react";
+import GroupsIcon from "@mui/icons-material/Groups"
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline"
+import NotificationsIcon from "@mui/icons-material/Notifications"
+import ListAltIcon from "@mui/icons-material/ListAlt"
+import { Link } from "react-router-dom"
+import { useEffect, useState } from "react"
 
 const Footer = () => {
-	const [value, setValue] = useState(location.pathname);
+	const [value, setValue] = useState(location.pathname)
 	const handleChange = (event: React.BaseSyntheticEvent, newValue: string) => {
-		event;
-		setValue(newValue);
-	};
+		event
+		setValue(newValue)
+	}
 	useEffect(() => {
-		setValue(location.pathname);
-	}, [location.pathname]);
+		setValue(location.pathname)
+	}, [location.pathname])
 	return (
 		<>
 			<Paper
@@ -34,7 +34,7 @@ const Footer = () => {
 					borderTop: "solid 2px #E0E0E0",
 					marginTop: 2,
 					height: "58px",
-					zIndex: 99,
+					zIndex: 99
 				}}
 				elevation={0}
 			>
@@ -77,7 +77,7 @@ const Footer = () => {
 				</BottomNavigation>
 			</Paper>
 		</>
-	);
-};
+	)
+}
 
-export default Footer;
+export default Footer

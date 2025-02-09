@@ -1,4 +1,4 @@
-import { Avatar, List, ListItem, Typography } from "@mui/material";
+import { Avatar, List, ListItem, Typography } from "@mui/material"
 
 const NotificationItem = () => {
 	return (
@@ -8,7 +8,7 @@ const NotificationItem = () => {
 				border: "solid 2px  #E0E0E0",
 				padding: "20px",
 				borderTop: "none",
-				overflow: "scroll",
+				overflow: "scroll"
 			}}
 		>
 			<Avatar sx={{ marginTop: "10px", marginRight: "10px", sizes: "lg" }} />
@@ -22,7 +22,7 @@ const NotificationItem = () => {
 			</ListItem>
 			<Typography variant="caption">12:00</Typography>
 		</List>
-	);
-};
+	)
+}
 
-export default NotificationItem;
+export default NotificationItem
