@@ -25,7 +25,62 @@
 	"linter": {
 		"enabled": true,
 		"rules": {
-			"recommended": true
+			"recommended": true,
+			"nursery": {
+				"noCommonJs": "error",
+				 "noSecrets": "error",
+				 "useConsistentCurlyBraces": "error"
+			},
+			"a11y": {
+        "useButtonType": "error",
+				 "noBlankTarget": "error"
+      },
+			"correctness": {
+				"noUnusedImports": "warn",
+				"noUnusedVariables": "warn",
+				"useJsxKeyInIterable": "error",
+				"noChildrenProp": "error",
+				"noVoidElementsWithChildren": "error",
+				"useExhaustiveDependencies": "warn",
+				"useHookAtTopLevel": "warn",
+				"noInvalidUseBeforeDeclaration": "error"
+			},
+			"style": {
+        "useFragmentSyntax": "error",
+				"useWhile": "error",
+				"useConsistentArrayType": {
+          "level": "error",
+          "options": {
+            "syntax": "generic"
+          }
+        },
+				"useExportType": "error",
+				"useImportType": "error",
+				"useDefaultParameterLast": "error",
+				 "useAsConstAssertion": "error",
+				 "useShorthandFunctionType": "error"
+      },
+			"suspicious": {
+        "noDuplicateJsxProps": "error",
+				 "noArrayIndexKey": "error",
+					"noEmptyInterface": "error",
+					 "noExplicitAny": "error",
+					 "noExtraNonNullAssertion": "error",
+					  "noRedeclare": "error",
+						 "useAwait": "warn"
+      },
+			"complexity": {
+        "noUselessFragments": "error",
+				"noBannedTypes": "error",
+				"useLiteralKeys": "error",
+				"noUselessTypeConstraint": "error",
+				"noUselessEmptyExport": "error"
+      },
+			"security": {
+        "noDangerouslySetInnerHtml": "error",
+				 "noDangerouslySetInnerHtmlWithChildren": "error"
+      }
+
 		}
 	},
 	"javascript": {
