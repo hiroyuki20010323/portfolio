@@ -9,28 +9,28 @@ import {
 	DialogTitle,
 	Paper,
 	TextField,
-	Typography,
-} from "@mui/material";
-import { useState } from "react";
-import Task from "./Task";
+	Typography
+} from "@mui/material"
+import { useState } from "react"
+import Task from "./Task"
 
 type TaskItems = {
-	taskItems: Task[];
-};
+	taskItems: Task[]
+}
 
 const EachTask: React.FC<TaskItems> = ({ taskItems }) => {
-	const [open, setOpen] = useState(false);
-	const [selectedTask, setSelectedTask] = useState<Task | null>(null);
+	const [open, setOpen] = useState(false)
+	const [selectedTask, setSelectedTask] = useState<Task | null>(null)
 
 	const handleOpen = (task: Task) => {
-		setSelectedTask(task);
-		setOpen(true);
-	};
+		setSelectedTask(task)
+		setOpen(true)
+	}
 
 	const handleClose = () => {
-		setOpen(false);
-		setSelectedTask(null);
-	};
+		setOpen(false)
+		setSelectedTask(null)
+	}
 
 	return (
 		<>
@@ -46,14 +46,14 @@ const EachTask: React.FC<TaskItems> = ({ taskItems }) => {
 								alignItems: "center",
 								padding: 3,
 								borderRadius: "4px",
-								border: "1px solid #E0E0E0",
+								border: "1px solid #E0E0E0"
 							}}
 						>
 							<Avatar src={task.createdUser.user.icon_url} />
 							<Typography
 								sx={{
 									flex: 1,
-									textAlign: "center",
+									textAlign: "center"
 								}}
 								variant="h6"
 							>
@@ -69,14 +69,14 @@ const EachTask: React.FC<TaskItems> = ({ taskItems }) => {
 								PaperProps={{
 									sx: {
 										width: "100vw",
-										borderRadius: "8px",
-									},
+										borderRadius: "8px"
+									}
 								}}
 							>
 								<Box
 									sx={{
 										display: "flex",
-										alignItems: "center",
+										alignItems: "center"
 									}}
 								>
 									<Avatar
@@ -86,7 +86,7 @@ const EachTask: React.FC<TaskItems> = ({ taskItems }) => {
 									<DialogTitle
 										sx={{
 											flex: 1,
-											textAlign: "center",
+											textAlign: "center"
 										}}
 									>
 										{selectedTask.taskTitle}
@@ -100,7 +100,7 @@ const EachTask: React.FC<TaskItems> = ({ taskItems }) => {
 										alignItems: "center",
 										width: "100%",
 										maxWidth: "800px",
-										margin: "0 auto",
+										margin: "0 auto"
 									}}
 								>
 									<TextField
@@ -112,7 +112,7 @@ const EachTask: React.FC<TaskItems> = ({ taskItems }) => {
 										sx={{
 											marginBottom: 2,
 											width: "100%",
-											maxWidth: "500px",
+											maxWidth: "500px"
 										}}
 									/>
 
@@ -124,7 +124,7 @@ const EachTask: React.FC<TaskItems> = ({ taskItems }) => {
 											sx={{
 												width: "100%",
 												maxWidth: "500px",
-												objectFit: "contain",
+												objectFit: "contain"
 											}}
 										/>
 									)}
@@ -135,7 +135,7 @@ const EachTask: React.FC<TaskItems> = ({ taskItems }) => {
 											month: "numeric",
 											day: "numeric",
 											hour: "2-digit",
-											minute: "2-digit",
+											minute: "2-digit"
 										})}
 									</Typography>
 								</DialogContent>
@@ -145,10 +145,10 @@ const EachTask: React.FC<TaskItems> = ({ taskItems }) => {
 							</Dialog>
 						)}
 					</Box>
-				);
+				)
 			})}
 		</>
-	);
-};
+	)
+}
 
-export default EachTask;
+export default EachTask

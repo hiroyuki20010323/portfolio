@@ -1,7 +1,7 @@
-import { Box, TextField, Button } from "@mui/material";
+import { Box, TextField, Button } from "@mui/material"
 
-import Footer from "./components/Footer";
-import Header from "./components/Header";
+import Footer from "./components/Footer"
+import Header from "./components/Header"
 
 const Invitations = () => {
 	return (
@@ -13,7 +13,7 @@ const Invitations = () => {
 					alignItems: "center",
 					flexFlow: "column",
 					paddingTop: "80px",
-					paddingBottom: "80px",
+					paddingBottom: "80px"
 				}}
 			>
 				<TextField
@@ -29,7 +29,7 @@ const Invitations = () => {
 			</Box>
 			<Footer />
 		</>
-	);
-};
+	)
+}
 
-export default Invitations;
+export default Invitations

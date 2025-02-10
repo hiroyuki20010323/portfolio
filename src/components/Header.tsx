@@ -1,12 +1,12 @@
-import { AppBar, Avatar, Toolbar, Typography } from "@mui/material";
-import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { AppBar, Avatar, Toolbar, Typography } from "@mui/material"
+import { useEffect, useState } from "react"
+import { Link } from "react-router-dom"
 
 const Header = () => {
-	const [pathName, setPathName] = useState(location.pathname);
+	const [pathName, setPathName] = useState(location.pathname)
 	useEffect(() => {
-		setPathName(location.pathname);
-	}, [location.pathname]);
+		setPathName(location.pathname)
+	}, [location.pathname])
 	return (
 		<>
 			{/* TODO:原始的な方法でアイコンの位置などを調整しているので後で修正する */}
@@ -18,7 +18,7 @@ const Header = () => {
 					height: "74px",
 					backgroundColor: "white",
 					borderBottom: "solid 2px #E0E0E0",
-					position: "fixed",
+					position: "fixed"
 				}}
 			>
 				<Toolbar
@@ -26,7 +26,7 @@ const Header = () => {
 						marginTop: 2,
 						display: "flex",
 						alignItems: "center",
-						position: "relative",
+						position: "relative"
 					}}
 				>
 					<Typography
@@ -36,7 +36,7 @@ const Header = () => {
 						sx={{
 							position: "absolute",
 							left: "50%",
-							transform: "translateX(-50%)",
+							transform: "translateX(-50%)"
 						}}
 					>
 						{pathName === "/"
@@ -63,7 +63,7 @@ const Header = () => {
 				</Toolbar>
 			</AppBar>
 		</>
-	);
-};
+	)
+}
 
-export default Header;
+export default Header

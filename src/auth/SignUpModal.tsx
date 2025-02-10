@@ -1,51 +1,51 @@
-import { Box, FormControl, TextField } from "@mui/material";
-import React, { useState } from "react";
-import { Controller, useForm } from "react-hook-form";
-import Button from "@mui/material/Button";
-import Typography from "@mui/material/Typography";
-import Modal from "@mui/material/Modal";
-import { useNavigate } from "react-router-dom";
-import { auth } from "./firebaseConfig";
-import { updateProfile } from "firebase/auth";
-import axios from "axios";
+import { Box, FormControl, TextField } from "@mui/material"
+import React, { useState } from "react"
+import { Controller, useForm } from "react-hook-form"
+import Button from "@mui/material/Button"
+import Typography from "@mui/material/Typography"
+import Modal from "@mui/material/Modal"
+import { useNavigate } from "react-router-dom"
+import { auth } from "./firebaseConfig"
+import { updateProfile } from "firebase/auth"
+import axios from "axios"
 
 type ModalControl = {
-	setIsOpenModal: React.Dispatch<React.SetStateAction<boolean>>;
-};
+	setIsOpenModal: React.Dispatch<React.SetStateAction<boolean>>
+}
 
 const SignUpModal = ({ setIsOpenModal }: ModalControl) => {
 	const { control, handleSubmit } = useForm({
 		mode: "onSubmit",
 		defaultValues: {
-			user_name: "",
-		},
-	});
-	const apiUrl = import.meta.env.VITE_API_URL;
+			user_name: ""
+		}
+	})
+	const apiUrl = import.meta.env.VITE_API_URL
 
-	const navigate = useNavigate();
+	const navigate = useNavigate()
 
-	const [open] = useState(true);
+	const [open] = useState(true)
 
 	// TODOuseStateを使用せずmodalを管理できないか・・・
 	const onSubmit = async (data: { user_name: string }) => {
 		if (auth.currentUser) {
-			const uid = auth.currentUser?.uid;
+			const uid = auth.currentUser?.uid
 			await updateProfile(auth.currentUser, {
-				displayName: data.user_name,
-			});
+				displayName: data.user_name
+			})
 
 			const response = await axios.post(`${apiUrl}/api/user`, {
 				uid: uid,
 				displayName: data.user_name,
-				icon_url: null,
-			});
-			console.log(response.data.message);
+				icon_url: null
+			})
+			console.log(response.data.message)
 		}
-		console.log(data);
-		setIsOpenModal(false);
-		console.log(auth.currentUser);
-		navigate("/");
-	};
+		console.log(data)
+		setIsOpenModal(false)
+		console.log(auth.currentUser)
+		navigate("/")
+	}
 	return (
 		<Box>
 			<Modal
@@ -64,7 +64,7 @@ const SignUpModal = ({ setIsOpenModal }: ModalControl) => {
 						bgcolor: "background.paper",
 						boxShadow: 24,
 						p: 4,
-						borderRadius: 2,
+						borderRadius: 2
 					}}
 				>
 					<FormControl
@@ -103,7 +103,7 @@ const SignUpModal = ({ setIsOpenModal }: ModalControl) => {
 				</Box>
 			</Modal>
 		</Box>
-	);
-};
+	)
+}
 
-export default SignUpModal;
+export default SignUpModal

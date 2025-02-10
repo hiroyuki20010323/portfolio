@@ -8,61 +8,61 @@ import {
 	Modal,
 	Tab,
 	TextField,
-	Typography,
-} from "@mui/material";
-import Header from "./components/Header";
-import Footer from "./components/Footer";
-import TabPanel from "@mui/lab/TabPanel";
-import { useEffect, useRef, useState } from "react";
-import TabContext from "@mui/lab/TabContext";
-import { TabList } from "@mui/lab";
-import AddIcon from "@mui/icons-material/Add";
-import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
-import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
-import TaskItem from "./TaskItem";
-import axios from "axios";
-import { Controller, useForm } from "react-hook-form";
-import { auth } from "./auth/firebaseConfig";
-import Loading from "./Loading";
+	Typography
+} from "@mui/material"
+import Header from "./components/Header"
+import Footer from "./components/Footer"
+import TabPanel from "@mui/lab/TabPanel"
+import { useEffect, useRef, useState } from "react"
+import TabContext from "@mui/lab/TabContext"
+import { TabList } from "@mui/lab"
+import AddIcon from "@mui/icons-material/Add"
+import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew"
+import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos"
+import TaskItem from "./TaskItem"
+import axios from "axios"
+import { Controller, useForm } from "react-hook-form"
+import { auth } from "./auth/firebaseConfig"
+import Loading from "./Loading"
 
 export type TaskData = {
-	id: number;
-	date: Date;
-	tasks: Task[];
-};
+	id: number
+	date: Date
+	tasks: Task[]
+}
 
 type Task = {
-	id: number;
-	taskTitle: string;
-	taskImageUrl: string | null;
-	taskDetail: string;
-	period: string;
+	id: number
+	taskTitle: string
+	taskImageUrl: string | null
+	taskDetail: string
+	period: string
 	createdUser: {
 		user: {
-			id: string;
-			user_name: string;
-			icon_url: string;
-		};
-	};
-};
+			id: string
+			user_name: string
+			icon_url: string
+		}
+	}
+}
 
 type TaskFormInputs = {
-	taskTitle: string;
-	taskDetail: string;
-	taskImage: File | string | null;
-	dueDate: string;
-	dueTime: string;
-};
+	taskTitle: string
+	taskDetail: string
+	taskImage: File | string | null
+	dueDate: string
+	dueTime: string
+}
 
 const Task = () => {
-	const apiUrl = import.meta.env.VITE_API_URL;
+	const apiUrl = import.meta.env.VITE_API_URL
 
-	const fileInputRef = useRef<HTMLInputElement | null>(null);
-	const [image, setImage] = useState<string | undefined>(undefined);
-	const [taskValue, setTaskValue] = useState<string>("1");
-	const [open, setOpen] = useState<boolean>(false);
-	const [tasks, setTasks] = useState<TaskData[]>([]);
-	const [isLoading, setIsLoading] = useState(true);
+	const fileInputRef = useRef<HTMLInputElement | null>(null)
+	const [image, setImage] = useState<string | undefined>(undefined)
+	const [taskValue, setTaskValue] = useState<string>("1")
+	const [open, setOpen] = useState<boolean>(false)
+	const [tasks, setTasks] = useState<TaskData[]>([])
+	const [isLoading, setIsLoading] = useState(true)
 	const { control, handleSubmit, setValue } = useForm<TaskFormInputs>({
 		mode: "onSubmit",
 		defaultValues: {
@@ -70,125 +70,125 @@ const Task = () => {
 			taskDetail: "",
 			taskImage: "",
 			dueDate: "",
-			dueTime: "",
-		},
-	});
+			dueTime: ""
+		}
+	})
 
 	useEffect(() => {
 		const getTasks = async () => {
 			try {
-				setIsLoading(true);
-				const token = await auth.currentUser?.getIdToken();
+				setIsLoading(true)
+				const token = await auth.currentUser?.getIdToken()
 				const taskData = await axios.get(`${apiUrl}/api/task`, {
 					headers: {
-						Authorization: `Bearer ${token}`,
-					},
-				});
-				console.log(taskData.data);
-				setTasks(taskData.data);
+						Authorization: `Bearer ${token}`
+					}
+				})
+				console.log(taskData.data)
+				setTasks(taskData.data)
 			} catch (e) {
-				console.error("タスクの取得に失敗しました。");
+				console.error("タスクの取得に失敗しました。")
 			} finally {
-				setIsLoading(false);
+				setIsLoading(false)
 			}
-		};
-		getTasks();
-	}, []);
+		}
+		getTasks()
+	}, [])
 
 	const handleInput = () => {
-		const files = fileInputRef.current?.files;
-		if (!files) return;
-		const file = files[0];
-		setValue("taskImage", file);
-		const reader = new FileReader();
-		reader.readAsDataURL(file);
+		const files = fileInputRef.current?.files
+		if (!files) return
+		const file = files[0]
+		setValue("taskImage", file)
+		const reader = new FileReader()
+		reader.readAsDataURL(file)
 		reader.onload = (e) => {
-			setImage(String(e.target?.result));
-		};
-	};
+			setImage(String(e.target?.result))
+		}
+	}
 
 	const fileUpload = () => {
-		fileInputRef.current?.click();
-	};
+		fileInputRef.current?.click()
+	}
 
 	const onSubmit = async ({
 		taskTitle,
 		taskDetail,
 		taskImage,
 		dueDate,
-		dueTime,
+		dueTime
 	}: TaskFormInputs) => {
 		try {
-			const token = await auth.currentUser?.getIdToken();
-			const formData = new FormData();
+			const token = await auth.currentUser?.getIdToken()
+			const formData = new FormData()
 
 			if (taskImage) {
-				formData.append("taskImage", taskImage);
+				formData.append("taskImage", taskImage)
 			}
-			formData.append("taskTitle", taskTitle);
-			formData.append("taskDetail", taskDetail);
-			formData.append("dueDate", dueDate);
-			formData.append("dueTime", dueTime);
+			formData.append("taskTitle", taskTitle)
+			formData.append("taskDetail", taskDetail)
+			formData.append("dueDate", dueDate)
+			formData.append("dueTime", dueTime)
 
 			for (let pair of formData.entries()) {
-				console.log(pair[0] + ": " + pair[1]);
+				console.log(pair[0] + ": " + pair[1])
 			}
 
 			const response = await axios.post(`${apiUrl}/api/task`, formData, {
 				headers: {
-					Authorization: `Bearer ${token}`,
-				},
-			});
-			handleCloseModal();
+					Authorization: `Bearer ${token}`
+				}
+			})
+			handleCloseModal()
 			const taskData = await axios.get(`${apiUrl}/api/task`, {
 				headers: {
-					Authorization: `Bearer ${token}`,
-				},
-			});
-			setTasks(taskData.data);
-			console.log(response);
+					Authorization: `Bearer ${token}`
+				}
+			})
+			setTasks(taskData.data)
+			console.log(response)
 		} catch (e) {
-			console.log("なんかのエラーが出ました", e);
+			console.log("なんかのエラーが出ました", e)
 		}
-	};
+	}
 
 	const handleChange = (event: React.SyntheticEvent, newValue: string) => {
-		setTaskValue(newValue);
-		event;
-	};
+		setTaskValue(newValue)
+		event
+	}
 
 	const handleOpenModal = () => {
-		setOpen(true);
-	};
+		setOpen(true)
+	}
 	const handleCloseModal = () => {
-		setOpen(false);
-	};
+		setOpen(false)
+	}
 
 	const getPrevWeekTasks = async () => {
-		const token = await auth.currentUser?.getIdToken();
-		const currentDate = tasks[0].date;
+		const token = await auth.currentUser?.getIdToken()
+		const currentDate = tasks[0].date
 		const response = await axios.get(`${apiUrl}/api/task/prev-week`, {
 			headers: {
-				Authorization: `Bearer ${token}`,
+				Authorization: `Bearer ${token}`
 			},
-			params: { date: currentDate },
-		});
-		setTasks(response.data);
-		console.log(tasks[0].date);
-	};
+			params: { date: currentDate }
+		})
+		setTasks(response.data)
+		console.log(tasks[0].date)
+	}
 
 	const getNextWeekTasks = async () => {
-		const token = await auth.currentUser?.getIdToken();
-		const currentDate = tasks[6].date;
+		const token = await auth.currentUser?.getIdToken()
+		const currentDate = tasks[6].date
 		const response = await axios.get(`${apiUrl}/api/task/next-week`, {
 			headers: {
-				Authorization: `Bearer ${token}`,
+				Authorization: `Bearer ${token}`
 			},
-			params: { date: currentDate },
-		});
-		setTasks(response.data);
-		console.log(tasks[6].date);
-	};
+			params: { date: currentDate }
+		})
+		setTasks(response.data)
+		console.log(tasks[6].date)
+	}
 
 	const style = {
 		position: "absolute",
@@ -199,8 +199,8 @@ const Task = () => {
 		bgcolor: "background.paper",
 		border: "2px solid #000",
 		boxShadow: 24,
-		p: 4,
-	};
+		p: 4
+	}
 
 	return (
 		<>
@@ -211,7 +211,7 @@ const Task = () => {
 					sx={{
 						overflow: "scroll",
 						paddingTop: "80px",
-						paddingBottom: "120px",
+						paddingBottom: "120px"
 					}}
 				>
 					<TabList onChange={handleChange} centered>
@@ -229,7 +229,7 @@ const Task = () => {
 									alignItems: "center",
 									height: "28vh",
 									flexFlow: "column",
-									marginBottom: 40,
+									marginBottom: 40
 								}}
 							>
 								<Loading />
@@ -252,7 +252,7 @@ const Task = () => {
 						sx={{
 							position: "fixed",
 							bottom: 80,
-							right: 16,
+							right: 16
 						}}
 						onClick={handleOpenModal}
 					>
@@ -274,14 +274,14 @@ const Task = () => {
 									width: "100%",
 									height: "calc(100vh - 100px)",
 									overflowY: "auto",
-									overflowX: "hidden",
+									overflowX: "hidden"
 								}}
 							>
 								<Box
 									sx={{
 										display: "flex",
 										alignItems: "center",
-										marginBottom: 4,
+										marginBottom: 4
 									}}
 								>
 									<Typography
@@ -307,8 +307,8 @@ const Task = () => {
 										rules={{
 											required: {
 												value: true,
-												message: "タイトルの入力は流石に必須です",
-											},
+												message: "タイトルの入力は流石に必須です"
+											}
 										}}
 										render={({ field, formState: { errors } }) => (
 											<TextField
@@ -370,8 +370,8 @@ const Task = () => {
 										rules={{
 											required: {
 												value: true,
-												message: "期限日は必ず指定しましょう",
-											},
+												message: "期限日は必ず指定しましょう"
+											}
 										}}
 										control={control}
 										render={({ field, formState: { errors } }) => (
@@ -406,7 +406,7 @@ const Task = () => {
 						sx={{
 							display: "flex",
 							alignItems: "center",
-							justifyContent: "center",
+							justifyContent: "center"
 						}}
 					>
 						<IconButton
@@ -422,7 +422,7 @@ const Task = () => {
 								marginRight: "10px",
 								marginLeft: "10px",
 								width: "200px",
-								textAlign: "center",
+								textAlign: "center"
 							}}
 							variant="subtitle1"
 						>
@@ -431,13 +431,13 @@ const Task = () => {
 									{new Date(tasks[0].date).toLocaleDateString("ja-JP", {
 										month: "numeric",
 										day: "numeric",
-										weekday: "short",
+										weekday: "short"
 									})}
 									&nbsp;~&nbsp;
 									{new Date(tasks[6].date).toLocaleDateString("ja-JP", {
 										month: "numeric",
 										day: "numeric",
-										weekday: "short",
+										weekday: "short"
 									})}
 								</>
 							) : (
@@ -458,12 +458,12 @@ const Task = () => {
 						sx={{
 							display: "flex",
 							alignItems: "center",
-							justifyContent: "center",
+							justifyContent: "center"
 						}}
 					>
 						{tasks.length > 0
 							? new Date(tasks[0].date).toLocaleDateString("ja-JP", {
-									year: "numeric",
+									year: "numeric"
 								})
 							: ""}
 					</Typography>
@@ -472,7 +472,7 @@ const Task = () => {
 
 			<Footer />
 		</>
-	);
-};
+	)
+}
 
-export default Task;
+export default Task

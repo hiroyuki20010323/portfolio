@@ -1,7 +1,7 @@
-import { signInWithEmailAndPassword, signInWithPopup } from "firebase/auth";
-import React, { useState } from "react";
-import { auth, provider } from "./firebaseConfig";
-import { Link, useNavigate } from "react-router-dom";
+import { signInWithEmailAndPassword, signInWithPopup } from "firebase/auth"
+import React, { useState } from "react"
+import { auth, provider } from "./firebaseConfig"
+import { Link, useNavigate } from "react-router-dom"
 
 import {
 	Box,
@@ -16,45 +16,45 @@ import {
 	Divider,
 	Avatar,
 	AppBar,
-	Toolbar,
-} from "@mui/material";
-import VisibilityIcon from "@mui/icons-material/Visibility";
-import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
-import axios from "axios";
+	Toolbar
+} from "@mui/material"
+import VisibilityIcon from "@mui/icons-material/Visibility"
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff"
+import axios from "axios"
 
 const Login = () => {
-	const [showPassword, setShowPassword] = useState(false);
-	const [email, setEmail] = useState<string>("");
-	const [password, setPassword] = useState<string>("");
-	const apiUrl = import.meta.env.VITE_API_URL;
+	const [showPassword, setShowPassword] = useState(false)
+	const [email, setEmail] = useState<string>("")
+	const [password, setPassword] = useState<string>("")
+	const apiUrl = import.meta.env.VITE_API_URL
 
-	const handleClickShowPassword = () => setShowPassword((prev) => !prev);
+	const handleClickShowPassword = () => setShowPassword((prev) => !prev)
 
 	const handleMouseDownPassword = (
-		event: React.MouseEvent<HTMLButtonElement>,
+		event: React.MouseEvent<HTMLButtonElement>
 	) => {
-		event.preventDefault();
-	};
+		event.preventDefault()
+	}
 
 	const handleMouseUpPassword = (
-		event: React.MouseEvent<HTMLButtonElement>,
+		event: React.MouseEvent<HTMLButtonElement>
 	) => {
-		event.preventDefault();
-	};
-	const navigate = useNavigate();
+		event.preventDefault()
+	}
+	const navigate = useNavigate()
 
 	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-		event.preventDefault();
+		event.preventDefault()
 
 		try {
 			const userCredential = await signInWithEmailAndPassword(
 				auth,
 				email,
-				password,
-			);
-			const user = userCredential.user;
+				password
+			)
+			const user = userCredential.user
 
-			const idToken = await user.getIdToken(true);
+			const idToken = await user.getIdToken(true)
 
 			const response = await axios.post(
 				`${apiUrl}/auth/verify`,
@@ -62,47 +62,47 @@ const Login = () => {
 				{
 					headers: {
 						Authorization: `Bearer ${idToken}`,
-						"Content-Type": "application/json",
-					},
-				},
-			);
-			console.log(response.data.message);
+						"Content-Type": "application/json"
+					}
+				}
+			)
+			console.log(response.data.message)
 
-			navigate("/");
+			navigate("/")
 		} catch (e) {
-			alert("IDまたはPassWordが違います");
+			alert("IDまたはPassWordが違います")
 		}
-	};
+	}
 
 	const handleChangeEmail = (
-		event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+		event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
 	) => {
-		setEmail(event.target.value);
-	};
+		setEmail(event.target.value)
+	}
 
 	const handleChangePassword = (
-		event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+		event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
 	) => {
-		setPassword(event.target.value);
-	};
+		setPassword(event.target.value)
+	}
 
 	const handleGoogleLogin = async () => {
 		try {
-			const userData = await signInWithPopup(auth, provider);
-			const { displayName, photoURL, uid } = userData.user;
+			const userData = await signInWithPopup(auth, provider)
+			const { displayName, photoURL, uid } = userData.user
 			const responseData = axios.post(`${apiUrl}/api/user`, {
 				displayName,
 				photoURL,
-				uid,
-			});
+				uid
+			})
 
-			console.log((await responseData).data.message);
+			console.log((await responseData).data.message)
 
-			navigate("/");
+			navigate("/")
 		} catch (error) {
-			console.log(error);
+			console.log(error)
 		}
-	};
+	}
 
 	return (
 		<Box display="flex" flexDirection="column" alignItems="center">
@@ -114,7 +114,7 @@ const Login = () => {
 					height: "74px",
 					backgroundColor: "white",
 					borderBottom: "solid 2px #E0E0E0",
-					position: "fixed",
+					position: "fixed"
 				}}
 			>
 				<Toolbar
@@ -122,7 +122,7 @@ const Login = () => {
 						marginTop: 2,
 						display: "flex",
 						alignItems: "center",
-						position: "relative",
+						position: "relative"
 					}}
 				>
 					<Typography
@@ -132,7 +132,7 @@ const Login = () => {
 						sx={{
 							position: "absolute",
 							left: "50%",
-							transform: "translateX(-50%)",
+							transform: "translateX(-50%)"
 						}}
 					>
 						FastShare
@@ -202,8 +202,8 @@ const Login = () => {
 						color: "#e3f2fd",
 						backgroundColor: "#e3f2fd",
 						"&:hover": {
-							backgroundColor: "#bbdefb",
-						},
+							backgroundColor: "#bbdefb"
+						}
 					}}
 				>
 					<Avatar
@@ -220,7 +220,7 @@ const Login = () => {
 				</Button>
 			</Box>
 		</Box>
-	);
-};
+	)
+}
 
-export default Login;
+export default Login

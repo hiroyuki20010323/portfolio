@@ -1,32 +1,32 @@
-import { Avatar, Box } from "@mui/material";
-import { useRef, useState } from "react";
-import { UseFormSetValue } from "react-hook-form";
+import { Avatar, Box } from "@mui/material"
+import { useRef, useState } from "react"
+import { UseFormSetValue } from "react-hook-form"
 
 type AvatarDataProps = {
-	setValue: UseFormSetValue<any>;
-	value: string;
-};
+	setValue: UseFormSetValue<any>
+	value: string
+}
 
 const GroupIcon = ({ setValue, value }: AvatarDataProps) => {
-	const fileInputRef = useRef<HTMLInputElement | null>(null);
-	const [icon, setIcon] = useState<string | undefined>(value);
+	const fileInputRef = useRef<HTMLInputElement | null>(null)
+	const [icon, setIcon] = useState<string | undefined>(value)
 
 	const handleInput = () => {
-		const files = fileInputRef.current?.files;
-		if (!files) return;
-		const file = files[0];
-		setValue("group_icon", file);
-		const reader = new FileReader();
-		reader.readAsDataURL(file);
+		const files = fileInputRef.current?.files
+		if (!files) return
+		const file = files[0]
+		setValue("group_icon", file)
+		const reader = new FileReader()
+		reader.readAsDataURL(file)
 		reader.onload = (e) => {
-			setIcon(String(e.target?.result));
-			console.log(icon);
-		};
-	};
+			setIcon(String(e.target?.result))
+			console.log(icon)
+		}
+	}
 
 	const fileUpload = () => {
-		fileInputRef.current?.click();
-	};
+		fileInputRef.current?.click()
+	}
 
 	return (
 		<Box>
@@ -40,11 +40,11 @@ const GroupIcon = ({ setValue, value }: AvatarDataProps) => {
 				ref={fileInputRef}
 				onChange={handleInput}
 				style={{
-					display: "none",
+					display: "none"
 				}}
 			/>
 		</Box>
-	);
-};
+	)
+}
 
-export default GroupIcon;
+export default GroupIcon
