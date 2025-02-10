@@ -1,4 +1,4 @@
-import Header from "./components/Header"
+import Header from "../../../components/Header"
 import {
 	Avatar,
 	AvatarGroup,
@@ -8,14 +8,14 @@ import {
 	TextField,
 	Typography
 } from "@mui/material"
-import Footer from "./components/Footer"
+import Footer from "../../../components/Footer"
 import { Link, useNavigate } from "react-router-dom"
-import { useAuthContext } from "./auth/AuthContext"
+import { useAuthContext } from "../../auth/components/AuthContext"
 import { useEffect, useRef, useState } from "react"
-import { auth } from "./auth/firebaseConfig"
+import { auth } from "../../../config/firebaseConfig"
 import axios from "axios"
 import { Group } from "./Home"
-import Loading from "./Loading"
+import Loading from "../../../components/Loading"
 import { Controller, useForm } from "react-hook-form"
 
 type FormInputs = {

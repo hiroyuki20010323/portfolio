@@ -1,10 +1,10 @@
 import { useNavigate } from "react-router-dom"
-import { useAuthContext } from "./auth/AuthContext"
+import { useAuthContext } from "../../auth/components/AuthContext"
 import { Avatar, Box, Button, List, ListItem, Typography } from "@mui/material"
-import Header from "./components/Header"
-import Footer from "./components/Footer"
+import Header from "../../../components/Header"
+import Footer from "../../../components/Footer"
 import { useEffect, useState } from "react"
-import { auth } from "./auth/firebaseConfig"
+import { auth } from "../../../config/firebaseConfig"
 import axios from "axios"
 
 export type Group = {

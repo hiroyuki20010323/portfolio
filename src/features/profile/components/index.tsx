@@ -1,14 +1,14 @@
-import Header from "../Header"
-import Footer from "../Footer"
+import Header from "../../../components/Header"
+import Footer from "../../../components/Footer"
 import { useNavigate } from "react-router-dom"
 import { signOut } from "firebase/auth"
-import { auth } from "../../auth/firebaseConfig"
+import { auth } from "../../../config/firebaseConfig"
 import { Box, Button, FormControl, TextField } from "@mui/material"
 import UserIcon from "./UserIcon"
 import { useForm, Controller } from "react-hook-form"
 import axios from "axios"
 import { useEffect, useState } from "react"
-import { useAuthContext } from "../../auth/AuthContext"
+import { useAuthContext } from "../../auth/components/AuthContext"
 
 export type UserProfileData = {
 	userName: string

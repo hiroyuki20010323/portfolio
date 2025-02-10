@@ -5,9 +5,10 @@ import Button from "@mui/material/Button"
 import Typography from "@mui/material/Typography"
 import Modal from "@mui/material/Modal"
 import { useNavigate } from "react-router-dom"
-import { auth } from "./firebaseConfig"
+
 import { updateProfile } from "firebase/auth"
 import axios from "axios"
+import { auth } from "../../../config/firebaseConfig"
 
 type ModalControl = {
 	setIsOpenModal: React.Dispatch<React.SetStateAction<boolean>>

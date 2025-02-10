@@ -10,8 +10,8 @@ import {
 	TextField,
 	Typography
 } from "@mui/material"
-import Header from "./components/Header"
-import Footer from "./components/Footer"
+import Header from "../../../components/Header"
+import Footer from "../../../components/Footer"
 import TabPanel from "@mui/lab/TabPanel"
 import { useEffect, useRef, useState } from "react"
 import TabContext from "@mui/lab/TabContext"
@@ -22,8 +22,8 @@ import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos"
 import TaskItem from "./TaskItem"
 import axios from "axios"
 import { Controller, useForm } from "react-hook-form"
-import { auth } from "./auth/firebaseConfig"
-import Loading from "./Loading"
+import { auth } from "../../../config/firebaseConfig"
+import Loading from "../../../components/Loading"
 
 export type TaskData = {
 	id: number

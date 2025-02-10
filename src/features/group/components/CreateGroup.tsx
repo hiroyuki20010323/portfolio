@@ -1,11 +1,11 @@
 import { Box, Button, FormControl, TextField } from "@mui/material"
-import Header from "./components/Header"
-import Footer from "./components/Footer"
+import Header from "../../../components/Header"
+import Footer from "../../../components/Footer"
 import { Controller, useForm } from "react-hook-form"
 import axios from "axios"
-import GroupIcon from "../src/components/GroupIcon"
+import GroupIcon from "./GroupIcon"
 import { useState } from "react"
-import { useAuthContext } from "./auth/AuthContext"
+import { useAuthContext } from "../../auth/components/AuthContext"
 import { useNavigate } from "react-router-dom"
 
 export type GroupProfileData = {

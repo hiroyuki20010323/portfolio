@@ -1,6 +1,6 @@
 // Import the functions you need from the SDKs you need
 import { useState } from "react"
-import { auth, provider } from "./firebaseConfig"
+import { auth, provider } from "../../../config/firebaseConfig"
 import { createUserWithEmailAndPassword, signInWithPopup } from "firebase/auth"
 import { Link, useNavigate } from "react-router-dom"
 import {
@@ -24,6 +24,7 @@ import VisibilityOffIcon from "@mui/icons-material/VisibilityOff"
 import axios from "axios"
 import { Controller, useForm } from "react-hook-form"
 import SignUpModal from "./SignUpModal"
+
 
 type UserData = {
 	email: string

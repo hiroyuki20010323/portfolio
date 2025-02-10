@@ -6,7 +6,7 @@ import {
 	useState
 } from "react"
 import { onAuthStateChanged, User } from "firebase/auth"
-import { auth } from "./firebaseConfig"
+import { auth } from "../../../config/firebaseConfig"
 
 const AuthContext = createContext<User | null>(null)
 
