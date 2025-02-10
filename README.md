@@ -108,10 +108,8 @@ erDiagram
         String task_detail
         String task_image_url
         DateTime period
-        String participation_created_user_id FK
-        Int participation_created_group_id FK
-        String participation_assignee_user_id FK
-        Int participation_assignee_group_id FK
+        String requester_participations_id FK
+        String contractor_participations_id FK
         Int calendar_id FK
         DateTime created_at
         DateTime updated_at
@@ -123,9 +121,6 @@ erDiagram
     calendars ||--o{ tasks : "1つの日付に複数のタスクを登録可能"
     participations ||--o{ tasks : "参加者は複数のタスクを作成・割当可能"
 
-    %% タスクとユーザー／グループ間の直接的な関係（概念上の関連）
-    users ||--o{ tasks : "タスクは作成者／担当者のユーザー情報と関連"
-    groups ||--o{ tasks : "タスクは作成グループ／担当グループと関連"
 ```
 ## インフラ構成
 <img width="100%" alt="Image" src="https://github.com/user-attachments/assets/a3e9d3d1-9be3-40b5-9867-54080844004c" />
