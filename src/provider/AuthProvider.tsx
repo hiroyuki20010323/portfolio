@@ -41,6 +41,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 	if (loading) {
 		return <Loading />
 	}
-	// TODO ローディング画面を作る。
+	
 	return <AuthContext.Provider value={user}>{children}</AuthContext.Provider>
 }

@@ -6,10 +6,11 @@ import Typography from "@mui/material/Typography"
 import Modal from "@mui/material/Modal"
 import { useNavigate } from "react-router-dom"
 import { updateProfile } from "firebase/auth"
-import axios from "axios"
+
 import { auth } from "../../../config/firebaseConfig"
 import Loading from "../../../components/Loading"
-import { API_URL } from "../../../config"
+
+import { api } from "../../../lib/axios"
 
 type ModalControl = {
 	setIsOpenModal: React.Dispatch<React.SetStateAction<boolean>>
@@ -43,7 +44,7 @@ const SignUpModal = ({
 				displayName: data.user_name
 			})
 
-			const response = await axios.post(`${API_URL}/api/user`, {
+			const response = await api.post(`/api/user`, {
 				uid: uid,
 				displayName: data.user_name,
 				icon_url: null

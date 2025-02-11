@@ -20,9 +20,10 @@ import {
 } from "@mui/material"
 import VisibilityIcon from "@mui/icons-material/Visibility"
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff"
-import axios from "axios"
+// import axios from "axios"
 import Loading from "../../../components/Loading"
-import { API_URL } from "../../../config"
+// import { API_URL } from "../../../config"
+import { api, CustomAxiosRequestConfig } from "../../../lib/axios"
 
 const Login = () => {
 	const [showPassword, setShowPassword] = useState(false)
@@ -54,17 +55,16 @@ const Login = () => {
 				email,
 				password
 			)
-			const user = userCredential.user
-			const idToken = await user.getIdToken(true)
-			const response = await axios.post(
-				`${API_URL}/auth/verify`,
+			
+			const response = await api.post(
+				`/auth/verify`,
 				{ message: "認証に成功しました！" },
 				{
-					headers: {
-						Authorization: `Bearer ${idToken}`,
-						"Content-Type": "application/json"
+					tokenProvider: {
+						type: 'specific',
+						user: userCredential.user  
 					}
-				}
+				}as CustomAxiosRequestConfig
 			)
 			console.log(response.data.message)
 			navigate("/")
@@ -91,7 +91,7 @@ const Login = () => {
 		try {
 			const userData = await signInWithPopup(auth, provider)
 			const { displayName, photoURL, uid } = userData.user
-			const responseData = axios.post(`${API_URL}/api/user`, {
+			const responseData = api.post(`/api/user`, {
 				displayName,
 				photoURL,
 				uid

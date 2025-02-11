@@ -1,4 +1,3 @@
-// Import the functions you need from the SDKs you need
 import { useState } from "react"
 import { auth, provider } from "../../../config/firebaseConfig"
 import { createUserWithEmailAndPassword, signInWithPopup } from "firebase/auth"
@@ -21,11 +20,10 @@ import {
 } from "@mui/material"
 import VisibilityIcon from "@mui/icons-material/Visibility"
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff"
-import axios from "axios"
 import { Controller, useForm } from "react-hook-form"
 import SignUpModal from "./SignUpModal"
 import Loading from "../../../components/Loading"
-import { API_URL } from "../../../config"
+import { api, CustomAxiosRequestConfig } from "../../../lib/axios"
 
 type UserData = {
 	email: string
@@ -69,7 +67,7 @@ export const SignUp = () => {
 	const handleGoogleLogin = async () => {
 		try {
 			const result = await signInWithPopup(auth, provider)
-			const response = await axios.post(`${API_URL}/api/user`, {
+			const response = await api.post(`/api/user`, {
 				uid: result.user.uid,
 				displayName: result.user.displayName,
 				icon_url: result.user.photoURL
@@ -91,17 +89,16 @@ export const SignUp = () => {
 				password
 			)
 
-			const user = userCredential.user
-			const idToken = await user.getIdToken(true)
-			const response = await axios.post(
-				`${API_URL}/auth/verify`,
+	
+			const response = await api.post(
+				`/auth/verify`,
 				{ message: "認証に成功しました！" },
 				{
-					headers: {
-						Authorization: `Bearer ${idToken}`,
-						"Content-Type": "application/json"
+					tokenProvider: {
+						type: 'specific',
+						user: userCredential.user  
 					}
-				}
+				}as CustomAxiosRequestConfig
 			)
 			setAuthLoading(false)
 			setIsOpenModal(true)
