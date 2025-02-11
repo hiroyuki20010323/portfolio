@@ -4,8 +4,9 @@ import { Avatar, Box, Button, List, ListItem, Typography } from "@mui/material"
 import Header from "../../../components/Header"
 import Footer from "../../../components/Footer"
 import { useEffect, useState } from "react"
-import { auth } from "../../../config/firebaseConfig"
-import axios from "axios"
+
+
+import { api } from "../../../lib/axios"
 
 export type Group = {
 	id: number
@@ -17,21 +18,17 @@ export type Group = {
 const Home = () => {
 	const navigate = useNavigate()
 	const user = useAuthContext()
-	const apiUrl = import.meta.env.VITE_API_URL
+	
 	const [groups, setGroups] = useState<Group[]>([])
 	useEffect(() => {
-		;(async () => {
+		(async () => {
 			if (!user) {
 				console.log("ログインしてません")
 				return
 			}
 
-			const token = await auth.currentUser?.getIdToken()
-			const response = await axios.get(`${apiUrl}/api/group`, {
-				headers: {
-					Authorization: `Bearer ${token}`
-				}
-			})
+			
+			const response = await api.get(`/api/group`)
 			setGroups(response.data)
 		})()
 
@@ -40,11 +37,10 @@ const Home = () => {
 
 	const openGroup = async (groupId: number) => {
 		try {
-			const token = await auth.currentUser?.getIdToken()
-			const response = await axios.post(
-				`${apiUrl}/api/open-group`,
-				{ groupId },
-				{ headers: { Authorization: `Bearer ${token}` } }
+			
+			const response = await api.post(
+				`/api/open-group`,
+				{ groupId }
 			)
 			console.log("グループを開きました")
 			alert(response.data.message)

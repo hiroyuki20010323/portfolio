@@ -2,11 +2,12 @@ import { Box, Button, FormControl, TextField } from "@mui/material"
 import Header from "../../../components/Header"
 import Footer from "../../../components/Footer"
 import { Controller, useForm } from "react-hook-form"
-import axios from "axios"
 import GroupIcon from "./GroupIcon"
 import { useState } from "react"
 import { useAuthContext } from "../../auth/components/AuthContext"
 import { useNavigate } from "react-router-dom"
+import { api, CustomAxiosRequestConfig } from "../../../lib/axios"
+
 
 export type GroupProfileData = {
 	group_name: string
@@ -17,7 +18,6 @@ export type GroupProfileData = {
 const CreateGroup = () => {
 	const navigate = useNavigate()
 	const user = useAuthContext()
-	const apiUrl = import.meta.env.VITE_API_URL
 	const { control, handleSubmit, setValue } = useForm({
 		mode: "onSubmit",
 		defaultValues: {
@@ -46,9 +46,10 @@ const CreateGroup = () => {
 				console.log(pair[0] + ": " + pair[1])
 			}
 
-			const groupPostResponse = await axios.post(
-				`${apiUrl}/api/group`,
-				formData
+			const groupPostResponse = await api.post(
+				`/api/group`,
+				formData,
+				{ requiresAuth: false } as CustomAxiosRequestConfig,
 			)
 			console.log(groupPostResponse.data)
 			navigate("/")

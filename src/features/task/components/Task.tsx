@@ -20,10 +20,10 @@ import AddIcon from "@mui/icons-material/Add"
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew"
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos"
 import TaskItem from "./TaskItem"
-import axios from "axios"
 import { Controller, useForm } from "react-hook-form"
-import { auth } from "../../../config/firebaseConfig"
+
 import Loading from "../../../components/Loading"
+import { api } from "../../../lib/axios"
 
 export type TaskData = {
 	id: number
@@ -55,7 +55,7 @@ type TaskFormInputs = {
 }
 
 const Task = () => {
-	const apiUrl = import.meta.env.VITE_API_URL
+	
 
 	const fileInputRef = useRef<HTMLInputElement | null>(null)
 	const [image, setImage] = useState<string | undefined>(undefined)
@@ -78,12 +78,7 @@ const Task = () => {
 		const getTasks = async () => {
 			try {
 				setIsLoading(true)
-				const token = await auth.currentUser?.getIdToken()
-				const taskData = await axios.get(`${apiUrl}/api/task`, {
-					headers: {
-						Authorization: `Bearer ${token}`
-					}
-				})
+				const taskData = await api.get(`/api/task`)
 				console.log(taskData.data)
 				setTasks(taskData.data)
 			} catch (e) {
@@ -119,7 +114,7 @@ const Task = () => {
 		dueTime
 	}: TaskFormInputs) => {
 		try {
-			const token = await auth.currentUser?.getIdToken()
+			
 			const formData = new FormData()
 
 			if (taskImage) {
@@ -134,17 +129,9 @@ const Task = () => {
 				console.log(pair[0] + ": " + pair[1])
 			}
 
-			const response = await axios.post(`${apiUrl}/api/task`, formData, {
-				headers: {
-					Authorization: `Bearer ${token}`
-				}
-			})
+			const response = await api.post(`/api/task`, formData)
 			handleCloseModal()
-			const taskData = await axios.get(`${apiUrl}/api/task`, {
-				headers: {
-					Authorization: `Bearer ${token}`
-				}
-			})
+			const taskData = await api.get(`/api/task`)
 			setTasks(taskData.data)
 			console.log(response)
 		} catch (e) {
@@ -165,12 +152,9 @@ const Task = () => {
 	}
 
 	const getPrevWeekTasks = async () => {
-		const token = await auth.currentUser?.getIdToken()
+		
 		const currentDate = tasks[0].date
-		const response = await axios.get(`${apiUrl}/api/task/prev-week`, {
-			headers: {
-				Authorization: `Bearer ${token}`
-			},
+		const response = await api.get(`/api/task/prev-week`, {
 			params: { date: currentDate }
 		})
 		setTasks(response.data)
@@ -178,12 +162,9 @@ const Task = () => {
 	}
 
 	const getNextWeekTasks = async () => {
-		const token = await auth.currentUser?.getIdToken()
+		
 		const currentDate = tasks[6].date
-		const response = await axios.get(`${apiUrl}/api/task/next-week`, {
-			headers: {
-				Authorization: `Bearer ${token}`
-			},
+		const response = await api.get(`/api/task/next-week`, {
 			params: { date: currentDate }
 		})
 		setTasks(response.data)

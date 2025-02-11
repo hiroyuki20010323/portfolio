@@ -12,11 +12,11 @@ import Footer from "../../../components/Footer"
 import { Link, useNavigate } from "react-router-dom"
 import { useAuthContext } from "../../auth/components/AuthContext"
 import { useEffect, useRef, useState } from "react"
-import { auth } from "../../../config/firebaseConfig"
-import axios from "axios"
+
 import { Group } from "./Home"
 import Loading from "../../../components/Loading"
 import { Controller, useForm } from "react-hook-form"
+import { api, CustomAxiosRequestConfig } from "../../../lib/axios"
 
 type FormInputs = {
 	group_name: string
@@ -27,7 +27,7 @@ type FormInputs = {
 const GroupSettings = () => {
 	const navigate = useNavigate()
 	const user = useAuthContext()
-	const apiUrl = import.meta.env.VITE_API_URL
+	
 	const [groupData, setGroupData] = useState<Group | null>(null)
 	const [groupIcon, setGroupIcon] = useState<string | null>(null)
 	const { control, handleSubmit, setValue } = useForm<FormInputs>({
@@ -58,9 +58,11 @@ const GroupSettings = () => {
 	const onDelete = async (groupId: number) => {
 		try {
 			console.log(groupId)
-			const response = await axios.delete(`${apiUrl}/api/group-profile`, {
-				data: { groupId }
-			})
+			const response = await api.delete(`/api/group-profile`, {
+				data: { groupId },
+				requiresAuth: false
+			} as CustomAxiosRequestConfig)
+
 			alert(response.data.message)
 			navigate("/")
 		} catch (e) {
@@ -74,7 +76,7 @@ const GroupSettings = () => {
 		group_description
 	}: FormInputs) => {
 		try {
-			const token = await auth.currentUser?.getIdToken()
+			
 			const formData = new FormData()
 
 			if (group_icon) {
@@ -89,14 +91,10 @@ const GroupSettings = () => {
 			}
 			console.log(groupData)
 
-			const patchResponse = await axios.patch(
-				`${apiUrl}/api/group-profile`,
+			const patchResponse = await api.patch(
+				`/api/group-profile`,
 				formData,
-				{
-					headers: {
-						Authorization: `Bearer ${token}`
-					}
-				}
+			
 			)
 			console.log(patchResponse.data)
 			setGroupData(patchResponse.data)
@@ -111,12 +109,8 @@ const GroupSettings = () => {
 				return
 			}
 
-			const token = await auth.currentUser?.getIdToken()
-			const response = await axios.get(`${apiUrl}/api/open-group`, {
-				headers: {
-					Authorization: `Bearer ${token}`
-				}
-			})
+			
+			const response = await api.get(`/api/open-group`)
 
 			setValue("group_name", response.data.group_name)
 			setValue("group_description", response.data.group_description)
