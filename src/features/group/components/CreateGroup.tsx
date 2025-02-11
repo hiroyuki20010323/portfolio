@@ -4,10 +4,9 @@ import Footer from "../../../components/Footer"
 import { Controller, useForm } from "react-hook-form"
 import GroupIcon from "./GroupIcon"
 import { useState } from "react"
-import { useAuthContext } from "../../auth/components/AuthContext"
+import { useAuthContext } from "../../../provider/AuthProvider"
 import { useNavigate } from "react-router-dom"
 import { api, CustomAxiosRequestConfig } from "../../../lib/axios"
-
 
 export type GroupProfileData = {
 	group_name: string
@@ -46,11 +45,9 @@ const CreateGroup = () => {
 				console.log(pair[0] + ": " + pair[1])
 			}
 
-			const groupPostResponse = await api.post(
-				`/api/group`,
-				formData,
-				{ requiresAuth: false } as CustomAxiosRequestConfig,
-			)
+			const groupPostResponse = await api.post(`/api/group`, formData, {
+				requiresAuth: false
+			} as CustomAxiosRequestConfig)
 			console.log(groupPostResponse.data)
 			navigate("/")
 		} catch (error) {

@@ -24,7 +24,8 @@ import VisibilityOffIcon from "@mui/icons-material/VisibilityOff"
 import axios from "axios"
 import { Controller, useForm } from "react-hook-form"
 import SignUpModal from "./SignUpModal"
-
+import Loading from "../../../components/Loading"
+import { API_URL } from "../../../config"
 
 type UserData = {
 	email: string
@@ -36,7 +37,7 @@ export const SignUp = () => {
 	const [showPassword, setShowPassword] = useState(false)
 	const [confirmShowPassword, setConfirmShowPassword] = useState(false)
 	const [isOpenModal, setIsOpenModal] = useState(false)
-	const apiUrl = import.meta.env.VITE_API_URL
+	const [authLoading, setAuthLoading] = useState(false)
 
 	const { handleSubmit, control, watch } = useForm({
 		mode: "onSubmit",
@@ -68,7 +69,7 @@ export const SignUp = () => {
 	const handleGoogleLogin = async () => {
 		try {
 			const result = await signInWithPopup(auth, provider)
-			const response = await axios.post(`${apiUrl}/api/user`, {
+			const response = await axios.post(`${API_URL}/api/user`, {
 				uid: result.user.uid,
 				displayName: result.user.displayName,
 				icon_url: result.user.photoURL
@@ -83,6 +84,7 @@ export const SignUp = () => {
 
 	const onSubmit = async ({ email, password }: UserData) => {
 		try {
+			setAuthLoading(true)
 			const userCredential = await createUserWithEmailAndPassword(
 				auth,
 				email,
@@ -92,7 +94,7 @@ export const SignUp = () => {
 			const user = userCredential.user
 			const idToken = await user.getIdToken(true)
 			const response = await axios.post(
-				`${apiUrl}/auth/verify`,
+				`${API_URL}/auth/verify`,
 				{ message: "認証に成功しました！" },
 				{
 					headers: {
@@ -101,11 +103,16 @@ export const SignUp = () => {
 					}
 				}
 			)
+			setAuthLoading(false)
 			setIsOpenModal(true)
 			console.log(response.data)
 		} catch (e) {
 			console.log("処理がうまくいきませんでした。")
 		}
+	}
+
+	if (authLoading) {
+		return <Loading />
 	}
 
 	return (
@@ -313,7 +320,13 @@ export const SignUp = () => {
 				</Typography>
 			</Button>
 
-			{isOpenModal && <SignUpModal setIsOpenModal={setIsOpenModal} />}
+			{isOpenModal && (
+				<SignUpModal
+					setIsOpenModal={setIsOpenModal}
+					setAuthLoading={setAuthLoading}
+					authLoading={authLoading}
+				/>
+			)}
 		</Box>
 	)
 }

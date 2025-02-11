@@ -21,12 +21,14 @@ import {
 import VisibilityIcon from "@mui/icons-material/Visibility"
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff"
 import axios from "axios"
+import Loading from "../../../components/Loading"
+import { API_URL } from "../../../config"
 
 const Login = () => {
 	const [showPassword, setShowPassword] = useState(false)
 	const [email, setEmail] = useState<string>("")
 	const [password, setPassword] = useState<string>("")
-	const apiUrl = import.meta.env.VITE_API_URL
+	const [authLoading, setAuthLoading] = useState(false)
 
 	const handleClickShowPassword = () => setShowPassword((prev) => !prev)
 
@@ -45,19 +47,17 @@ const Login = () => {
 
 	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault()
-
 		try {
+			setAuthLoading(true)
 			const userCredential = await signInWithEmailAndPassword(
 				auth,
 				email,
 				password
 			)
 			const user = userCredential.user
-
 			const idToken = await user.getIdToken(true)
-
 			const response = await axios.post(
-				`${apiUrl}/auth/verify`,
+				`${API_URL}/auth/verify`,
 				{ message: "認証に成功しました！" },
 				{
 					headers: {
@@ -67,10 +67,11 @@ const Login = () => {
 				}
 			)
 			console.log(response.data.message)
-
 			navigate("/")
 		} catch (e) {
 			alert("IDまたはPassWordが違います")
+		} finally {
+			setAuthLoading(false)
 		}
 	}
 
@@ -90,7 +91,7 @@ const Login = () => {
 		try {
 			const userData = await signInWithPopup(auth, provider)
 			const { displayName, photoURL, uid } = userData.user
-			const responseData = axios.post(`${apiUrl}/api/user`, {
+			const responseData = axios.post(`${API_URL}/api/user`, {
 				displayName,
 				photoURL,
 				uid
@@ -102,6 +103,10 @@ const Login = () => {
 		} catch (error) {
 			console.log(error)
 		}
+	}
+
+	if (authLoading) {
+		return <Loading />
 	}
 
 	return (

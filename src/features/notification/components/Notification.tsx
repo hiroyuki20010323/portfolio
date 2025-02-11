@@ -3,7 +3,6 @@ import Header from "../../../components/Header"
 import NotificationItem from "./NotificationItem"
 import Footer from "../../../components/Footer"
 
-
 const Notification = () => {
 	return (
 		<Box>

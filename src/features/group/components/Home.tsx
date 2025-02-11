@@ -1,10 +1,9 @@
 import { useNavigate } from "react-router-dom"
-import { useAuthContext } from "../../auth/components/AuthContext"
+import { useAuthContext } from "../../../provider/AuthProvider"
 import { Avatar, Box, Button, List, ListItem, Typography } from "@mui/material"
 import Header from "../../../components/Header"
 import Footer from "../../../components/Footer"
 import { useEffect, useState } from "react"
-
 
 import { api } from "../../../lib/axios"
 
@@ -18,16 +17,15 @@ export type Group = {
 const Home = () => {
 	const navigate = useNavigate()
 	const user = useAuthContext()
-	
+
 	const [groups, setGroups] = useState<Group[]>([])
 	useEffect(() => {
-		(async () => {
+		;(async () => {
 			if (!user) {
 				console.log("ログインしてません")
 				return
 			}
 
-			
 			const response = await api.get(`/api/group`)
 			setGroups(response.data)
 		})()
@@ -37,11 +35,7 @@ const Home = () => {
 
 	const openGroup = async (groupId: number) => {
 		try {
-			
-			const response = await api.post(
-				`/api/open-group`,
-				{ groupId }
-			)
+			const response = await api.post(`/api/open-group`, { groupId })
 			console.log("グループを開きました")
 			alert(response.data.message)
 		} catch (e) {

@@ -7,7 +7,7 @@ import { Box, Button, FormControl, TextField } from "@mui/material"
 import UserIcon from "./UserIcon"
 import { useForm, Controller } from "react-hook-form"
 import { useEffect, useState } from "react"
-import { useAuthContext } from "../../auth/components/AuthContext"
+import { useAuthContext } from "../../../provider/AuthProvider"
 import { api } from "../../../lib/axios"
 
 export type UserProfileData = {
@@ -22,7 +22,6 @@ const Profile = () => {
 		signOut(auth)
 		navigate("/login")
 	}
-
 
 	const { control, handleSubmit, setValue } = useForm({
 		mode: "onSubmit",
@@ -44,10 +43,7 @@ const Profile = () => {
 				console.log(pair[0] + ": " + pair[1])
 			}
 
-			
-
-			const patchResponse = await api.patch(`/api/profile`,
-				formData)
+			const patchResponse = await api.patch(`/api/profile`, formData)
 			console.log(patchResponse.data)
 
 			const getResponse = await api.get(`/api/profile`)
@@ -63,13 +59,12 @@ const Profile = () => {
 	}
 
 	useEffect(() => {
-		(async () => {
+		;(async () => {
 			if (!user) {
 				console.log("ログインしてません")
 				return
 			}
 
-	
 			const getResponse = await api.get(`/api/profile`)
 
 			const { newUserName, fileUrl } = getResponse.data

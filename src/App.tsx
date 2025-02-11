@@ -1,11 +1,11 @@
-import { AuthProvider } from "./features/auth/components/AuthContext"
+import { AuthProvider } from "./provider/AuthProvider"
 import AppRoutes from "./routes/AppRoutes"
 
 const App = () => {
 	return (
 		<>
 			<AuthProvider>
-			<AppRoutes />
+				<AppRoutes />
 			</AuthProvider>
 		</>
 	)

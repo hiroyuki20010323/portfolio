@@ -55,8 +55,6 @@ type TaskFormInputs = {
 }
 
 const Task = () => {
-	
-
 	const fileInputRef = useRef<HTMLInputElement | null>(null)
 	const [image, setImage] = useState<string | undefined>(undefined)
 	const [taskValue, setTaskValue] = useState<string>("1")
@@ -114,7 +112,6 @@ const Task = () => {
 		dueTime
 	}: TaskFormInputs) => {
 		try {
-			
 			const formData = new FormData()
 
 			if (taskImage) {
@@ -152,7 +149,6 @@ const Task = () => {
 	}
 
 	const getPrevWeekTasks = async () => {
-		
 		const currentDate = tasks[0].date
 		const response = await api.get(`/api/task/prev-week`, {
 			params: { date: currentDate }
@@ -162,7 +158,6 @@ const Task = () => {
 	}
 
 	const getNextWeekTasks = async () => {
-		
 		const currentDate = tasks[6].date
 		const response = await api.get(`/api/task/next-week`, {
 			params: { date: currentDate }

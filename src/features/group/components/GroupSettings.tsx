@@ -10,7 +10,7 @@ import {
 } from "@mui/material"
 import Footer from "../../../components/Footer"
 import { Link, useNavigate } from "react-router-dom"
-import { useAuthContext } from "../../auth/components/AuthContext"
+import { useAuthContext } from "../../../provider/AuthProvider"
 import { useEffect, useRef, useState } from "react"
 
 import { Group } from "./Home"
@@ -27,7 +27,7 @@ type FormInputs = {
 const GroupSettings = () => {
 	const navigate = useNavigate()
 	const user = useAuthContext()
-	
+
 	const [groupData, setGroupData] = useState<Group | null>(null)
 	const [groupIcon, setGroupIcon] = useState<string | null>(null)
 	const { control, handleSubmit, setValue } = useForm<FormInputs>({
@@ -76,7 +76,6 @@ const GroupSettings = () => {
 		group_description
 	}: FormInputs) => {
 		try {
-			
 			const formData = new FormData()
 
 			if (group_icon) {
@@ -91,11 +90,7 @@ const GroupSettings = () => {
 			}
 			console.log(groupData)
 
-			const patchResponse = await api.patch(
-				`/api/group-profile`,
-				formData,
-			
-			)
+			const patchResponse = await api.patch(`/api/group-profile`, formData)
 			console.log(patchResponse.data)
 			setGroupData(patchResponse.data)
 		} catch (e) {
@@ -109,7 +104,6 @@ const GroupSettings = () => {
 				return
 			}
 
-			
 			const response = await api.get(`/api/open-group`)
 
 			setValue("group_name", response.data.group_name)
