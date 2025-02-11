@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { auth, provider } from "../../../config/firebaseConfig"
 import { createUserWithEmailAndPassword, signInWithPopup } from "firebase/auth"
-import { Link, useNavigate } from "react-router-dom"
+import { Link } from "react-router-dom"
 import {
 	AppBar,
 	Avatar,
@@ -24,6 +24,7 @@ import { Controller, useForm } from "react-hook-form"
 import SignUpModal from "./SignUpModal"
 import Loading from "../../../components/Loading"
 import { api, CustomAxiosRequestConfig } from "../../../lib/axios"
+import { useNavigation } from "../../../hooks/useNavigation"
 
 type UserData = {
 	email: string
@@ -46,7 +47,7 @@ export const SignUp = () => {
 		}
 	})
 	const password = watch("password")
-	const navigate = useNavigate()
+	const {toHome}=useNavigation()
 
 	const handleClickShowPassword = () => setShowPassword((prev) => !prev)
 	const handleClickConfirmShowPassword = () =>
@@ -73,8 +74,8 @@ export const SignUp = () => {
 				icon_url: result.user.photoURL
 			})
 			console.log(response.data.message)
-
-			navigate("/")
+     
+			toHome()
 		} catch (error) {
 			console.log(error)
 		}

@@ -12,7 +12,7 @@ export type InternalAxiosRequestConfig = OriginalInternalAxiosRequestConfig & {
 }
 
 type TokenProvider = {
-  type: 'specific';
+  type:  'specific';
   user?: User;  
 }
 

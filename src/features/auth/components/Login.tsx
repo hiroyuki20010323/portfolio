@@ -1,7 +1,7 @@
-import { signInWithEmailAndPassword, signInWithPopup } from "firebase/auth"
+import {  signInWithPopup } from "firebase/auth"
 import React, { useState } from "react"
 import { auth, provider } from "../../../config/firebaseConfig"
-import { Link, useNavigate } from "react-router-dom"
+import { Link } from "react-router-dom"
 
 import {
 	Box,
@@ -20,16 +20,20 @@ import {
 } from "@mui/material"
 import VisibilityIcon from "@mui/icons-material/Visibility"
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff"
-// import axios from "axios"
+
 import Loading from "../../../components/Loading"
-// import { API_URL } from "../../../config"
-import { api, CustomAxiosRequestConfig } from "../../../lib/axios"
+
+import { api } from "../../../lib/axios"
+import { useNavigation } from "../../../hooks/useNavigation"
+import { useLogin } from "../hooks/useLogin"
 
 const Login = () => {
 	const [showPassword, setShowPassword] = useState(false)
 	const [email, setEmail] = useState<string>("")
 	const [password, setPassword] = useState<string>("")
-	const [authLoading, setAuthLoading] = useState(false)
+	// const [authLoading, setAuthLoading] = useState(false)
+	const { toHome } = useNavigation()
+	const { login, authLoading } = useLogin();
 
 	const handleClickShowPassword = () => setShowPassword((prev) => !prev)
 
@@ -44,35 +48,11 @@ const Login = () => {
 	) => {
 		event.preventDefault()
 	}
-	const navigate = useNavigate()
+	
 
 	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault()
-		try {
-			setAuthLoading(true)
-			const userCredential = await signInWithEmailAndPassword(
-				auth,
-				email,
-				password
-			)
-			
-			const response = await api.post(
-				`/auth/verify`,
-				{ message: "認証に成功しました！" },
-				{
-					tokenProvider: {
-						type: 'specific',
-						user: userCredential.user  
-					}
-				}as CustomAxiosRequestConfig
-			)
-			console.log(response.data.message)
-			navigate("/")
-		} catch (e) {
-			alert("IDまたはPassWordが違います")
-		} finally {
-			setAuthLoading(false)
-		}
+		await login(email,password)
 	}
 
 	const handleChangeEmail = (
@@ -99,7 +79,7 @@ const Login = () => {
 
 			console.log((await responseData).data.message)
 
-			navigate("/")
+			toHome()
 		} catch (error) {
 			console.log(error)
 		}
