@@ -1,13 +1,43 @@
-import axios from "axios";
 import { API_URL } from "../config";
-// import { auth } from "../config/firebaseConfig";
+import axios, {  InternalAxiosRequestConfig as OriginalInternalAxiosRequestConfig } from 'axios';
+import { auth } from "../config/firebaseConfig";
 
 
+type InternalAxiosRequestConfig = OriginalInternalAxiosRequestConfig & {
+  requiresAuth?: boolean;
+}
 
-
-
-// const token = await auth.currentUser?.getIdToken()
 export const api = axios.create({
   baseURL: API_URL,
+  headers: {
+    'Content-Type': 'application/json',
+    'Accept': 'application/json',
+  }
 }) 
+
+api.interceptors.request.use((config) => {
+  if (config.data instanceof FormData) {
+    config.headers['Content-Type'] = 'multipart/form-data';
+  }
+  return config;
+});
+
+api.interceptors.request.use(
+  async (config: InternalAxiosRequestConfig) => {
+    if (config.requiresAuth !== false) {
+      
+      const token = await auth.currentUser?.getIdToken()
+      if (token && !config.headers?.Authorization) {
+        config.headers = config.headers || {};
+        config.headers.Authorization = `Bearer ${token}`;
+      }
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
+
+
+
 

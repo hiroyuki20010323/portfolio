@@ -6,9 +6,9 @@ import { auth } from "../../../config/firebaseConfig"
 import { Box, Button, FormControl, TextField } from "@mui/material"
 import UserIcon from "./UserIcon"
 import { useForm, Controller } from "react-hook-form"
-import axios from "axios"
 import { useEffect, useState } from "react"
 import { useAuthContext } from "../../auth/components/AuthContext"
+import { api } from "../../../lib/axios"
 
 export type UserProfileData = {
 	userName: string
@@ -22,7 +22,7 @@ const Profile = () => {
 		signOut(auth)
 		navigate("/login")
 	}
-	const apiUrl = import.meta.env.VITE_API_URL
+
 
 	const { control, handleSubmit, setValue } = useForm({
 		mode: "onSubmit",
@@ -44,24 +44,13 @@ const Profile = () => {
 				console.log(pair[0] + ": " + pair[1])
 			}
 
-			const token = await auth.currentUser?.getIdToken()
+			
 
-			const patchResponse = await axios.patch(
-				`${apiUrl}/api/profile`,
-				formData,
-				{
-					headers: {
-						Authorization: `Bearer ${token}`
-					}
-				}
-			)
+			const patchResponse = await api.patch(`/api/profile`,
+				formData)
 			console.log(patchResponse.data)
 
-			const getResponse = await axios.get(`${apiUrl}/api/profile`, {
-				headers: {
-					Authorization: `Bearer ${token}`
-				}
-			})
+			const getResponse = await api.get(`/api/profile`)
 
 			const { newUserName, fileUrl } = getResponse.data
 			setFileUrl(fileUrl)
@@ -74,18 +63,14 @@ const Profile = () => {
 	}
 
 	useEffect(() => {
-		;(async () => {
+		(async () => {
 			if (!user) {
 				console.log("ログインしてません")
 				return
 			}
 
-			const token = await auth.currentUser?.getIdToken()
-			const getResponse = await axios.get(`${apiUrl}/api/profile`, {
-				headers: {
-					Authorization: `Bearer ${token}`
-				}
-			})
+	
+			const getResponse = await api.get(`/api/profile`)
 
 			const { newUserName, fileUrl } = getResponse.data
 
