@@ -1,7 +1,7 @@
 import { useState } from "react"
-import { AuthRepos } from "../api/Auth"
 import { useNavigation } from "../../../hooks/useNavigation"
 import { SignUpModalData } from "../components/SignUpModal"
+import { AuthRepos } from "../api/auth"
 
 export const useAuth = () => {
 	const [authLoading, setAuthLoading] = useState(false)
@@ -22,17 +22,17 @@ export const useAuth = () => {
 
 	const handleGoogleLogin = async () => {
 		try {
-			AuthRepos.googleAuth()
+			await AuthRepos.googleAuth()
 			toHome()
 		} catch (error) {
 			console.log(error)
 		}
 	}
 
-	const signUp = (email: string, password: string) => {
+	const signUp = async(email: string, password: string) => {
 		try {
 			setAuthLoading(true)
-			AuthRepos.signUp(email, password)
+			await AuthRepos.signUp(email, password)
 			setAuthLoading(false)
 			setIsOpenModal(true)
 		} catch (e) {
@@ -42,7 +42,7 @@ export const useAuth = () => {
 
 	const inputUserModal = async (data: SignUpModalData) => {
 		setAuthLoading(true)
-		AuthRepos.updateUserName(data)
+		await AuthRepos.updateUserName(data)
 		setAuthLoading(false)
 		setIsOpenModal(false)
 		toHome()
