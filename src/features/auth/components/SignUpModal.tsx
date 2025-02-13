@@ -1,28 +1,22 @@
 import { Box, FormControl, TextField } from "@mui/material"
-import React from "react"
 import { Controller, useForm } from "react-hook-form"
 import Button from "@mui/material/Button"
 import Typography from "@mui/material/Typography"
 import Modal from "@mui/material/Modal"
-import { useNavigate } from "react-router-dom"
-import { updateProfile } from "firebase/auth"
 
-import { auth } from "../../../config/firebaseConfig"
 import Loading from "../../../components/Loading"
 
-import { api } from "../../../lib/axios"
+import { useAuth } from "../hooks/useAuth"
 
 type ModalControl = {
-	setIsOpenModal: React.Dispatch<React.SetStateAction<boolean>>
-	setAuthLoading: React.Dispatch<React.SetStateAction<boolean>>
 	authLoading: boolean
 }
 
-const SignUpModal = ({
-	setIsOpenModal,
-	setAuthLoading,
-	authLoading
-}: ModalControl) => {
+export type SignUpModalData = {
+	user_name: string
+}
+
+const SignUpModal = ({ authLoading }: ModalControl) => {
 	const { control, handleSubmit } = useForm({
 		mode: "onSubmit",
 		defaultValues: {
@@ -30,33 +24,12 @@ const SignUpModal = ({
 		}
 	})
 
-	const navigate = useNavigate()
+	const { inputUserModal } = useAuth()
 
 	// モーダルをtrueにして表示させる
 	const open = true
 
-	// TODOuseStateを使用せずmodalを管理できないか・・・
-	const onSubmit = async (data: { user_name: string }) => {
-		setAuthLoading(true)
-		if (auth.currentUser) {
-			const uid = auth.currentUser?.uid
-			await updateProfile(auth.currentUser, {
-				displayName: data.user_name
-			})
-
-			const response = await api.post(`/api/user`, {
-				uid: uid,
-				displayName: data.user_name,
-				icon_url: null
-			})
-			console.log(response.data.message)
-		}
-		console.log(data)
-		setAuthLoading(false)
-		setIsOpenModal(false)
-		console.log(auth.currentUser)
-		navigate("/")
-	}
+	const onSubmit = (data: SignUpModalData) => inputUserModal(data)
 
 	if (authLoading) {
 		return <Loading />

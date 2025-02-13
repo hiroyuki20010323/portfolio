@@ -1,4 +1,3 @@
-import React, { useState } from "react"
 import { Link } from "react-router-dom"
 import {
 	Box,
@@ -19,73 +18,30 @@ import {
 import VisibilityIcon from "@mui/icons-material/Visibility"
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff"
 import Loading from "../../../components/Loading"
-import { useNavigation } from "../../../hooks/useNavigation"
-import { useLogin } from "../hooks/useLogin"
-import { AuthRepos } from "../api/Auth"
-import { usePassword } from "../hooks/useForm"
+import { usePasswordVisibility } from "../hooks/useForm"
 import { Controller, useForm } from "react-hook-form"
+import { useAuth } from "../hooks/useAuth"
 
-export type LoginUserData ={
-	email:string,
-	password:string
+export type LoginUserData = {
+	email: string
+	password: string
 }
 
 const Login = () => {
-
-  // const [email, setEmail] = useState<string>("")
-	// const [password, setPassword] = useState<string>("")
-	const { toHome } = useNavigation()
-	const { login, authLoading } = useLogin();
-	const {showPassword,controlPassword}=usePassword();
-	const { control, handleSubmit} = useForm({
+	const { login, authLoading, handleGoogleLogin } = useAuth()
+	const { showPassword, togglePassword } = usePasswordVisibility()
+	const { control, handleSubmit } = useForm({
 		mode: "onSubmit",
 		defaultValues: {
-			password:"",
-		  email: ""
+			password: "",
+			email: ""
 		}
 	})
-	
 
-	
+	const handleClickShowPassword = () => togglePassword()
 
-	const handleClickShowPassword = () => controlPassword();
-
-	const handleMouseDownPassword = (
-		event: React.MouseEvent<HTMLButtonElement>
-	) => {
-		event.preventDefault()
-	}
-
-	const handleMouseUpPassword = (
-		event: React.MouseEvent<HTMLButtonElement>
-	) => {
-		event.preventDefault()
-	}
-	
-
-  const onSubmit = async ({email, password}:LoginUserData) => await login(email,password)
-	
-
-	// const handleChangeEmail = (
-	// 	event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-	// ) => {
-	// 	setEmail(event.target.value)
-	// }
-
-	// const handleChangePassword = (
-	// 	event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-	// ) => {
-	// 	setPassword(event.target.value)
-	// }
-
-	const handleGoogleLogin = async () => {
-		try {
-			AuthRepos.googleAuth()
-			toHome()
-		} catch (error) {
-			console.log(error)
-		}
-	}
+	const onSubmit = ({ email, password }: LoginUserData) =>
+		login(email, password)
 
 	if (authLoading) {
 		return <Loading />
@@ -136,10 +92,8 @@ const Login = () => {
 			<FormControl
 				component="form"
 				onSubmit={handleSubmit(onSubmit)}
-				sx={{display:"flex",
-					flexDirection:"column",
-					alignItems:"center"}}
-				>
+				sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}
+			>
 				<Controller
 					name="email"
 					control={control}
@@ -163,7 +117,7 @@ const Login = () => {
 					)}
 				/>
 
-<FormControl variant="outlined" sx={{ width: 300, margin: 3 }}>
+				<FormControl variant="outlined" sx={{ width: 300, margin: 3 }}>
 					<Controller
 						name="password"
 						control={control}
@@ -185,11 +139,7 @@ const Login = () => {
 									type={showPassword ? "text" : "password"}
 									endAdornment={
 										<InputAdornment position="end">
-											<IconButton
-												onClick={handleClickShowPassword}
-												onMouseDown={handleMouseDownPassword}
-												onMouseUp={handleMouseUpPassword}
-											>
+											<IconButton onClick={handleClickShowPassword}>
 												{showPassword ? (
 													<VisibilityIcon />
 												) : (
@@ -212,7 +162,6 @@ const Login = () => {
 
 				<Button
 					type="submit"
-					
 					variant="contained"
 					sx={{ width: 300, height: 50, margin: 3 }}
 				>

@@ -8,21 +8,18 @@ import { onAuthStateChanged, User } from "firebase/auth"
 
 export type InternalAxiosRequestConfig = OriginalInternalAxiosRequestConfig & {
 	requiresAuth?: boolean
-  tokenProvider?: TokenProvider;
+	tokenProvider?: TokenProvider
 }
 
 type TokenProvider = {
-  type:  'specific';
-  user?: User;  
+	type: "specific"
+	user?: User
 }
-
 
 export type CustomAxiosRequestConfig = AxiosRequestConfig & {
-  requiresAuth?: boolean;
-  tokenProvider?: TokenProvider;
+	requiresAuth?: boolean
+	tokenProvider?: TokenProvider
 }
-
-
 
 export const api = axios.create({
 	baseURL: API_URL,
@@ -48,9 +45,10 @@ api.interceptors.request.use(
 					resolve()
 				})
 			})
-			const token = config.tokenProvider?.type === 'specific'
-        ? await config.tokenProvider.user?.getIdToken(true)
-        : await auth.currentUser?.getIdToken()
+			const token =
+				config.tokenProvider?.type === "specific"
+					? await config.tokenProvider.user?.getIdToken(true)
+					: await auth.currentUser?.getIdToken()
 
 			if (token && !config.headers?.Authorization) {
 				config.headers = config.headers || {}

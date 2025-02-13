@@ -1,6 +1,3 @@
-import { useState } from "react"
-import { auth, provider } from "../../../config/firebaseConfig"
-import { createUserWithEmailAndPassword, signInWithPopup } from "firebase/auth"
 import { Link } from "react-router-dom"
 import {
 	AppBar,
@@ -23,8 +20,8 @@ import VisibilityOffIcon from "@mui/icons-material/VisibilityOff"
 import { Controller, useForm } from "react-hook-form"
 import SignUpModal from "./SignUpModal"
 import Loading from "../../../components/Loading"
-import { api, CustomAxiosRequestConfig } from "../../../lib/axios"
-import { useNavigation } from "../../../hooks/useNavigation"
+import { usePasswordVisibility } from "../hooks/useForm"
+import { useAuth } from "../hooks/useAuth"
 
 type UserData = {
 	email: string
@@ -33,10 +30,13 @@ type UserData = {
 }
 
 export const SignUp = () => {
-	const [showPassword, setShowPassword] = useState(false)
-	const [confirmShowPassword, setConfirmShowPassword] = useState(false)
-	const [isOpenModal, setIsOpenModal] = useState(false)
-	const [authLoading, setAuthLoading] = useState(false)
+	const { authLoading, handleGoogleLogin, signUp, isOpenModal } = useAuth()
+	const {
+		showPassword,
+		showConfirmPassword,
+		togglePassword,
+		toggleConfirmPassword
+	} = usePasswordVisibility()
 
 	const { handleSubmit, control, watch } = useForm({
 		mode: "onSubmit",
@@ -47,67 +47,12 @@ export const SignUp = () => {
 		}
 	})
 	const password = watch("password")
-	const {toHome}=useNavigation()
 
-	const handleClickShowPassword = () => setShowPassword((prev) => !prev)
-	const handleClickConfirmShowPassword = () =>
-		setConfirmShowPassword((prev) => !prev)
+	const handleClickShowPassword = () => togglePassword()
 
-	const handleMouseDownPassword = (
-		event: React.MouseEvent<HTMLButtonElement>
-	) => {
-		event.preventDefault()
-	}
+	const handleClickConfirmShowPassword = () => toggleConfirmPassword()
 
-	const handleMouseUpPassword = (
-		event: React.MouseEvent<HTMLButtonElement>
-	) => {
-		event.preventDefault()
-	}
-
-	const handleGoogleLogin = async () => {
-		try {
-			const result = await signInWithPopup(auth, provider)
-			const response = await api.post(`/api/user`, {
-				uid: result.user.uid,
-				displayName: result.user.displayName,
-				icon_url: result.user.photoURL
-			})
-			console.log(response.data.message)
-     
-			toHome()
-		} catch (error) {
-			console.log(error)
-		}
-	}
-
-	const onSubmit = async ({ email, password }: UserData) => {
-		try {
-			setAuthLoading(true)
-			const userCredential = await createUserWithEmailAndPassword(
-				auth,
-				email,
-				password
-			)
-
-	
-			const response = await api.post(
-				`/auth/verify`,
-				{ message: "認証に成功しました！" },
-				{
-					tokenProvider: {
-						type: 'specific',
-						user: userCredential.user  
-					}
-				}as CustomAxiosRequestConfig
-			)
-			setAuthLoading(false)
-			setIsOpenModal(true)
-			console.log(response.data)
-		} catch (e) {
-			console.log("処理がうまくいきませんでした。")
-		}
-	}
+	const onSubmit = ({ email, password }: UserData) => signUp(email, password)
 
 	if (authLoading) {
 		return <Loading />
@@ -207,11 +152,7 @@ export const SignUp = () => {
 									type={showPassword ? "text" : "password"}
 									endAdornment={
 										<InputAdornment position="end">
-											<IconButton
-												onClick={handleClickShowPassword}
-												onMouseDown={handleMouseDownPassword}
-												onMouseUp={handleMouseUpPassword}
-											>
+											<IconButton onClick={handleClickShowPassword}>
 												{showPassword ? (
 													<VisibilityIcon />
 												) : (
@@ -250,15 +191,11 @@ export const SignUp = () => {
 									name="confirmPassword"
 									label="確認用パスワード"
 									id="outlined-adornment-password"
-									type={confirmShowPassword ? "text" : "password"}
+									type={showConfirmPassword ? "text" : "password"}
 									endAdornment={
 										<InputAdornment position="end">
-											<IconButton
-												onClick={handleClickConfirmShowPassword}
-												onMouseDown={handleMouseDownPassword}
-												onMouseUp={handleMouseUpPassword}
-											>
-												{confirmShowPassword ? (
+											<IconButton onClick={handleClickConfirmShowPassword}>
+												{showConfirmPassword ? (
 													<VisibilityIcon />
 												) : (
 													<VisibilityOffIcon />
@@ -318,13 +255,7 @@ export const SignUp = () => {
 				</Typography>
 			</Button>
 
-			{isOpenModal && (
-				<SignUpModal
-					setIsOpenModal={setIsOpenModal}
-					setAuthLoading={setAuthLoading}
-					authLoading={authLoading}
-				/>
-			)}
+			{isOpenModal && <SignUpModal authLoading={authLoading} />}
 		</Box>
 	)
 }
