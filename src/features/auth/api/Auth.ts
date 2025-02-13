@@ -1,0 +1,37 @@
+import { signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth'
+import { api, CustomAxiosRequestConfig } from '../../../lib/axios'
+import { auth, provider } from '../../../config/firebaseConfig'
+
+export const AuthRepos={
+// グーグルログイン
+	googleAuth: async() => {
+	 const userData = await signInWithPopup(auth, provider)
+			 const { displayName, photoURL, uid } = userData.user
+			 await api.post(`/api/user`, {
+				 displayName,
+				 photoURL,
+				 uid
+			 })
+			},
+
+// メールアドレスログイン
+  emailAndPasswordLogin:async(email:string,password:string)=>{
+		const userCredential = await signInWithEmailAndPassword(
+			auth,
+			email,
+			password
+		)
+		await api.post(
+			`/auth/verify`,
+			{ message: "認証に成功しました！" },
+			{
+				tokenProvider: {
+					type: 'specific',
+					user: userCredential.user  
+				}
+			}as CustomAxiosRequestConfig
+		)
+		
+	}		
+}
+

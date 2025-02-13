@@ -1,8 +1,5 @@
-import {  signInWithPopup } from "firebase/auth"
 import React, { useState } from "react"
-import { auth, provider } from "../../../config/firebaseConfig"
 import { Link } from "react-router-dom"
-
 import {
 	Box,
 	TextField,
@@ -16,26 +13,42 @@ import {
 	Divider,
 	Avatar,
 	AppBar,
-	Toolbar
+	Toolbar,
+	FormHelperText
 } from "@mui/material"
 import VisibilityIcon from "@mui/icons-material/Visibility"
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff"
-
 import Loading from "../../../components/Loading"
-
-import { api } from "../../../lib/axios"
 import { useNavigation } from "../../../hooks/useNavigation"
 import { useLogin } from "../hooks/useLogin"
+import { AuthRepos } from "../api/Auth"
+import { usePassword } from "../hooks/useForm"
+import { Controller, useForm } from "react-hook-form"
+
+export type LoginUserData ={
+	email:string,
+	password:string
+}
 
 const Login = () => {
-	const [showPassword, setShowPassword] = useState(false)
-	const [email, setEmail] = useState<string>("")
-	const [password, setPassword] = useState<string>("")
-	// const [authLoading, setAuthLoading] = useState(false)
+
+  // const [email, setEmail] = useState<string>("")
+	// const [password, setPassword] = useState<string>("")
 	const { toHome } = useNavigation()
 	const { login, authLoading } = useLogin();
+	const {showPassword,controlPassword}=usePassword();
+	const { control, handleSubmit} = useForm({
+		mode: "onSubmit",
+		defaultValues: {
+			password:"",
+		  email: ""
+		}
+	})
+	
 
-	const handleClickShowPassword = () => setShowPassword((prev) => !prev)
+	
+
+	const handleClickShowPassword = () => controlPassword();
 
 	const handleMouseDownPassword = (
 		event: React.MouseEvent<HTMLButtonElement>
@@ -50,35 +63,24 @@ const Login = () => {
 	}
 	
 
-	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-		event.preventDefault()
-		await login(email,password)
-	}
+  const onSubmit = async ({email, password}:LoginUserData) => await login(email,password)
+	
 
-	const handleChangeEmail = (
-		event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-	) => {
-		setEmail(event.target.value)
-	}
+	// const handleChangeEmail = (
+	// 	event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+	// ) => {
+	// 	setEmail(event.target.value)
+	// }
 
-	const handleChangePassword = (
-		event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-	) => {
-		setPassword(event.target.value)
-	}
+	// const handleChangePassword = (
+	// 	event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+	// ) => {
+	// 	setPassword(event.target.value)
+	// }
 
 	const handleGoogleLogin = async () => {
 		try {
-			const userData = await signInWithPopup(auth, provider)
-			const { displayName, photoURL, uid } = userData.user
-			const responseData = api.post(`/api/user`, {
-				displayName,
-				photoURL,
-				uid
-			})
-
-			console.log((await responseData).data.message)
-
+			AuthRepos.googleAuth()
 			toHome()
 		} catch (error) {
 			console.log(error)
@@ -131,45 +133,86 @@ const Login = () => {
 				初めての方は<Link to={"/signup"}>こちら</Link>
 			</Typography>
 
-			<Box
+			<FormControl
 				component="form"
-				onSubmit={handleSubmit}
-				flexDirection="column"
-				display="flex"
-				alignItems="center"
-			>
-				<TextField
+				onSubmit={handleSubmit(onSubmit)}
+				sx={{display:"flex",
+					flexDirection:"column",
+					alignItems:"center"}}
+				>
+				<Controller
 					name="email"
-					type="email"
-					id="email"
-					label="メールアドレス"
-					sx={{ width: 300, margin: 3 }}
-					onChange={(e) => handleChangeEmail(e)}
+					control={control}
+					rules={{
+						required: "入力は必須です!",
+						pattern: {
+							value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+							message: "有効なメールアドレスを入力してください"
+						}
+					}}
+					render={({ field, formState: { errors } }) => (
+						<TextField
+							{...field}
+							name="email"
+							type="email"
+							label="メールアドレス"
+							sx={{ width: 300, margin: 3 }}
+							error={errors.email ? true : false}
+							helperText={errors.email?.message}
+						/>
+					)}
 				/>
 
-				<FormControl variant="outlined" sx={{ width: 300, margin: 3 }}>
-					<InputLabel>パスワード</InputLabel>
-					<OutlinedInput
-						onChange={(e) => handleChangePassword(e)}
-						label="パスワード"
-						id="outlined-adornment-password"
-						type={showPassword ? "text" : "password"}
-						endAdornment={
-							<InputAdornment position="end">
-								<IconButton
-									onClick={handleClickShowPassword}
-									onMouseDown={handleMouseDownPassword}
-									onMouseUp={handleMouseUpPassword}
-								>
-									{showPassword ? <VisibilityIcon /> : <VisibilityOffIcon />}
-								</IconButton>
-							</InputAdornment>
-						}
+<FormControl variant="outlined" sx={{ width: 300, margin: 3 }}>
+					<Controller
+						name="password"
+						control={control}
+						rules={{
+							required: "パスワードは必須です!",
+							minLength: {
+								value: 8,
+								message: "パスワードは8文字以上で入力してください!"
+							}
+						}}
+						render={({ field, formState: { errors } }) => (
+							<>
+								<InputLabel>パスワード</InputLabel>
+								<OutlinedInput
+									{...field}
+									label="パスワード"
+									name="password"
+									id="outlined-adornment-password"
+									type={showPassword ? "text" : "password"}
+									endAdornment={
+										<InputAdornment position="end">
+											<IconButton
+												onClick={handleClickShowPassword}
+												onMouseDown={handleMouseDownPassword}
+												onMouseUp={handleMouseUpPassword}
+											>
+												{showPassword ? (
+													<VisibilityIcon />
+												) : (
+													<VisibilityOffIcon />
+												)}
+											</IconButton>
+										</InputAdornment>
+									}
+									error={errors.password ? true : false}
+								/>
+								{errors.password && (
+									<FormHelperText error>
+										{errors.password.message}
+									</FormHelperText>
+								)}
+							</>
+						)}
 					/>
 				</FormControl>
 
 				<Button
 					type="submit"
+					
 					variant="contained"
 					sx={{ width: 300, height: 50, margin: 3 }}
 				>
@@ -203,7 +246,7 @@ const Login = () => {
 						Googleログイン
 					</Typography>
 				</Button>
-			</Box>
+			</FormControl>
 		</Box>
 	)
 }
