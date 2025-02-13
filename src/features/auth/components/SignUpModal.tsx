@@ -3,20 +3,19 @@ import { Controller, useForm } from "react-hook-form"
 import Button from "@mui/material/Button"
 import Typography from "@mui/material/Typography"
 import Modal from "@mui/material/Modal"
-
 import Loading from "../../../components/Loading"
-
 import { useAuth } from "../hooks/useAuth"
 
-type ModalControl = {
-	authLoading: boolean
-}
+
 
 export type SignUpModalData = {
 	user_name: string
 }
 
-const SignUpModal = ({ authLoading }: ModalControl) => {
+const SignUpModal = () => {
+	const { inputUserModal,authLoading } = useAuth()
+	// モーダルをtrueにして表示させる
+	const open = true
 	const { control, handleSubmit } = useForm({
 		mode: "onSubmit",
 		defaultValues: {
@@ -24,12 +23,8 @@ const SignUpModal = ({ authLoading }: ModalControl) => {
 		}
 	})
 
-	const { inputUserModal } = useAuth()
-
-	// モーダルをtrueにして表示させる
-	const open = true
-
 	const onSubmit = (data: SignUpModalData) => inputUserModal(data)
+
 
 	if (authLoading) {
 		return <Loading />
